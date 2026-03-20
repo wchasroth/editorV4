@@ -123,9 +123,9 @@
    </tr>
    {foreach from=$rows item=row}
       <tr>
-         <td style="white-space: nowrap;" class="smaller">{$row['shortname']}</td>
-         {if $showDistrict} <td align='right'>{$row['district']}</td> {/if}
-         {if $showSubDist}  <td align='right'>{$row['subdist']}</td>  {/if}
+         <td style="white-space: nowrap;"     class="smaller">{$row['shortname']}</td>
+         {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
+         {if $showSubDist}  <td align='right' class="smaller">{$row['subdist']}</td>  {/if}
          {if $showSeat}
             {if $row['seatmax'] > 1 } <td align='right'>{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}

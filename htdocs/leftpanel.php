@@ -1,0 +1,63 @@
+<?php
+declare(strict_types=1);
+
+namespace CharlesRothDotNet\Editor26;
+
+use CharlesRothDotNet\Alfred\Str;
+use CharlesRothDotNet\Alfred\SmartyPage;
+use CharlesRothDotNet\Alfred\EnvFile;
+use CharlesRothDotNet\Alfred\PdoHelper;
+
+require_once('../vendor/autoload.php');
+
+date_default_timezone_set("America/New_York");
+
+$env = new EnvFile("_env");
+$pdo = PdoHelper::makePdo($env);
+
+$counties = [];
+
+$sql = "SELECT e.org, e.district, e.name \n"
+     . "  FROM entity26        AS e \n"
+     . "  JOIN entity2county26 AS c ON (e.org = c.org  AND  e.district = c.district) \n"
+     . "  WHERE e.org in ('cnty', 'city', 'town', 'vil', 'schl-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p') \n"
+     . "  ORDER BY c.county_id, "
+     . "        FIELD(e.org, 'cnty', 'city', 'town', 'vil', 'schl-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p'), e.name ";
+$result = $pdo->run($sql);
+foreach ($result->getRows() as $row) {
+   $org      = $row['org'];
+   $name     = simplifyName($row['name']);
+   $district = $row['district'];
+   switch ($org) {
+      case 'cnty':
+         $cid = intval($district);
+         $name = Str::replaceAll($name, " County", "");
+         $counties[$cid] = ['cnty' => [$org, $district, $name], 'juris' => [], 'vil' => [], 'schl' => [], 'crt' => []];
+         break;
+
+      case 'city':
+      case 'town':       $counties[$cid]['juris'][] = [$org, $district, $name];    break;
+
+      case 'vil':        $counties[$cid]['vil']  [] = [$org, $district, $name];    break;
+
+      case 'schl-cou':   $counties[$cid]['schl'] [] = [$org, $district, $name];    break;
+
+      case 'crt-a':
+      case 'crt-c':
+      case 'crt-d':
+      case 'crt-m':
+      case 'crt-p':      $counties[$cid]['crt']     [] = [$org, $district, $name, $org];  break;
+   }
+}
+
+$smarty = new SmartyPage();
+$smarty->assign('counties', $counties);
+$smarty->display('leftpanel.tpl');
+
+function simplifyName(string $text): string {
+   $name = ucwords(strtolower($text));
+   if (Str::contains($name, " Community "))       $name = Str::replaceFirst($name, " Community ", " Comm. ");
+   if (Str::endsWith($name, " Schools"))          $name = Str::replaceFirst($name, " Schools",    "");
+   if (Str::endsWith($name, " School District"))  $name = Str::replaceFirst($name, " School District",    "");
+   return $name;
+}

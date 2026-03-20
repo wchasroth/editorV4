@@ -1,0 +1,26 @@
+Extract styles into css file
+
+Extract javascript into js file (?)
+
+Commas in number fields(???)
+
+Separate utility to fix casing in incumbent names
+
+How to handle security?  Hook into dev copy of existing editor,
+    use cookie info?
+
+Begin design for adding new seat rows.
+   Alcona / Harrisville city
+      https://harrisvillemi.org/local-government/
+
+Begin design for deleting 'extra' seat rows.
+
+Button to clear an entire row (???)
+
+Separate seats by partisan vs non-partisan
+   show different vote columns for each.
+     (What to do when mixed, e.g. 'mi' ??)
+        (should we split supremes into their own page?)
+        (are there any other such cases?)
+
+Look into "expandable" fields: overlaying Z-indexes, good enough?

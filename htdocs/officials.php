@@ -53,7 +53,7 @@ $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i
      . "  LEFT JOIN v4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
      . "  WHERE s.org in ($quotedOrgs) \n"
      . makeDistrictClause($district) . "\n"
-     . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.subdist, s.seatnum \n";
+     . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 $result = $pdo->run($sql);
 
 //---Where the LEFT JOIN v4incumbents found no incumbent rows, create empty ones, with the seat_id set.

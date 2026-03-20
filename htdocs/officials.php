@@ -29,7 +29,7 @@ if (! empty($fieldsChanged)) {
    foreach (Str::split($fieldsChanged, ",") as $field) {
       $value = HttpPost::value($field);
       $parts = Str::split($field, ':');
-      $sql   = "UPDATE " . ($parts[0] == 'i' ? "incumbent26" : "seat26") . " SET ";
+      $sql   = "UPDATE " . ($parts[0] == 'i' ? "v4incumbents" : "v4seats") . " SET ";
       if (Str::startsWith($parts[2], "term")  ||  Str::startsWith($parts[2], "votes"))  $value = intval($value);
       $sqlFields = new SqlFields([$parts[2] => $value]);
       $result = $pdo->runSF($sql, "WHERE id={$parts[1]}", $sqlFields, true);
@@ -48,20 +48,20 @@ $quotedOrgs = Str::join($orgs, ",");
 $counties = [];
 $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i.web, "
      . "            i.votes_D, i.votes_R, i.votes_O, i.votes_U, i.votes_T, i.id AS inc_id \n"
-     . "  FROM seat26           AS s \n"
-     . "  LEFT JOIN incumbent26 AS i   ON (s.id = i.seat_id) \n"
-     . "  LEFT JOIN title26     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
+     . "  FROM v4seats           AS s \n"
+     . "  LEFT JOIN v4incumbents AS i   ON (s.id = i.seat_id) \n"
+     . "  LEFT JOIN v4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
      . "  WHERE s.org in ($quotedOrgs) \n"
      . makeDistrictClause($district) . "\n"
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.subdist, s.seatnum \n";
 $result = $pdo->run($sql);
 
-//---Where the LEFT JOIN incumbent26 found no incumbent rows, create empty ones, with the seat_id set.
+//---Where the LEFT JOIN v4incumbents found no incumbent rows, create empty ones, with the seat_id set.
 $rows  = $result->getRows();
 $count = $result->getRowCount();
 for ($i=0;   $i<$count;   $i++) {
    if (empty($rows[$i]['inc_id'])) {
-      $insertIncumbent = "INSERT INTO incumbent26 (seat_id) VALUES ({$rows[$i]['id']}) ";
+      $insertIncumbent = "INSERT INTO v4incumbents (seat_id) VALUES ({$rows[$i]['id']}) ";
       $insertResult    = $pdo->run($insertIncumbent);
       $newIndex = $insertResult->getInsertId();
       $rows[$i]['inc_id'] = $newIndex;
@@ -72,7 +72,7 @@ $expandableOrgs = array_intersect(getUniqueOrgsFoundIn($rows),
    ['city', 'city-cou', 'cnty', 'cnty-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou']);
 $offices = [];
 foreach ($expandableOrgs as $org) {
-   $sql = "SELECT office, shortname FROM title26 WHERE org='$org' AND shortname != '' ";
+   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ";
    $result = $pdo->run($sql);
    $offices[$org] = $result->getRows();
 }

@@ -114,10 +114,10 @@
       <td class="th2">Address</td>
       <td class="th2">Yrs</td>
       <td class="th2">Cycle</td>
+      <td class="th2">C votes</td>
       <td class="th2">D votes</td>
       <td class="th2">R votes</td>
       <td class="th2">O votes</td>
-      <td class="th2">U votes</td>
       <td class="th2">T votes</td>
    </tr>
    {foreach from=$rows item=row}
@@ -136,10 +136,10 @@
          <td><input name="i:{$row['inc_id']}:address"   type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['address']}"/></td>
          <td><input name="s:{$row['id']    }:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td><input name="s:{$row['id']    }:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
+         <td><input name="i:{$row['inc_id']}:votes_C"   type="text"  size="7"  class="char7 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['votes_D']}"/></td>
          <td><input name="i:{$row['inc_id']}:votes_D"   type="text"  size="7"  class="char7 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['votes_D']}"/></td>
          <td><input name="i:{$row['inc_id']}:votes_R"   type="text"  size="7"  class="char7 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['votes_R']}"/></td>
          <td><input name="i:{$row['inc_id']}:votes_O"   type="text"  size="7"  class="char7 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['votes_O']}"/></td>
-         <td><input name="i:{$row['inc_id']}:votes_U"   type="text"  size="7"  class="char7 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['votes_U']}"/></td>
          <td><input name="i:{$row['inc_id']}:votes_T"   type="text"  size="7"  class="char7 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['votes_T']}"/></td>
       </tr>
    {/foreach}

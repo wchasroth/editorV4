@@ -3,3 +3,4 @@ _env
 templates_c
 cache
 .idea
+composer.lock

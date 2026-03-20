@@ -8,6 +8,7 @@
         font-family: 'Roboto';
         /* font-size: 0.8rem; */
       }
+      .smaller { font-size: 80%; }
       .zebra {
          tr:nth-child(even) {
             background-color: #d2d2d2;
@@ -122,7 +123,7 @@
    </tr>
    {foreach from=$rows item=row}
       <tr>
-         <td style="white-space: nowrap;">{$row['shortname']}</td>
+         <td style="white-space: nowrap;" class="smaller">{$row['shortname']}</td>
          {if $showDistrict} <td align='right'>{$row['district']}</td> {/if}
          {if $showSubDist}  <td align='right'>{$row['subdist']}</td>  {/if}
          {if $showSeat}

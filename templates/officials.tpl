@@ -8,7 +8,7 @@
         font-family: 'Roboto';
         /* font-size: 0.8rem; */
       }
-      .smaller { font-size: 90%; }
+      .smaller { font-size: 85%; }
       .zebra {
          tr:nth-child(even) {
             background-color: #d2d2d2;

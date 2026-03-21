@@ -18,9 +18,11 @@ $pdo = PdoHelper::makePdo($env);
 $counties = [];
 
 $sql = "SELECT e.org, e.district, e.name \n"
-     . "  FROM entity26        AS e \n"
-     . "  JOIN entity2county26 AS c ON (e.org = c.org  AND  e.district = c.district) \n"
+     . "  FROM entity26         AS e \n"
+     . "  JOIN entity2county26  AS c ON (e.org = c.org  AND  e.district = c.district) \n"
+     . "  LEFT JOIN v4completed AS d ON (e.district = d.id) "
      . "  WHERE e.org in ('cnty', 'city', 'town', 'vil', 'schl-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p') \n"
+     . "    AND d.type='county' "
      . "  ORDER BY c.county_id, "
      . "        FIELD(e.org, 'cnty', 'city', 'town', 'vil', 'schl-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p'), e.name ";
 $result = $pdo->run($sql);

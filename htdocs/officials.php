@@ -20,6 +20,7 @@ date_default_timezone_set("America/New_York");
 $env = new EnvFile("_env");
 $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
+$logger->log("Officials startup");
 
 $qsOrgs     = HttpGet::value('orgs');
 $qsDistrict = HttpGet::value('district');

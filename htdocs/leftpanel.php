@@ -7,6 +7,7 @@ use CharlesRothDotNet\Alfred\Str;
 use CharlesRothDotNet\Alfred\SmartyPage;
 use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
+use CharlesRothDotNet\Alfred\DumbFileLogger;
 
 require_once('../vendor/autoload.php');
 
@@ -14,6 +15,8 @@ date_default_timezone_set("America/New_York");
 
 $env = new EnvFile("_env");
 $pdo = PdoHelper::makePdo($env);
+$logger = new DumbFileLogger($env->get('logFile'));
+$logger->log("LeftPanel startup");
 
 $counties = [];
 
@@ -26,6 +29,7 @@ $sql = "SELECT e.org, e.district, e.name \n"
      . "  ORDER BY c.county_id, "
      . "        FIELD(e.org, 'cnty', 'city', 'town', 'vil', 'schl-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p'), e.name ";
 $result = $pdo->run($sql);
+if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");
 foreach ($result->getRows() as $row) {
    $org      = $row['org'];
    $name     = simplifyName($row['name']);

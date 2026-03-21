@@ -35,6 +35,7 @@ foreach ($result->getRows() as $row) {
    $org      = $row['org'];
    $name     = simplifyName($row['name']);
    $district = $row['district'];
+   $logger->log("Got: " . showArray($row));
    switch ($org) {
       case 'cnty':
          $cid = intval($district);
@@ -67,4 +68,10 @@ function simplifyName(string $text): string {
    if (Str::endsWith($name, " Schools"))          $name = Str::replaceFirst($name, " Schools",    "");
    if (Str::endsWith($name, " School District"))  $name = Str::replaceFirst($name, " School District",    "");
    return $name;
+}
+
+function showArray (array $aa): string {
+   $keyValues = [];
+   foreach ($aa as $key => $value) $keyValues[] = "$key=>$value";
+   return "[" . Str::join($keyValues, ", ") . "]";
 }

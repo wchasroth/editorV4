@@ -30,6 +30,7 @@ $sql = "SELECT e.org, e.district, e.name \n"
      . "        FIELD(e.org, 'cnty', 'city', 'town', 'vil', 'schl-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p'), e.name ";
 $result = $pdo->run($sql);
 if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");
+$cid = 0;  // This is a bug/hack!
 foreach ($result->getRows() as $row) {
    $org      = $row['org'];
    $name     = simplifyName($row['name']);

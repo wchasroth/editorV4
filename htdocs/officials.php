@@ -82,6 +82,8 @@ foreach ($expandableOrgs as $org) {
    $offices[$org] = $result->getRows();
 }
 
+for ($i=0;   $i<$count;   $i++) $rows[$i]['name'] = correctCase($rows[$i]['name']);
+
 $smarty = new SmartyPage();
 $smarty->assign('rows', $rows);
 $smarty->assign('name', calculatePageName($pdo, $orgs, $district));
@@ -99,6 +101,12 @@ $smarty->display('officials.tpl');
 
 
 //$smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, "displayCode2",    [HttpCode::class, "display"]);
+
+function correctCase(string $name): string {
+   $upper = strtoupper($name);
+   if ($upper != $name)  return $name;
+   return ucwords(strtolower($name));
+}
 
 function calculatePageName(AlfredPDO $pdo, array $orgs, string $district): string {
    switch ($orgs[0]) {

@@ -18,43 +18,74 @@ $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
 $logger->log("LeftPanel startup");
 
-$counties = [];
-
-$sql = "SELECT e.org, e.district, e.name \n"
-     . "  FROM entity26         AS e \n"
-     . "  JOIN entity2county26  AS c ON (e.org = c.org  AND  e.district = c.district) \n"
-//   . "  LEFT JOIN v4completed AS d ON (e.district = d.id) "
-     . "  WHERE e.org in ('cnty', 'city', 'town', 'vil', 'schl-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p') \n"
-//   . "    AND d.type='county' "
-     . "  ORDER BY c.county_id, "
-     . "        FIELD(e.org, 'cnty', 'city', 'town', 'vil', 'schl-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p'), e.name ";
+$sql = "SELECT id FROM v4completed WHERE type='county' ORDER by id";
 $result = $pdo->run($sql);
-if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");
-$cid = 0;  // This is a bug/hack!
-foreach ($result->getRows() as $row) {
-   $org      = $row['org'];
-   $name     = simplifyName($row['name']);
-   $district = $row['district'];
-   $logger->log("Got: " . showArray($row));
-   switch ($org) {
-      case 'cnty':
-         $cid = intval($district);
-         $name = Str::replaceAll($name, " County", "");
-         $counties[$cid] = ['cnty' => [$org, $district, $name], 'juris' => [], 'vil' => [], 'schl' => [], 'crt' => []];
-         break;
+$countyNums = $result->getArrayOf('id');
 
-      case 'city':
-      case 'town':       $counties[$cid]['juris'][] = [$org, $district, $name];    break;
+$counties = [];
+foreach ($countyNums as $countyNum) {
 
-      case 'vil':        $counties[$cid]['vil']  [] = [$org, $district, $name];    break;
+   $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link "
+        . "     FROM v4counties WHERE id = $countyNum "
+        . "UNION "
+        . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link "
+        . "     FROM      v4jurisdictions AS j "
+        . "     LEFT JOIN v4completed     AS c  ON (c.id = j.id  AND c.type='city') "
+        . "    WHERE j.type='c'  AND  j.county_id = $countyNum "
+        . "UNION "
+        . "   SELECT 'town' AS org, j.id, j.name, 1 AS link "
+        . "     FROM      v4jurisdictions AS j "
+        . "    WHERE j.type='t'  AND  j.county_id = $countyNum "
+        . "UNION "
+        . "   SELECT 'vil' AS org, v.id, v.name, IF(c.id IS NULL, 0, 1) AS link "
+        . "     FROM      v4villages  AS v "
+        . "     LEFT JOIN v4completed AS c  ON (c.id = v.id  AND c.type='village') "
+        . "    WHERE v.county_id = $countyNum "
+        . "UNION "
+        . "   SELECT 'schl-cou' AS org, s.id, s.name, IF(c.id IS NULL, 0, 1) AS link "
+        . "     FROM      v4schools   AS s "
+        . "     LEFT JOIN v4completed AS c  ON (c.id = s.id  AND c.type='school') "
+        . "    WHERE s.county_id = $countyNum "
+        . "UNION "
+        . "   SELECT type AS org, shortname AS id, name, 1 AS link "
+        . "    FROM  court "
+        . "    WHERE county_id = $countyNum "
+        . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'A', 'C', 'D', 'PD', 'P'), name ";
 
-      case 'schl-cou':   $counties[$cid]['schl'] [] = [$org, $district, $name];    break;
+   $result = $pdo->run($sql);
+   if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");
+   foreach ($result->getRows() as $row) {
+      $org = $row['org'];
+      $name = simplifyName($row['name']);
+      $district = $row['district'];
+      $logger->log("Got: " . showArray($row));
+      switch ($org) {
+         case 'cnty':
+            $name = Str::replaceAll($name, " County", "");
+            $counties[$countyNum] = ['cnty' => [$org, $district, $name], 'juris' => [], 'vil' => [], 'schl' => [], 'crt' => []];
+            break;
 
-      case 'crt-a':
-      case 'crt-c':
-      case 'crt-d':
-      case 'crt-m':
-      case 'crt-p':      $counties[$cid]['crt']     [] = [$org, $district, $name, $org];  break;
+         case 'city':
+         case 'town':
+            $counties[$countyNum]['juris'][] = [$org, $district, $name];
+            break;
+
+         case 'vil':
+            $counties[$countyNum]['vil']  [] = [$org, $district, $name];
+            break;
+
+         case 'schl-cou':
+            $counties[$countyNum]['schl'] [] = [$org, $district, $name];
+            break;
+
+         case 'crt-a':
+         case 'crt-c':
+         case 'crt-d':
+         case 'crt-m':
+         case 'crt-p':
+            $counties[$countyNum]['crt']     [] = [$org, $district, $name, $org];
+            break;
+      }
    }
 }
 

@@ -57,7 +57,7 @@ foreach ($countyNums as $countyNum) {
    foreach ($result->getRows() as $row) {
       $org = $row['org'];
       $name = simplifyName($row['name']);
-      $district = $row['district'];
+      $district = $row['id'];
       $logger->log("Got: " . showArray($row));
       switch ($org) {
          case 'cnty':

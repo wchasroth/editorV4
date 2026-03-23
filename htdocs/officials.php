@@ -94,7 +94,7 @@ $smarty->assign('showSubDist',  $showSubDist);
 $smarty->assign('showSeat',     $showSeat);
 $smarty->assign('expandableOrgs', $expandableOrgs);
 
-$smarty->assign('qsOrgs',     $qsOrgs);      // for <form> action querystring.
+$smarty->assign('qsOrgs',     translateOrgs($qsOrgs));      // for <form> action querystring.
 $smarty->assign('qsDistrict', $qsDistrict);
 $smarty->assign('qsShow',     $qsShow);
 
@@ -141,4 +141,15 @@ function getUniqueOrgsFoundIn(array $rows): array {
       }
    }
    return $orgsFound;
+}
+
+function translateOrgs(string $orgs):  string {  // Handle weird court orgs from 'court' table.
+   $transform = ['A' => 'crt-a', 'C' => 'crt-c', 'D' => 'crt-d', 'P' => 'crt-p', 'PD' => 'crt-d,crt-p'];
+   $orgNames = Str::split($orgs, ",");
+   $results = [];
+   foreach ($orgNames as $org) {
+      if (isset($transform[$org]))  $results[] = $transform[$org];
+      else                          $results[] = $org;
+   }
+   return Str::join($results, ",");
 }

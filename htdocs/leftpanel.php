@@ -24,10 +24,7 @@ $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
 $logger->log("LeftPanel startup");
 
-$result = $pdo->run("SELECT admin FROM azure_users WHERE email='$email'");
-$isAdmin = intval($result->getSingleValue('admin')) === 1;
-
-$sql = "SELECT id FROM v4completed WHERE type='county' ORDER by id";
+$sql = "SELECT id FROM v4completed WHERE type='county' AND id IN ($allowedCounties) ORDER by id";
 $result = $pdo->run($sql);
 $countyNums = $result->getArrayOf('id');
 
@@ -100,7 +97,6 @@ foreach ($countyNums as $countyNum) {
 
 $smarty = new SmartyPage();
 $smarty->assign('counties', $counties);
-$smarty->assign('isAdmin', $allowedCounties);
 $smarty->display('leftpanel.tpl');
 
 function simplifyName(string $text): string {

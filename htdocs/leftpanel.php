@@ -84,11 +84,16 @@ foreach ($countyNums as $countyNum) {
             $counties[$countyNum]['schl'] [] = [$org, $district, $name];
             break;
 
-         case 'crt-a':
-         case 'crt-c':
-         case 'crt-d':
-         case 'crt-m':
-         case 'crt-p':
+//         case 'crt-a':
+//         case 'crt-c':
+//         case 'crt-d':
+//         case 'crt-m':
+//         case 'crt-p':
+         case 'A':
+         case 'C':
+         case 'D':
+         case 'PD':
+         case 'P':
             $counties[$countyNum]['crt']     [] = [$org, $district, $name, $org];
             $logger->log("CRT: " . showArray([$org, $district, $name, $org]));
             break;

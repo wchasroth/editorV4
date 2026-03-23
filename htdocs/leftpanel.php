@@ -14,9 +14,15 @@ require_once('../vendor/autoload.php');
 date_default_timezone_set("America/New_York");
 
 $env = new EnvFile("_env");
+$boss  = new CookieBoss($env->get('domain'), $env->get('cookie_path'), $env->get('securekey'));
+$email = CookieVerifier::getEmail($boss, $env->get('cookie'));
+
 $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
 $logger->log("LeftPanel startup");
+
+$result = $pdo->run("SELECT admin FROM azure_users WHERE email='$email'");
+$isAdmin = intval($result->getSingleValue('admin')) === 1;
 
 $sql = "SELECT id FROM v4completed WHERE type='county' ORDER by id";
 $result = $pdo->run($sql);
@@ -91,6 +97,7 @@ foreach ($countyNums as $countyNum) {
 
 $smarty = new SmartyPage();
 $smarty->assign('counties', $counties);
+$smarty->assign('isAdmin', $isAdmin);
 $smarty->display('leftpanel.tpl');
 
 function simplifyName(string $text): string {

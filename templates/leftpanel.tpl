@@ -48,6 +48,7 @@
 </head>
 
 <body style='max-width: 65em; background-color: #CCE6FF;'>
+isAdmin={$isAdmin}<br/>
 <ul style="padding-left: 0;">
    <li><a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a></li>
    <li><a href="#" onClick="return loadOfficials('mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a></li>

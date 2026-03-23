@@ -73,7 +73,7 @@
                      ><span id='A{$county.cnty[1]}V' class="arrow">&#9654;</span> Villages</a>
                   <ul id="C{$county.cnty[1]}V" style="display: none";>
                      {foreach from=$county.vil item=vil}
-                        <li><a href="#" onClick="return loadOfficials('vil,vil-cou', '{$vil[1]}', 's');">{$vil[2]}</a></li>
+                        <li><a href="#" onClick="return loadOfficials('vil,vil-cou', '{$vil[1]}', 's');" class="child">{$vil[2]}</a></li>
                      {/foreach}
                   </ul>
                </li>

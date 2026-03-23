@@ -18,6 +18,7 @@ date_default_timezone_set("America/New_York");
 $env = new EnvFile("_env");
 $boss  = new CookieBoss($env->get('domain'), $env->get('cookie_path'), $env->get('securekey'));
 $email = CookieVerifier::getEmail($boss, $env->get('cookie'));
+$allowedCounties = $boss->getValueFromHashedCookie($env->get('counties'));
 
 $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
@@ -99,7 +100,7 @@ foreach ($countyNums as $countyNum) {
 
 $smarty = new SmartyPage();
 $smarty->assign('counties', $counties);
-$smarty->assign('isAdmin', $isAdmin);
+$smarty->assign('isAdmin', $allowedCounties);
 $smarty->display('leftpanel.tpl');
 
 function simplifyName(string $text): string {

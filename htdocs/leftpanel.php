@@ -19,6 +19,7 @@ $env = new EnvFile("_env");
 $boss  = new CookieBoss($env->get('domain'), $env->get('cookie_path'), $env->get('securekey'));
 $email = CookieVerifier::getEmail($boss, $env->get('cookie'));
 $allowedCounties = $boss->getValueFromHashedCookie($env->get('counties'));
+$allowedState    = Str::contains($allowedCounties, "999");
 
 $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
@@ -96,6 +97,7 @@ foreach ($countyNums as $countyNum) {
 }
 
 $smarty = new SmartyPage();
+$smarty->assign('allowedState', $allowedState);
 $smarty->assign('counties', $counties);
 $smarty->display('leftpanel.tpl');
 

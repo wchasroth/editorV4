@@ -48,13 +48,15 @@
 </head>
 
 <body style='max-width: 65em; background-color: #CCE6FF;'>
-isAdmin={$isAdmin}<br/>
 <ul style="padding-left: 0;">
-   <li><a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a></li>
-   <li><a href="#" onClick="return loadOfficials('mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a></li>
-   <li><a href="#" onClick="return loadOfficials('mi-sen', '', 'd');" class="child">MI Senate</a></li>
-   <li><a href="#" onClick="return loadOfficials('mi-hou', '', 'd');" class="child">MI House</a></li>
-   <li><a href="#" onClick="return loadOfficials('mi-boe,mi-msu,mi-um,mi-wsu', '', 's');" class="child">MI Education</a></li>
+   {if $allowedState }
+      <li><a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a></li>
+      <li><a href="#" onClick="return loadOfficials('mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a></li>
+      <li><a href="#" onClick="return loadOfficials('mi-sen', '', 'd');" class="child">MI Senate</a></li>
+      <li><a href="#" onClick="return loadOfficials('mi-hou', '', 'd');" class="child">MI House</a></li>
+      <li><a href="#" onClick="return loadOfficials('mi-boe,mi-msu,mi-um,mi-wsu', '', 's');" class="child">MI Education</a></li>
+   {/if}
+
    {foreach from=$counties item=county}
       <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}');"
            ><span id='A{$county.cnty[1]}' class="arrow">&#9654;</span> {$county.cnty[2]}</a>

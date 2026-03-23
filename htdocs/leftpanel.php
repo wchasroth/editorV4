@@ -23,10 +23,8 @@ $allowedState    = Str::contains($allowedCounties, "999");
 
 $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
-$logger->log("LeftPanel startup");
 
 $sql = "SELECT id FROM v4completed WHERE type='county' AND id IN ($allowedCounties) ORDER by id";
-$logger->log("counties: $sql");
 $result = $pdo->run($sql);
 $countyNums = $result->getArrayOf('id');
 
@@ -66,7 +64,7 @@ foreach ($countyNums as $countyNum) {
       $org = $row['org'];
       $name = simplifyName($row['name']);
       $district = $row['id'];
-      $logger->log("Got: " . showArray($row));
+//    $logger->log("Got: " . showArray($row));
       switch ($org) {
          case 'cnty':
             $name = Str::replaceAll($name, " County", "");
@@ -92,6 +90,7 @@ foreach ($countyNums as $countyNum) {
          case 'crt-m':
          case 'crt-p':
             $counties[$countyNum]['crt']     [] = [$org, $district, $name, $org];
+            $logger->log("CRT: " . showArray([$org, $district, $name, $org]));
             break;
       }
    }

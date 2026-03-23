@@ -51,7 +51,7 @@ $quotedOrgs = Str::join($orgs, ",");
 $counties = [];
 $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i.web, "
 //   . "            i.votes_C, i.votes_D, i.votes_R, i.votes_O, i.votes_T, i.id AS inc_id \n"
-     . "            (i.votes_C * 100) / i.votes_T as PCT, i.id AS inc_id \n"
+     . "            ROUND((i.votes_C * 100) / i.votes_T) as PCT, i.id AS inc_id \n"
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4incumbents AS i   ON (s.id = i.seat_id) \n"
      . "  LEFT JOIN v4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"

@@ -26,6 +26,7 @@ $logger = new DumbFileLogger($env->get('logFile'));
 $logger->log("LeftPanel startup");
 
 $sql = "SELECT id FROM v4completed WHERE type='county' AND id IN ($allowedCounties) ORDER by id";
+$logger->log("counties: $sql");
 $result = $pdo->run($sql);
 $countyNums = $result->getArrayOf('id');
 

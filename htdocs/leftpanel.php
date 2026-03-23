@@ -8,6 +8,8 @@ use CharlesRothDotNet\Alfred\SmartyPage;
 use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
 use CharlesRothDotNet\Alfred\DumbFileLogger;
+use CharlesRothDotNet\Alfred\CookieBoss;
+use CharlesRothDotNet\Alfred\CookieVerifier;
 
 require_once('../vendor/autoload.php');
 

@@ -110,9 +110,9 @@
       <td class="th2">TL</td>
       <td class="th2">&nbsp;Next</td>
       <td class="th2">Name</td>
-      <td class="th2">Phone</td>
-      <td class="th2">Email</td>
       <td class="th2">Web</td>
+      <td class="th2">Email</td>
+      <td class="th2">Phone</td>
       <td class="th2">Address</td>
       <td class="th2">Pty</td>
       <td class="th2">Pct</td>
@@ -132,9 +132,9 @@
          <td><input name="s:{$row['id']    }:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td><input name="s:{$row['id']    }:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
          <td><input name="i:{$row['inc_id']}:name"      type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
-         <td><input name="i:{$row['inc_id']}:phone"     type="text"  size="12" class="char12"                         onChange="changed(this.name);"  value="{$row['phone']}"/></td>
-         <td><input name="i:{$row['inc_id']}:email"     type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['email']}"/></td>
          <td><input name="i:{$row['inc_id']}:web"       type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['web']}"/></td>
+         <td><input name="i:{$row['inc_id']}:email"     type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['email']}"/></td>
+         <td><input name="i:{$row['inc_id']}:phone"     type="text"  size="12" class="char12"                         onChange="changed(this.name);"  value="{$row['phone']}"/></td>
          <td><input name="i:{$row['inc_id']}:address"   type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['address']}"/></td>
          <td><input name="i:{$row['inc_id']}:party"     type="text"  size="1"  class="char1"                          onChange="changed(this.name);"  value="{$row['party']}"/></td>
          <td align='right' class="smaller">{$row['PCT']}%</td>

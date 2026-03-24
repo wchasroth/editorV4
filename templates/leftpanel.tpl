@@ -19,6 +19,9 @@
       .child {
          color: inherit;
       }
+      .incomplete {
+         color: red;
+      }
       .arrow {
          font-size: 80%;
          display: inline-block;
@@ -86,7 +89,11 @@
                    ><span id='A{$county.cnty[1]}S' class="arrow">&#9654;</span> School Districts</a>
                <ul id="C{$county.cnty[1]}S" style="display: none";>
                   {foreach from=$county.schl item=schl}
-                     <li><a href="#" onClick="return loadOfficials('schl-cou', '{$schl[1]}', 's');" class="child">{$schl[2]}</a></li>
+                      {if $schl[3] == 1}
+                         <li><a href="#" onClick="return loadOfficials('schl-cou', '{$schl[1]}', 's');" class="child">{$schl[2]}</a></li>
+                      {else}
+                         <li><a href="#" onClick="return false);" class="incomplete">{$schl[2]}</a></li>
+                      {/if}
                   {/foreach}
                </ul>
             </li>

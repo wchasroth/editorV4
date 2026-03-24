@@ -64,7 +64,7 @@ foreach ($countyNums as $countyNum) {
       $org = $row['org'];
       $name = simplifyName($row['name']);
       $district = $row['id'];
-      $isLink   = intval($row['link']) > 0;
+      $link     = intval($row['link']);
 //    $logger->log("Got: " . showArray($row));
       switch ($org) {
          case 'cnty':
@@ -82,7 +82,7 @@ foreach ($countyNums as $countyNum) {
             break;
 
          case 'schl-cou':
-            if ($isLink) $counties[$countyNum]['schl'] [] = [$org, $district, $name];
+            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link];
             break;
 
 //         case 'crt-a':

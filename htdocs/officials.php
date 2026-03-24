@@ -33,9 +33,10 @@ if (! empty($fieldsChanged)) {
       $value = HttpPost::value($field);
       $parts = Str::split($field, ':');
       $sql   = "UPDATE " . ($parts[0] == 'i' ? "v4incumbents" : "v4seats") . " SET ";
-      if (Str::startsWith($parts[2], "term")  ||  Str::startsWith($parts[2], "votes"))  $value = intval($value);
+      if (Str::startsWith($parts[2], "term"))  $value = intval($value);
       $sqlFields = new SqlFields([$parts[2] => $value]);
-      $result = $pdo->runSF($sql, "WHERE id={$parts[1]}", $sqlFields, true);
+      $logger->log("SAVE: $sql " . $sqlFields->getUpdateFragment());
+//    $result = $pdo->runSF($sql, "WHERE id={$parts[1]}", $sqlFields, true);
    }
 }
 

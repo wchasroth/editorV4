@@ -114,8 +114,8 @@
       <td class="th2">Email</td>
       <td class="th2">Web</td>
       <td class="th2">Address</td>
-      <td class="th2">Pct</td>
       <td class="th2">Pty</td>
+      <td class="th2">Pct</td>
    </tr>
    {foreach from=$rows item=row}
       <tr>

@@ -40,6 +40,12 @@ else if ($org === 'city') {
       . "     AND id NOT IN (SELECT id        FROM v4completed     WHERE type='county') "
       . "   ORDER BY name";
 }
+else if ($org === 'vil') {
+   $sql = "SELECT name FROM v4counties "
+      . "   WHERE id     IN (SELECT county_id FROM v4villages  WHERE id=$qsDistrict) "
+      . "     AND id NOT IN (SELECT id        FROM v4completed WHERE type='county') "
+      . "   ORDER BY name";
+}
 
 $result = $pdo->run($sql);
 $rows = $result->getRows();

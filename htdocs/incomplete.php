@@ -36,6 +36,8 @@ if ($qsOrgs == 'schl-cou') {
 
 $result = $pdo->run($sql);
 $rows = $result->getRows();
+$rowCount = $result->getRowCount();
+for ($i=0;   $i < $rowCount;   $i++) $rows[$i]['name'] = ucwords (strtolower ($rows[$i]['name']));
 
 $smarty = new SmartyPage();
 

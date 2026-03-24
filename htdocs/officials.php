@@ -88,6 +88,17 @@ foreach ($expandableOrgs as $org) {
 
 for ($i=0;   $i<$count;   $i++) $rows[$i]['name'] = correctCase($rows[$i]['name']);
 
+//---Transform termcycle into next year this seat is up for election.  (Make function!)
+$thisYear = intval(date('Y'));
+for ($i=0;   $i<$count;   $i++) {
+   $cycle   = intval($rows[$i]['cycle']);
+   $termlen = intval($rows[$i]['termlen']);
+   if ($cycle > 0  &&  $termlen > 0) {
+      while ($cycle < $thisYear) $cycle += $termlen;
+      $rows[$i]['cycle'] = strval($cycle);
+   }
+}
+
 $regionColumnName = "Reg";
 if (Str::contains($qsOrgs, "cnty"))  $regionColumnName = "Dist";
 if (Str::contains($qsOrgs, "city"))  $regionColumnName = "Ward";

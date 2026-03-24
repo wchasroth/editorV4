@@ -35,7 +35,7 @@ if (! empty($fieldsChanged)) {
       $sql   = "UPDATE " . ($parts[0] == 'i' ? "v4incumbents" : "v4seats") . " SET ";
       if (Str::startsWith($parts[2], "term"))  $value = intval($value);
       $sqlFields = new SqlFields([$parts[2] => $value]);
-      $logger->log("SAVE: $sql " . $sqlFields->getUpdateFragment());
+      $logger->log("SAVE: $sql " . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}");
 //    $result = $pdo->runSF($sql, "WHERE id={$parts[1]}", $sqlFields, true);
    }
 }

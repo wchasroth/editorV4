@@ -28,17 +28,17 @@ $qsShow     = HttpGet::value('show');
 
 $org = Str::substringBefore($qsOrgs . ',', ',');
 $sql = "SELECT '' ";
-if ($qsOrgs === 'schl-cou') {
+if ($org === 'schl-cou') {
    $sql = "SELECT name FROM v4counties "
         . " WHERE id     IN (SELECT county_id FROM v4schools   WHERE id=$qsDistrict) "
         . "   AND id NOT IN (SELECT id        FROM v4completed WHERE type='county') "
         . "  ORDER BY name";
 }
-else if ($qsOrgs === 'city') {
+else if ($org === 'city') {
    $sql = "SELECT name FROM v4counties "
-      . " WHERE id     IN (SELECT county_id FROM v4jurisdictions WHERE type='c' AND id=$qsDistrict) "
-      . "   AND id NOT IN (SELECT id        FROM v4completed     WHERE type='county') "
-      . "  ORDER BY name";
+      . "   WHERE id     IN (SELECT county_id FROM v4jurisdictions WHERE type='c' AND id=$qsDistrict) "
+      . "     AND id NOT IN (SELECT id        FROM v4completed     WHERE type='county') "
+      . "   ORDER BY name";
 }
 
 $result = $pdo->run($sql);

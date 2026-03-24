@@ -91,11 +91,11 @@ for ($i=0;   $i<$count;   $i++) $rows[$i]['name'] = correctCase($rows[$i]['name'
 //---Transform termcycle into next year this seat is up for election.  (Make function!)
 $thisYear = intval(date('Y'));
 for ($i=0;   $i<$count;   $i++) {
-   $cycle   = intval($rows[$i]['cycle']);
-   $termlen = intval($rows[$i]['termlen']);
-   if ($cycle > 0  &&  $termlen > 0) {
-      while ($cycle < $thisYear) $cycle += $termlen;
-      $rows[$i]['cycle'] = strval($cycle);
+   $termcycle = intval($rows[$i]['termcycle']);
+   $termlen   = intval($rows[$i]['termlen']);
+   if ($termcycle > 0  &&  $termlen > 0) {
+      while ($termcycle < $thisYear) $termcycle += $termlen;
+      $rows[$i]['termcycle'] = strval($termcycle);
    }
 }
 

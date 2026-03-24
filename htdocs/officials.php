@@ -39,7 +39,8 @@ if (! empty($fieldsChanged)) {
    }
 }
 
-$orgs         = Str::split($qsOrgs, ",");
+//$orgs         = Str::split($qsOrgs, ",");
+$orgs         = Str::split(translateOrgs($qsOrgs), ",");
 $district     = $qsDistrict;
 $showDistrict = Str::contains($qsShow, 'd');
 $showSubDist  = Str::contains($qsShow, 'w');

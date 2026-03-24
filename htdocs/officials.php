@@ -147,7 +147,19 @@ function calculatePageName(AlfredPDO $pdo, array $orgs, string $district, DumbFi
    $quotedOrgs = Str::join($orgs, ",");
    $sql = "SELECT name FROM entity26 WHERE org IN ($quotedOrgs) " . makeDistrictClause($district);
    $rows = $pdo->run($sql)->getRows();
-   if (count($rows) == 0)  $logger->log("officials, nothing in entity26: $sql");
+
+   //---This is a horrible hack-around for the issues with entity26 -- which itself should be replaced!
+   if (count($rows) == 0) {
+      $logger->log("officials, nothing in entity26: $sql");
+      if (Str::startsWith($orgs[0], "'vil'")) {
+         $sql = "SELECT name FROM v4villages WHERE id=$district";
+         $result = $pdo->run($sql);
+         $name = $result->getSingleValue('name');
+         if (! Str::contains(strtolower($name), "village")) $name = "Village of " . ucwords(strtolower($name));
+         return $name;
+      }
+
+   }
    return ucwords(strtolower((count($rows) > 0) ? $rows[0]['name'] : "No Name Found"));
 }
 

@@ -95,7 +95,7 @@ foreach ($countyNums as $countyNum) {
          case 'PD':
          case 'P':
             $counties[$countyNum]['crt']     [] = [$org, $district, $name, $org];
-            $logger->log("CRT: " . showArray([$org, $district, $name, $org]));
+//          $logger->log("CRT: " . showArray([$org, $district, $name, $org]));
             break;
       }
    }

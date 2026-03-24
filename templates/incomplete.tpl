@@ -15,8 +15,8 @@
 <h2>Incomplete</h2>
 
 <p/>
-The incumbent officials for this entity cannot be displayed,<br/>
-because we are still missing the county election reports for:
+The incumbent officials for this entity cannot be displayed, because<br/>
+it partly falls under one or more counties that have not been fully imported yet:
 
 <ul>
 {foreach from=$rows item=row}

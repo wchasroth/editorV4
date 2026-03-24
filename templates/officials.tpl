@@ -94,7 +94,6 @@
 <body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
 <form id="mainForm" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
-    qsOrgs={$qsOrgs}<br/>
 <table class="zebra" cellpadding="0" cellspacing="0">
    <tr>
       <td class="th1" colspan="1"
@@ -106,7 +105,7 @@
    <tr>
       <td class="th2">Office</td>
       {if $showDistrict } <td class="th2">Dist</td>    {/if}
-      {if $showSubDist  } <td class="th2">Reg</td> {/if}
+      {if $showSubDist  } <td class="th2">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2">S#</td>      {/if}
       <td class="th2">TL</td>
       <td class="th2">Pty</td>

@@ -87,6 +87,8 @@ foreach ($expandableOrgs as $org) {
 
 for ($i=0;   $i<$count;   $i++) $rows[$i]['name'] = correctCase($rows[$i]['name']);
 
+$regionColumnName = "Reg";
+if (Str::contains($qsOrgs, "cnty"))  $regionColumnName = "Dist";
 $smarty = new SmartyPage();
 $smarty->assign('rows', $rows);
 $smarty->assign('name', calculatePageName($pdo, $orgs, $district));
@@ -94,6 +96,7 @@ $smarty->assign('showDistrict', $showDistrict);
 $smarty->assign('showSubDist',  $showSubDist);
 $smarty->assign('showSeat',     $showSeat);
 $smarty->assign('expandableOrgs', $expandableOrgs);
+$smarty->assign('regionColumnName', $regionColumnName);
 
 $smarty->assign('qsOrgs',     translateOrgs($qsOrgs));      // for <form> action querystring.
 $smarty->assign('qsDistrict', $qsDistrict);

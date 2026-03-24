@@ -78,7 +78,7 @@ foreach ($countyNums as $countyNum) {
             break;
 
          case 'vil':
-            $counties[$countyNum]['vil']  [] = [$org, $district, $name];
+            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link];
             break;
 
          case 'schl-cou':

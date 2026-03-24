@@ -93,6 +93,7 @@ for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['name']      = correctCase($rows[$i]['name']);  // Fix all-upper-case names
    $rows[$i]['termcycle'] = nextElectionYearForSeat($rows[$i], $thisYear);
    $rows[$i]['web']       = stripHttps($rows[$i]['web']);
+   if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
 }
 
 function nextElectionYearForSeat(array $row, int $thisYear): string {

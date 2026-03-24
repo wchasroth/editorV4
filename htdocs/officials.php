@@ -86,17 +86,24 @@ foreach ($expandableOrgs as $org) {
    $offices[$org] = $result->getRows();
 }
 
-for ($i=0;   $i<$count;   $i++) $rows[$i]['name'] = correctCase($rows[$i]['name']);
-
-//---Transform termcycle into next year this seat is up for election.  (Make function!)
+//---Apply simple transformations for display:
 $thisYear = intval(date('Y'));
 for ($i=0;   $i<$count;   $i++) {
-   $termcycle = intval($rows[$i]['termcycle']);
-   $termlen   = intval($rows[$i]['termlen']);
-   if ($termcycle > 0  &&  $termlen > 0) {
-      while ($termcycle < $thisYear) $termcycle += $termlen;
-      $rows[$i]['termcycle'] = strval($termcycle);
-   }
+   $rows[$i]['name']      = correctCase($rows[$i]['name']);  // Fix all-upper-case names
+   $rows[$i]['termcycle'] = nextElectionYearForSeat($rows[$i], $thisYear);
+   $rows[$i]['web']       = stripHttps($rows[$i]['web']);
+}
+
+function nextElectionYearForSeat(array $row, int $thisYear): string {
+   $termcycle = intval($row['termcycle']);
+   $termlen   = intval($row['termlen']);
+   if ($termcycle == 0  ||  $termlen == 0)  return $row['termlen'];
+   while ($termcycle < $thisYear) $termcycle += $termlen;
+   return strval($termcycle);
+}
+
+function stripHttps(string $url): string {
+   return (Str::startsWith($url, "https://") ? Str::substringAfter($url, "https://") : $url);
 }
 
 $regionColumnName = "Reg";

@@ -70,7 +70,11 @@
                    ><span id='A{$county.cnty[1]}J' class="arrow">&#9654;</span> Jurisdictions</a>
                <ul id="C{$county.cnty[1]}J" style="display: none;">
                   {foreach from=$county.juris item=juris}
-                     <li><a href="#" onClick="return loadOfficials('city,city-cou,town,town-cou', '{$juris[1]}', 'ws');" class="child">{$juris[2]}</a></li>
+                     {if $juris[3] == 1}
+                        <li><a href="#" onClick="return loadOfficials('city,city-cou,town,town-cou', '{$juris[1]}', 'ws', 1);" class="child"     >{$juris[2]}</a></li>
+                     {else}
+                        <li><a href="#" onClick="return loadOfficials('city,city-cou,town,town-cou', '{$juris[1]}', 'ws', 0);" class="incomplete">{$juris[2]}</a></li>
+                     {/if}
                   {/foreach}
                </ul>
             </li>

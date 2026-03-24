@@ -98,7 +98,7 @@ for ($i=0;   $i<$count;   $i++) {
 function nextElectionYearForSeat(array $row, int $thisYear): string {
    $termcycle = intval($row['termcycle']);
    $termlen   = intval($row['termlen']);
-   if ($termcycle == 0  ||  $termlen == 0)  return strval($row['termlen']);
+   if ($termcycle == 0  ||  $termlen == 0)  return strval($row['termcycle']);
    while ($termcycle < $thisYear) $termcycle += $termlen;
    return strval($termcycle);
 }

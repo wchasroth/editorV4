@@ -128,7 +128,6 @@
          {/if}
          {if $showSeat}
             {if $row['seatmax'] != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
-            <td align='right' class="smaller">{$row['seatnum']}</td>
          {/if}
          <td><input name="i:{$row['inc_id']}:party"     type="text"  size="1"  class="char1"                          onChange="changed(this.name);"  value="{$row['party']}"/></td>
          <td align='right' class="smaller">{$row['PCT']}%</td>

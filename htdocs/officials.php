@@ -89,6 +89,7 @@ for ($i=0;   $i<$count;   $i++) $rows[$i]['name'] = correctCase($rows[$i]['name'
 
 $regionColumnName = "Reg";
 if (Str::contains($qsOrgs, "cnty"))  $regionColumnName = "Dist";
+if (Str::contains($qsOrgs, "city"))  $regionColumnName = "Ward";
 $smarty = new SmartyPage();
 $smarty->assign('rows', $rows);
 $smarty->assign('name', calculatePageName($pdo, $orgs, $district));

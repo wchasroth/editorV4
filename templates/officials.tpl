@@ -94,6 +94,7 @@
 <body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
 <form id="mainForm" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
+    qsOrgs={$qsOrgs}<br/>
 <table class="zebra" cellpadding="0" cellspacing="0">
    <tr>
       <td class="th1" colspan="1"

@@ -112,7 +112,7 @@ if (Str::contains($qsOrgs, "cnty"))  $regionColumnName = "Dist";
 if (Str::contains($qsOrgs, "city"))  $regionColumnName = "Ward";
 $smarty = new SmartyPage();
 $smarty->assign('rows', $rows);
-$smarty->assign('name', calculatePageName($pdo, $orgs, $district));
+$smarty->assign('name', calculatePageName($pdo, $orgs, $district, $logger));
 $smarty->assign('showDistrict', $showDistrict);
 $smarty->assign('showSubDist',  $showSubDist);
 $smarty->assign('showSeat',     $showSeat);
@@ -135,7 +135,7 @@ function correctCase(string $name): string {
    return ucwords(strtolower($name));
 }
 
-function calculatePageName(AlfredPDO $pdo, array $orgs, string $district): string {
+function calculatePageName(AlfredPDO $pdo, array $orgs, string $district, DumbFileLogger $logger): string {
    switch ($orgs[0]) {
       case "'us'":      return "United States";
       case "'mi'":      return "State of Michigan";
@@ -147,6 +147,7 @@ function calculatePageName(AlfredPDO $pdo, array $orgs, string $district): strin
    $quotedOrgs = Str::join($orgs, ",");
    $sql = "SELECT name FROM entity26 WHERE org IN ($quotedOrgs) " . makeDistrictClause($district);
    $rows = $pdo->run($sql)->getRows();
+   if (count($rows) == 0)  $logger->log("officials, nothing in entity26: $sql");
    return ucwords(strtolower((count($rows) > 0) ? $rows[0]['name'] : "No Name Found"));
 }
 

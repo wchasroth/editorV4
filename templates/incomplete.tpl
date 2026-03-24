@@ -16,7 +16,7 @@
 
 <p/>
 The incumbent officials for this entity cannot be displayed, because<br/>
-it partly falls under one or more counties that have not been fully imported yet:
+it partly falls under one or more counties that have not been imported yet:
 
 <ul>
 {foreach from=$rows item=row}

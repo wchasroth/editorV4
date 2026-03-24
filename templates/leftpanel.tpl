@@ -37,14 +37,15 @@
          return false;
       }
 
-      function loadOfficials(orgs, district='', show='') {
+      function loadOfficials(orgs, district='', show='', link=1) {
          let officialsFrame = window.parent.frames[1];
          if (officialsFrame.document != null) {
              let fc = officialsFrame.document.getElementById("fieldsChanged");
              if (fc != null  &&  fc.value != ""  &&
                  ! confirm("There are un-saved changes!\n\nPress OK if you're sure you want to proceed.\nPress Cancel to stay on the same page.")) return;
          }
-         officialsFrame.location.href = "officials.php?orgs=" + orgs + "&district=" + district + "&show=" + show;
+         if (link == 1) officialsFrame.location.href = "officials.php?orgs="  + orgs + "&district=" + district + "&show=" + show;
+         else           officialsFrame.location.href = "incomplete.php?orgs=" + orgs + "&district=" + district + "&show=" + show;
          return false;
       }
    </script>
@@ -90,9 +91,9 @@
                <ul id="C{$county.cnty[1]}S" style="display: none";>
                   {foreach from=$county.schl item=schl}
                       {if $schl[3] == 1}
-                         <li><a href="#" onClick="return loadOfficials('schl-cou', '{$schl[1]}', 's');" class="child">{$schl[2]}</a></li>
+                         <li><a href="#" onClick="return loadOfficials('schl-cou', '{$schl[1]}', 's', 1);" class="child"     >{$schl[2]}</a></li>
                       {else}
-                         <li><a href="#" onClick="return false);" class="incomplete">{$schl[2]}</a></li>
+                         <li><a href="#" onClick="return loadOfficials('schl-cou', '{$schl[1]}', 's', 0);" class="incomplete">{$schl[2]}</a></li>
                       {/if}
                   {/foreach}
                </ul>

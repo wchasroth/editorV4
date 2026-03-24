@@ -26,10 +26,22 @@ $qsOrgs     = HttpGet::value('orgs');
 $qsDistrict = HttpGet::value('district');
 $qsShow     = HttpGet::value('show');
 
+$sql = "SELECT '' ";
+if ($qsOrgs == 'schl-cou') {
+   $sql = "SELECT name FROM v4counties "
+        . " WHERE id     IN (SELECT county_id FROM v4schools   WHERE id=$qsDistrict) "
+        . "   AND id NOT IN (SELECT id        FROM v4completed WHERE type='county') "
+        . "  ORDER BY name";
+}
+
+$result = $pdo->run($sql);
+$rows = $result->getRows();
+
 $smarty = new SmartyPage();
 
 $smarty->assign('qsOrgs',     $qsOrgs);
 $smarty->assign('qsDistrict', $qsDistrict);
 $smarty->assign('qsShow',     $qsShow);
+$smarty->assign('rows',       $rows);
 
 $smarty->display('incomplete.tpl');

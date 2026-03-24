@@ -83,6 +83,16 @@
 </head>
 
 <body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
+<h2>Incomplete</h2>
+
+<p/>
+The incumbent officials for this entity cannot be displayed,
+because we are still missing the county election report for:
+
+{foreach from=$rows item=row}
+   <li>{$row['name']}</li>
+{/foreach}
+
 
 qsOrgs={$qsOrgs}<br/>
 qsDistrict={$qsDistrict}<br/>

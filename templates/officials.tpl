@@ -108,7 +108,7 @@
       {if $showSubDist  } <td class="th2">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2">S#</td>      {/if}
       <td class="th2">TL</td>
-      <td class="th2" align='right'>Next</td>
+      <td class="th2">&nbsp;Next</td>
       <td class="th2">Name</td>
       <td class="th2">Phone</td>
       <td class="th2">Email</td>

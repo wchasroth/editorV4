@@ -62,7 +62,7 @@ foreach ($countyNums as $countyNum) {
         . "   SELECT type AS org, shortname AS id, name, 1 AS link "
         . "    FROM  court "
         . "    WHERE county_id = $countyNum "
-        . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'A', 'C', 'D', 'PD', 'P'), name ";
+        . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'A', 'C', 'D', 'PD', 'P'), name ";
 
    $result = $pdo->run($sql);
    if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");

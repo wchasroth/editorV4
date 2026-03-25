@@ -100,6 +100,11 @@
          mainForm.requestSubmit();
       }
 
+      function hasChanged() {
+          let fc = document.getElementById("fieldsChanged");
+          return (fc != null  &&  fc.value != "");
+      }
+
       function showPopUp() {
           const popup = document.getElementById("pop-up-save");
           popup.style.display = "block";
@@ -186,7 +191,6 @@
                           {/foreach}
                        </select>
                   </td>
-                  <td>&nbsp;<button>Add</button></td>
                {elseif $org == 'cnty-cou'}
                   <td>New county commissioner:&nbsp;&nbsp;</td>
                   <td>District #&nbsp; <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
@@ -201,6 +205,9 @@
                   <td>Seat# <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
                   <td><button>Add</button></td>
                {/if}
+            </tr>
+            <tr>
+                <td></td><td>&nbsp;<button>Add</button></td>
             </tr>
          {/foreach}
       </table>

@@ -194,7 +194,6 @@
                {elseif $org == 'cnty-cou'}
                   <td>New county commissioner:&nbsp;&nbsp;</td>
                   <td>District #&nbsp; <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
-                  <td>&nbsp;<button>Add</button></td>
                {elseif $org == 'city'}     <td>New city office:</td>          <td>(select office)</td>
                {elseif $org == 'city-cou'} <td>New city council:</td>         <td>(select ward/subdist, can be 0) (select seatnum)</td>
                {elseif $org == 'town'}     <td>New town office:</td>          <td>(select office)</td>
@@ -203,13 +202,12 @@
                {else}
                   <td>New Judge:</td>
                   <td>Seat# <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
-                  <td><button>Add</button></td>
                {/if}
             </tr>
-            <tr>
-                <td></td><td>&nbsp;<button>Add</button></td>
-            </tr>
          {/foreach}
+         <tr>
+             <td></td><td>&nbsp;<button>Add</button></td>
+         </tr>
       </table>
    </form>
 {/if}

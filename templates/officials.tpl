@@ -104,6 +104,7 @@
           const popup = document.getElementById("pop-up-save");
           popup.style.display = "block";
           setTImeout(function() { popup.style.display = "none";}, 3000);
+          return false;
       }
    </script>
 </head>
@@ -114,7 +115,7 @@
 <div id="pop-up-save" class="pop-up">
      Save successfull!
 </div>
-<button onClick="showPopUp();">Test pop-up</button>
+<button onClick="return showPopUp();">Test pop-up</button>
 
 <table class="zebra" cellpadding="0" cellspacing="0">
    <tr>

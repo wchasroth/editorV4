@@ -61,7 +61,7 @@
           position: fixed;
           top: 100px;
           left: 200px;
-          background-color: green;
+          background-color: lightgreen;
           padding: 15px;
           border-radius: 5px;
           z-index: 1000;

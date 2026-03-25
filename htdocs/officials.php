@@ -25,6 +25,7 @@ $logger->log("Officials startup");
 $qsOrgs     = HttpGet::value('orgs');
 $qsDistrict = HttpGet::value('district');
 $qsShow     = HttpGet::value('show');
+$showSaved  = 0;
 
 //====Handle form submission, if any.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");
@@ -39,6 +40,7 @@ if (! empty($fieldsChanged)) {
       $logger->log("SAVE: $query ");
       $result = $pdo->run($query);
    }
+   $showSaved = 1;
 }
 
 //$orgs         = Str::split($qsOrgs, ",");
@@ -127,6 +129,7 @@ $smarty->assign('qsDistrict', $qsDistrict);
 $smarty->assign('qsShow',     $qsShow);
 
 $smarty->assign('sql', $sql);
+$smarty->assign('showSaved', $showSaved);
 $smarty->display('officials.tpl');
 
 

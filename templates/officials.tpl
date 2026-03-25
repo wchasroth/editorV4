@@ -112,10 +112,11 @@
 <body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
 <form id="mainForm" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
+
+{if $showSaved == 1} <script>showPopup();</script> {/if}
 <div id="pop-up-save" class="pop-up">
-     Save successfull!
+     Changes saved.
 </div>
-<button onClick="return showPopUp();">Test pop-up</button>
 
 <table class="zebra" cellpadding="0" cellspacing="0">
    <tr>

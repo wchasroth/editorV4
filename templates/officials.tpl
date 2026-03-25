@@ -178,7 +178,13 @@
             <tr>
                {if     $org == 'cnty'}
                   <td>New county office:</td>
-                  <td><select><option>office</option></select></td>
+                  <td>
+                      <select name="office">
+                          {foreach from=$offices item=office}
+                              <option value="{$office.office}">{$office.shortname}</option>
+                          {/foreach}
+                       </select>
+                  </td>
                   <td><button>Add</button></td>
                {elseif $org == 'cnty-cou'}
                   <td>New county commissioner:&nbsp;&nbsp;</td>

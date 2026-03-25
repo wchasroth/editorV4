@@ -45,6 +45,7 @@ if (! empty($fieldsChanged)) {
 
 //$orgs         = Str::split($qsOrgs, ",");
 $orgs         = Str::split(translateOrgs($qsOrgs), ",");
+$org1         = $orgs[0];
 $district     = $qsDistrict;
 $showDistrict = Str::contains($qsShow, 'd');
 $showSubDist  = Str::contains($qsShow, 'w');
@@ -100,18 +101,6 @@ for ($i=0;   $i<$count;   $i++) {
    if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
 }
 
-function nextElectionYearForSeat(array $row, int $thisYear): string {
-   $termcycle = intval($row['termcycle']);
-   $termlen   = intval($row['termlen']);
-   if ($termcycle == 0  ||  $termlen == 0)  return strval($row['termcycle']);
-   while ($termcycle < $thisYear) $termcycle += $termlen;
-   return strval($termcycle);
-}
-
-function stripHttps(string $url): string {
-   return (Str::startsWith($url, "https://") ? Str::substringAfter($url, "https://") : $url);
-}
-
 $regionColumnName = "Reg";
 if (Str::contains($qsOrgs, "cnty"))  $regionColumnName = "Dist";
 if (Str::contains($qsOrgs, "city"))  $regionColumnName = "Ward";
@@ -127,6 +116,7 @@ $smarty->assign('regionColumnName', $regionColumnName);
 $smarty->assign('qsOrgs',     translateOrgs($qsOrgs));      // for <form> action querystring.
 $smarty->assign('qsDistrict', $qsDistrict);
 $smarty->assign('qsShow',     $qsShow);
+$smarty->assign('offices',    computeOfficeNames($pdo, $org1));
 
 $smarty->assign('sql', $sql);
 $smarty->assign('showSaved', $showSaved);
@@ -134,6 +124,24 @@ $smarty->display('officials.tpl');
 
 
 //$smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, "displayCode2",    [HttpCode::class, "display"]);
+
+function computeOfficeNames($pdo, $org): array {
+   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ";
+   $result = $pdo->run($sql);
+   return $result->getRows();
+}
+
+function nextElectionYearForSeat(array $row, int $thisYear): string {
+   $termcycle = intval($row['termcycle']);
+   $termlen   = intval($row['termlen']);
+   if ($termcycle == 0  ||  $termlen == 0)  return strval($row['termcycle']);
+   while ($termcycle < $thisYear) $termcycle += $termlen;
+   return strval($termcycle);
+}
+
+function stripHttps(string $url): string {
+   return (Str::startsWith($url, "https://") ? Str::substringAfter($url, "https://") : $url);
+}
 
 function correctCase(string $name): string {
    $upper = strtoupper($name);

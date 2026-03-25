@@ -107,7 +107,7 @@
                </ul>
             </li>
 
-            <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}S');"
+            <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}C');"
                  ><span id='A{$county.cnty[1]}C' class="arrow">&#9654;</span> Comm Colleges</a>
                  <ul id="C{$county.cnty[1]}C" style="display: none";>
                      {foreach from=$county.comcol item=col}

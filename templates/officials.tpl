@@ -103,7 +103,7 @@
       function showPopUp() {
           const popup = document.getElementById("pop-up-save");
           popup.style.display = "block";
-          setTImeout(function() { popup.style.display = "none";}, 3000);
+          setTimeout(function() { popup.style.display = "none";}, 3000);
           return false;
       }
    </script>

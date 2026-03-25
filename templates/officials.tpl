@@ -189,7 +189,7 @@
                   <td>&nbsp;<button>Add</button></td>
                {elseif $org == 'cnty-cou'}
                   <td>New county commissioner:&nbsp;&nbsp;</td>
-                  <td>Region <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
+                  <td>District <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
                   <td><button>Add</button></td>
                {elseif $org == 'city'}     <td>New city office:</td>          <td>(select office)</td>
                {elseif $org == 'city-cou'} <td>New city council:</td>         <td>(select ward/subdist, can be 0) (select seatnum)</td>

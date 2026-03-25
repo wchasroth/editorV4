@@ -126,7 +126,7 @@ $smarty->display('officials.tpl');
 //$smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, "displayCode2",    [HttpCode::class, "display"]);
 
 function computeOfficeNames($pdo, $org): array {
-   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ";
+   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ORDER BY shortname ";
    $result = $pdo->run($sql);
    return $result->getRows();
 }

@@ -206,7 +206,7 @@
             </tr>
          {/foreach}
          <tr>
-             <td></td><td>&nbsp;<button>Add</button></td>
+             <td></td><td align="right">&nbsp;<button>Add</button></td>
          </tr>
       </table>
    </form>

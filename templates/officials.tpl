@@ -113,7 +113,7 @@
 <form id="mainForm" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
 
-{if $showSaved == 1} <script>showPopup();</script> {/if}
+{if $showSaved == 1} <script>showPopUp();</script> {/if}
 <div id="pop-up-save" class="pop-up">
      Changes saved.
 </div>

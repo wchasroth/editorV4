@@ -47,6 +47,15 @@ else if ($org === 'vil') {
       . "   ORDER BY name";
 }
 
+else if ($org === 'comcol-cou') {
+   $sql = "SELECT name FROM v4counties "
+      . "   WHERE id     IN (SELECT y.county_id FROM      v4commcolleges_county AS y "
+      . "                                       LEFT JOIN v4commcolleges        AS c ON (c.id = y.id) "
+      . "                                      WHERE c.id =  $qsDistrict "
+      . "     AND id NOT IN (SELECT id          FROM v4completed WHERE type='county') "
+      . "   ORDER BY name";
+}
+
 $result = $pdo->run($sql);
 $rows = $result->getRows();
 $rowCount = $result->getRowCount();

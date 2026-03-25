@@ -56,6 +56,17 @@
          border: none;
          height: 1.8em;
       }
+      #pop-up-save {
+          display: none;
+          position: fixed;
+          top: 100px;
+          left: 200px;
+          background-color: green;
+          padding: 15px;
+          border-radius: 5px;
+          z-index: 1000;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
    </style>
    <script>
       function shrinkExpandLeftPanel() {
@@ -88,12 +99,23 @@
          let mainForm = document.getElementById("mainForm");
          mainForm.requestSubmit();
       }
+
+      function showPopUp() {
+          const popup = document.getElementById("pop-up-save");
+          popup.style.display = "block";
+          setTImeout(function() { popup.style.display = "none";}, 3000);
+      }
    </script>
 </head>
 
 <body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
 <form id="mainForm" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
+<div id="pop-up-save" class="pop-up">
+     Save successfull!
+</div>
+<button onClick="showPopUp();">Test pop-up</button>
+
 <table class="zebra" cellpadding="0" cellspacing="0">
    <tr>
       <td class="th1" colspan="1"

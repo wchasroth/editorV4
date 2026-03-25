@@ -107,6 +107,19 @@
                </ul>
             </li>
 
+            <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}S');"
+                 ><span id='E{$county.cnty[1]}S' class="arrow">&#9654;</span> School Districts</a>
+                 <ul id="F{$county.cnty[1]}S" style="display: none";>
+                     {foreach from=$county.comcol item=col}
+                         {if $schl[3] == 1}
+                             <li><a href="#" onClick="return loadOfficials('comcol-cou', '{$col[1]}', 's', 1);" class="child"     >{$col[2]}</a></li>
+                         {else}
+                             <li><a href="#" onClick="return loadOfficials('comcol-cou', '{$col[1]}', 's', 0);" class="incomplete">{$col[2]}</a></li>
+                         {/if}
+                     {/foreach}
+                 </ul>
+            </li>
+
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}T');"
                ><span id='A{$county.cnty[1]}T' class="arrow">&#9654;</span> Courts</a>
                <ul id="C{$county.cnty[1]}T" style="display: none";>

@@ -85,6 +85,10 @@ foreach ($countyNums as $countyNum) {
             $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link];
             break;
 
+         case 'comcol-cou':
+            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link];
+            break;
+
 //         case 'crt-a':
 //         case 'crt-c':
 //         case 'crt-d':

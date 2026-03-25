@@ -181,6 +181,7 @@
                   <td>
                       <select name="office">
                           {foreach from=$offices item=office}
+                              <option value="">(choose one)</option>
                               <option value="{$office.office}">{$office.shortname}</option>
                           {/foreach}
                        </select>

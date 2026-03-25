@@ -161,7 +161,12 @@ function calculatePageName(AlfredPDO $pdo, array $orgs, string $district, DumbFi
          if (! Str::contains(strtolower($name), "village")) $name = "Village of " . ucwords(strtolower($name));
          return $name;
       }
-
+      if (Str::startsWith($orgs[0], "'comcol")) {
+         $sql = "SELECT name FROM v4commcolleges WHERE id=$district";
+         $result = $pdo->run($sql);
+         $name = $result->getSingleValue('name');
+         return $name;
+      }
    }
    return ucwords(strtolower((count($rows) > 0) ? $rows[0]['name'] : "No Name Found"));
 }

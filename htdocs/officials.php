@@ -85,12 +85,12 @@ for ($i=0;   $i<$count;   $i++) {
 
 $expandableOrgs = array_intersect(getUniqueOrgsFoundIn($rows),
    ['city', 'city-cou', 'cnty', 'cnty-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou']);
-$offices = [];
-foreach ($expandableOrgs as $org) {
-   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ";
-   $result = $pdo->run($sql);
-   $offices[$org] = $result->getRows();
-}
+//$offices = [];
+//foreach ($expandableOrgs as $org) {
+//   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ";
+//   $result = $pdo->run($sql);
+//   $offices[$org] = $result->getRows();
+//}
 
 //---Apply simple transformations for display:
 $thisYear = intval(date('Y'));

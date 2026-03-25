@@ -93,6 +93,7 @@ foreach ($countyNums as $countyNum) {
 
          case 'comcol-cou':
             $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link];
+            $logger->log("COMM: " . showArray([$org, $district, $name, $org]));
             break;
 
 //         case 'crt-a':

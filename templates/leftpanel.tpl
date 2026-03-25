@@ -111,7 +111,7 @@
                  ><span id='A{$county.cnty[1]}C' class="arrow">&#9654;</span> Comm Colleges</a>
                  <ul id="C{$county.cnty[1]}C" style="display: none";>
                      {foreach from=$county.comcol item=col}
-                         {if $schl[3] == 1}
+                         {if $col[3] == 1}
                              <li><a href="#" onClick="return loadOfficials('comcol-cou', '{$col[1]}', 's', 1);" class="child"     >{$col[2]}</a></li>
                          {else}
                              <li><a href="#" onClick="return loadOfficials('comcol-cou', '{$col[1]}', 's', 0);" class="incomplete">{$col[2]}</a></li>

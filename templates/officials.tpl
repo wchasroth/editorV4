@@ -123,7 +123,7 @@
 </div>
 {if $showSaved == 1} <script>showPopUp();</script> {/if}
 
-<table class="zebra" cellpadding="0" cellspacing="0" border="1">
+<table class="zebra" cellpadding="0" cellspacing="0">
    <tr>
       <td class="th1" colspan="1"
          ><img id="shrinkExpand" src="shrink-10-48.png" style="height: 75%;  margin-top: 5px;"
@@ -162,7 +162,7 @@
          <td><input name="s:{$row['id']    }:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td><input name="s:{$row['id']    }:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
          <td><input name="i:{$row['inc_id']}:name"      type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
-         <td style="vertical-align: middle;">
+         <td style="vertical-align: bottom;">
              {if $row['url'] != ''}
                 <a href="{$row['url']}" target="_blank"><img src="external3.png" width="15"></a>
              {/if}

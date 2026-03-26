@@ -164,7 +164,7 @@
          <td><input name="i:{$row['inc_id']}:name"      type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
          <td>
              {if $row['url'] != ''}
-                <a href="{$row['url']}" target="_blank"><img src="linkout3.jpg"></a>
+                <a href="{$row['url']}" target="_blank"><img src="linkout3.jpg" size="15"></a>
              {/if}
          </td>
          <td><input name="i:{$row['inc_id']}:web"       type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['web']}"/></td>

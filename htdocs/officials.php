@@ -97,8 +97,9 @@ $thisYear = intval(date('Y'));
 for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['name']      = correctCase($rows[$i]['name']);  // Fix all-upper-case names
    $rows[$i]['termcycle'] = nextElectionYearForSeat($rows[$i], $thisYear);
-   $rows[$i]['web']       = stripHttps($rows[$i]['web']);
    if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
+   $rows[$i]['web'] = stripHttps ($rows[$i]['web']);
+   $rows[$i]['url'] = addProtocol($rows[$i]['web']);
 }
 
 $regionColumnName = "Reg";
@@ -124,6 +125,11 @@ $smarty->display('officials.tpl');
 
 
 //$smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, "displayCode2",    [HttpCode::class, "display"]);
+
+function addProtocol (string $url): string {
+   if (! empty($url)  &&  ! Str::startsWith($url, "http://"))  $url = "https://$url";
+   return $url;
+}
 
 function computeOfficeNames($pdo, $org): array {
    $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ORDER BY shortname ";

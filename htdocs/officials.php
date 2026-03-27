@@ -27,7 +27,7 @@ $qsDistrict = HttpGet::value('district');
 $qsShow     = HttpGet::value('show');
 $showSaved  = 0;
 
-//====Handle form submission, if any.
+//====Handle data changes (form submission)
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");
 if (! empty($fieldsChanged)) {
    foreach (Str::split($fieldsChanged, ",") as $field) {
@@ -41,6 +41,19 @@ if (! empty($fieldsChanged)) {
       $result = $pdo->run($query);
    }
    $showSaved = 1;
+}
+
+//====Handle adding new seats (form submission)
+$office  = HttpPost::value('office');
+$subdist = HttpPost::value('subdist');
+$org     = HttpPost::value('org');
+if (! empty($office)) {
+   $sql = "INSERT INTO v4seats (org, office, district, seatnum) VALUES ('$org', '$office', '$qsDistrict', 1)";
+   $logger->log($sql);
+}
+if (! empty($subdist)) {
+   $sql = "INSERT INTO v4seats (org, district, subdist) VALUES ('$org', '$qsDistrict', $subdist)";
+   $logger->log($sql);
 }
 
 //$orgs         = Str::split($qsOrgs, ",");
@@ -67,7 +80,7 @@ $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i
      . makeDistrictClause($district) . "\n"
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 $result = $pdo->run($sql);
-$logger->log("SQL: $sql");
+//$logger->log("SQL: $sql");
 if ($result->failed()) $logger->log("Failed main select: " . $result->getError() . "  $sql");
 
 //---Where the LEFT JOIN v4incumbents found no incumbent rows, create empty ones, with the seat_id set.

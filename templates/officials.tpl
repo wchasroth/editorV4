@@ -199,7 +199,8 @@
    <div id="pop-up-changed" class="pop-up" style="width: 300px;">
        Save changes first!
    </div>
-   <form id="addSeats" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
+   <form id="addSeats1" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
+   <form id="addSeats2" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
       If there are actually more offices than shown above, you may add new ("empty") seats:
       <p/>
       <table style="margin-left: 2em;">
@@ -208,16 +209,23 @@
                {if     $org == 'cnty'}
                   <td>New county office:</td>
                   <td>
-                      <select name="office" onClick="return warnAboutChangedData();">
+                      <input type="hidden" name="org" value="cnty" form="addSeats1" />
+                      <select name="office" onClick="return warnAboutChangedData();" form="addSeats1">
                           <option value="">(choose one)</option>
                           {foreach from=$offices item=office}
                               <option value="{$office.office}">{$office.shortname}</option>
                           {/foreach}
                        </select>
                   </td>
+                  <td>&nbsp;<button type="submit" onClick="return warnAboutChangedData();" form="addSeats1">Add</button></td>
+
                {elseif $org == 'cnty-cou'}
+                  <input type="hidden" name="org" value="cnty-com" form="addSeats2" />
                   <td>New county commissioner:&nbsp;&nbsp;</td>
-                  <td>District #&nbsp; <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1" onClick="return warnAboutChangedData();" />&nbsp;&nbsp;</td>
+                  <td>District #&nbsp; <input type="text" name="subdist" size="2" style="border: 1px solid;"
+                                           class="char1" onClick="return warnAboutChangedData();" form="addSeats2" />&nbsp;&nbsp;</td>
+                  <td>&nbsp;<button type="submit" onClick="return warnAboutChangedData();" form="addSeats2">Add</button></td>
+
                {elseif $org == 'city'}     <td>New city office:</td>          <td>(select office)</td>
                {elseif $org == 'city-cou'} <td>New city council:</td>         <td>(select ward/subdist, can be 0) (select seatnum)</td>
                {elseif $org == 'town'}     <td>New town office:</td>          <td>(select office)</td>
@@ -227,7 +235,6 @@
                   <td>New Judge:</td>
                   <td>Seat# <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
                {/if}
-               <td>&nbsp;<button type="submit" onClick="return warnAboutChangedData();">Add</button></td>
             </tr>
             <tr><td>&nbsp;</td></tr>
          {/foreach}

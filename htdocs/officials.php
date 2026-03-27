@@ -62,12 +62,13 @@ else if (! empty($subdist)) {
 }
 
 else if (! empty($deleteSeat)) {
-   $sql = "DELETE FROM v4seats WHERE id = (SELECT seat_id FROM v4incumbents WHERE id=$deleteSeat)";
+   $sql = "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat";
    $result = $pdo->run($sql);
    $logger->log($sql . "  " . $result->getError());
    $sql = "DELETE FROM v4incumbents WHERE id = $deleteSeat";
    $result = $pdo->run($sql);
    $logger->log($sql . "  " . $result->getError());
+   // log what we deleted!
    // renumber seats?
 }
 

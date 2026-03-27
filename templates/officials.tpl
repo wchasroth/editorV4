@@ -67,6 +67,15 @@
           z-index: 1000;
           box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       }
+      #pop-up-changed {
+          display: none;
+          position: absolute;
+          background-color: lightcoral;
+          padding: 15px;
+          border-radius: 5px;
+          z-index: 1000;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
    </style>
    <script>
       function shrinkExpandLeftPanel() {
@@ -105,8 +114,14 @@
           return (fc != null  &&  fc.value != "");
       }
 
-      function showPopUp() {
-          const popup = document.getElementById("pop-up-save");
+      function warnAboutChangedData() {
+          if (! hasChanged())  return true;
+          showPopUp('pop-up-changed');
+          return false;
+      }
+
+      function showPopUp(id) {
+          const popup = document.getElementById(id);
           popup.style.display = "block";
           setTimeout(function() { popup.style.display = "none";}, 2000);
           return false;
@@ -121,7 +136,8 @@
 <div id="pop-up-save" class="pop-up">
      Changes saved.
 </div>
-{if $showSaved == 1} <script>showPopUp();</script> {/if}
+
+{if $showSaved == 1} <script>showPopUp('pop-up-save');</script> {/if}
 
 <table class="zebra" cellpadding="0" cellspacing="0">
    <tr>
@@ -179,9 +195,11 @@
 </form>
 <p/>
 
-<p>&nbsp;</p>
 {if $expandableOrgs|count > 0}
-   <form method="POST">
+   <div id="pop-up-changed" class="pop-up" style="width: 300px;">
+       Save changes first!
+   </div>
+   <form id="addSeats" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
       If there are actually more offices than shown above, you may add new ("empty") seats:
       <p/>
       <table style="margin-left: 2em;">
@@ -190,7 +208,7 @@
                {if     $org == 'cnty'}
                   <td>New county office:</td>
                   <td>
-                      <select name="office">
+                      <select name="office" onClick="return warnAboutChangedData();">
                           <option value="">(choose one)</option>
                           {foreach from=$offices item=office}
                               <option value="{$office.office}">{$office.shortname}</option>
@@ -199,7 +217,7 @@
                   </td>
                {elseif $org == 'cnty-cou'}
                   <td>New county commissioner:&nbsp;&nbsp;</td>
-                  <td>District #&nbsp; <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
+                  <td>District #&nbsp; <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1" onClick="return warnAboutChangedData();" />&nbsp;&nbsp;</td>
                {elseif $org == 'city'}     <td>New city office:</td>          <td>(select office)</td>
                {elseif $org == 'city-cou'} <td>New city council:</td>         <td>(select ward/subdist, can be 0) (select seatnum)</td>
                {elseif $org == 'town'}     <td>New town office:</td>          <td>(select office)</td>
@@ -209,11 +227,10 @@
                   <td>New Judge:</td>
                   <td>Seat# <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
                {/if}
+               <td>&nbsp;<button type="submit" onClick="return warnAboutChangedData();">Add</button></td>
             </tr>
+            <tr><td>&nbsp;</td></tr>
          {/foreach}
-         <tr>
-             <td></td><td align="right">&nbsp;<button>Add</button></td>
-         </tr>
       </table>
    </form>
 {/if}

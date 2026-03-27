@@ -217,7 +217,7 @@
    <form id="addSeats1" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
    <form id="addSeats2" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
       <div style="max-width: 40em;">
-         <b>New Seats:</b> If this page is missing some offices or seats, you may can add new "empty" seats, below.
+         <b>New Seats:</b> If this page is missing some offices or seats, you can add new "empty" seats, below.
          Then proceed to fill in the data for each new seat.
       </div>
       <p/>
@@ -262,6 +262,8 @@
 <div style="max-width: 40em;">
    <b>Deleting Seats:</b>  We may list seats that don't actually exist.&nbsp;
    This is usually the result of missing information in the county election reports, such as term length.&nbsp;
+   (If we don't know the term length, we don't know when they were replaced.)&nbsp;
+   Resignations can also cause problems.
    <p/>
     You can delete a set with the trash-can icon at the left of each row.&nbsp;
    But be <b>very careful</b> about deleting seats.&nbsp;

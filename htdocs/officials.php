@@ -75,7 +75,8 @@ else if (! empty($deleteSeat)) {
 
 function runQueryReportErrors($pdo, DumbFileLogger $logger, string $sql): void {
    $result = $pdo->run($sql);
-   if ($result->failed()) $logger->log("Error: $sql  " . $result->getError());
+//   if ($result->failed()) $logger->log("Error: $sql  " . $result->getError());
+   $logger->log("Test: $sql  " . $result->getError());
 }
 
 

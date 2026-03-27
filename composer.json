@@ -1,9 +1,9 @@
 {
-    "name": "charlesrothdotnet/editor26",
+    "name": "charlesrothdotnet/editorv4",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "CharlesRothDotNet\\Editor26\\": "src/"
+            "CharlesRothDotNet\\EditorV4\\": "src/"
         }
     },
     "authors": [

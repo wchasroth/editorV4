@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CharlesRothDotNet\Editor26;
+namespace CharlesRothDotNet\EditorV4;
 
 use CharlesRothDotNet\Alfred\AlfredPDO;
 use CharlesRothDotNet\Alfred\SqlFields;
@@ -17,7 +17,8 @@ require_once('../vendor/autoload.php');
 
 date_default_timezone_set("America/New_York");
 
-$env = new EnvFile("_env");
+$env   = new EnvFile("_env");
+$email = EnvHelper::getEmail($env);
 $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
 $logger->log("Officials startup");
@@ -62,14 +63,19 @@ else if (! empty($subdist)) {
 }
 
 else if (! empty($deleteSeat)) {
-   $sql = "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat";
-   $result = $pdo->run($sql);
-   $logger->log($sql . "  " . $result->getError());
-   $sql = "DELETE FROM v4seats WHERE id = $deleteSeat";
-   $result = $pdo->run($sql);
-   $logger->log($sql . "  " . $result->getError());
-   // log what we deleted!
+   runQueryReportErrors($pdo, $logger, "INSERT INTO v4deletedIncumbents SELECT * FROM v4incumbents WHERE seat_id = $deleteSeat");
+   runQueryReportErrors($pdo, $logger, "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat");
+   $sql = "INSERT INTO v4deletedSeats (id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, whodid) "
+        . "                     SELECT id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, '$email' "
+        . "   FROM v4seats WHERE id = $deleteSeat";
+   runQueryReportErrors($pdo, $logger, $sql);
+   runQueryReportErrors($pdo, $logger, "DELETE FROM v4seats WHERE id = $deleteSeat");
    // renumber seats?
+}
+
+function runQueryReportErrors($pdo, DumbFileLogger $logger, string $sql): void {
+   $result = $pdo->run($sql);
+   if ($result->failed()) $logger->log("Error: $sql  " . $result->getError());
 }
 
 

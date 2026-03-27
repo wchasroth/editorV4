@@ -17,9 +17,9 @@ require_once('../vendor/autoload.php');
 
 date_default_timezone_set("America/New_York");
 
-$env   = new EnvFile("_env");
-$email = EnvHelper::getEmail($env);
-$pdo = PdoHelper::makePdo($env);
+$env    = new EnvFile("_env");
+$email  = EnvHelper::getEmail($env);
+$pdo    = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
 $logger->log("Officials startup");
 
@@ -72,13 +72,6 @@ else if (! empty($deleteSeat)) {
    runQueryReportErrors($pdo, $logger, "DELETE FROM v4seats WHERE id = $deleteSeat");
    // renumber seats?
 }
-
-function runQueryReportErrors($pdo, DumbFileLogger $logger, string $sql): void {
-   $result = $pdo->run($sql);
-//   if ($result->failed()) $logger->log("Error: $sql  " . $result->getError());
-   $logger->log("Test: $sql  " . $result->getError());
-}
-
 
 //$orgs         = Str::split($qsOrgs, ",");
 $orgs         = Str::split(translateOrgs($qsOrgs), ",");
@@ -162,6 +155,12 @@ $smarty->display('officials.tpl');
 
 
 //$smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, "displayCode2",    [HttpCode::class, "display"]);
+
+function runQueryReportErrors($pdo, DumbFileLogger $logger, string $sql): void {
+   $result = $pdo->run($sql);
+//   if ($result->failed()) $logger->log("Error: $sql  " . $result->getError());
+   $logger->log("Test: $sql  " . $result->getError());
+}
 
 function addProtocol (string $url): string {
    if (! empty($url)  &&  ! Str::startsWith($url, "http://"))  $url = "https://$url";

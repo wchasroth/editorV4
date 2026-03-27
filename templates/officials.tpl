@@ -224,34 +224,19 @@
       <table style="margin-left: 2em;">
          {foreach from=$expandableOrgs item=org}
             <tr>
-               {if     $org == 'cnty'}
-                  <td>New county office:</td>
-                  <td>
-                      <input type="hidden" name="org" value="cnty" form="addSeats1" />
-                      <select name="office" onClick="return continueIfDataUnChanged();" form="addSeats1">
-                          <option value="">(choose one)</option>
-                          {foreach from=$offices item=office}
-                              <option value="{$office.office}">{$office.shortname}</option>
-                          {/foreach}
-                       </select>
-                  </td>
-                  <td>&nbsp;<button type="submit" onClick="return continueIfDataUnChanged();" form="addSeats1">Add</button></td>
+               {if     $org == 'cnty'}     {include file="inc_office.tpl"  org=$org title="county office"}
 
-               {elseif $org == 'cnty-cou'}
-                  <input type="hidden" name="org" value="cnty-com" form="addSeats2" />
-                  <td>New county commissioner:&nbsp;&nbsp;</td>
-                  <td>District #&nbsp; <input type="text" name="subdist" size="2" style="border: 1px solid;" class="char1"
-                                                  onClick="return continueIfDataUnChanged();" form="addSeats2" />&nbsp;&nbsp;</td>
-                  <td>&nbsp;<button type="submit" onClick="return continueIfDataUnChanged();" form="addSeats2">Add</button></td>
+               {elseif $org == 'cnty-com'} {include file="inc_council.tpl" org=$org title="county commissioner"  dt="District"}
 
-               {elseif $org == 'city'}     <td>New city office:</td>          <td>(select office)</td>
-               {elseif $org == 'city-cou'} <td>New city council:</td>         <td>(select ward/subdist, can be 0) (select seatnum)</td>
-               {elseif $org == 'town'}     <td>New town office:</td>          <td>(select office)</td>
-               {elseif $org == 'town-cou'} <td>New town council:</td>         <td>(select ward/subdist, can be 0) (select seatnum)</td>
-               {elseif $org == 'schl-cou'} <td>New school board:</td>         <td>(select ward/subdist, can be 0) (select seatnum)</td>
-               {else}
-                  <td>New Judge:</td>
-                  <td>Seat# <input type="text" name="seatnum" size="2" style="border: 1px solid;" class="char1"/>&nbsp;&nbsp;</td>
+               {elseif $org == 'city'}     {include file="inc_office.tpl"  org=$org title="city office:"}
+               {elseif $org == 'city-cou'} {include file="inc_council.tpl" org=$org title="city council"         dt="Ward"}
+
+               {elseif $org == 'town'}     {include file="inc_office.tpl"  org=$org title="township office:"}
+               {elseif $org == 'town-cou'} {include file="inc_council.tpl" org=$org title="township trustee"}
+
+               {elseif $org == 'schl-cou'} {include file="inc_council.tpl" org=$org title="school board"}
+
+               {elseif $org|substr:0:3 == 'crt'}  {include file="inc_council.tpl" org=$org title="judge"}
                {/if}
             </tr>
             <tr><td>&nbsp;</td></tr>

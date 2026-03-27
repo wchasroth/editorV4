@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace CharlesRothDotNet\EditorV4;
 
 use CharlesRothDotNet\Alfred\AlfredPDO;
+use CharlesRothDotNet\Alfred\PdoRunResult;
 use CharlesRothDotNet\Alfred\SqlFields;
 use CharlesRothDotNet\Alfred\Str;
 use CharlesRothDotNet\Alfred\HttpGet;
@@ -58,8 +59,12 @@ else if (! empty($office)) {
 
 //---Handle new seats on commission/council (form submission)
 else if (! empty($subdist)) {
-   $sql = "INSERT INTO v4seats (org, district, subdist) VALUES ('$org', '$qsDistrict', $subdist)";
-   $pdo->run($sql);
+   $logger->log("subdist=$subdist");
+   $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdist";
+   $result = runQueryReportErrors($pdo, $logger, $sql);
+   $highseat = intval($result->getSingleValue('highseat')) + 1;
+   $sql = "INSERT INTO v4seats (org, district, subdist, seatnum) VALUES ('$org', '$qsDistrict', $subdist, $highseat)";
+   runQueryReportErrors($pdo, $logger, $sql, true);
 }
 
 else if (! empty($deleteSeat)) {
@@ -114,7 +119,7 @@ for ($i=0;   $i<$count;   $i++) {
 }
 
 $expandableOrgs = array_intersect(getUniqueOrgsFoundIn($rows),
-   ['city', 'city-cou', 'cnty', 'cnty-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou']);
+   ['city', 'city-cou', 'cnty', 'cnty-com', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou']);
 //$offices = [];
 //foreach ($expandableOrgs as $org) {
 //   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ";
@@ -156,10 +161,11 @@ $smarty->display('officials.tpl');
 
 //$smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, "displayCode2",    [HttpCode::class, "display"]);
 
-function runQueryReportErrors($pdo, DumbFileLogger $logger, string $sql): void {
+function runQueryReportErrors($pdo, DumbFileLogger $logger, string $sql, $alwaysLog=false): PdoRunResult {
    $result = $pdo->run($sql);
-//   if ($result->failed()) $logger->log("Error: $sql  " . $result->getError());
-   $logger->log("Test: $sql  " . $result->getError());
+   if      ($alwaysLog)        $logger->log("RunQueryReportErrors: $sql");
+   else if ($result->failed()) $logger->log("Error: $sql  " . $result->getError());
+   return $result;
 }
 
 function addProtocol (string $url): string {

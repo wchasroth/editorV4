@@ -114,10 +114,9 @@
           return (fc != null  &&  fc.value != "");
       }
 
-      function warnAboutChangedData() {
-          if (! hasChanged())  return true;
-          showPopUp('pop-up-changed');
-          return false;
+      function continueIfDataUnChanged() {
+          if (hasChanged()) { showPopUp('pop-up-changed'); return false; }
+          return true;
       }
 
       function showPopUp(id) {
@@ -126,12 +125,26 @@
           setTimeout(function() { popup.style.display = "none";}, 2000);
           return false;
       }
+
+      function deleteThisSeat (id, name) {
+          if (continueIfDataUnChanged()) {
+              if (! confirm("Do you really want to delete " + name + "?")) return false;
+              const ds = document.getElementById('deleteSeat');
+              ds.value = id;
+              mainForm = document.getElementById('mainForm');
+              mainForm.submit();
+              return false;
+          }
+          showPopUp('pop-up-changed');
+          return false;
+      }
    </script>
 </head>
 
 <body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
 <form id="mainForm" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
+<input type="hidden" name="deleteSeat"    id="deleteSeat"    value="" />
 
 <div id="pop-up-save" class="pop-up">
      Changes saved.
@@ -141,13 +154,14 @@
 
 <table class="zebra" cellpadding="0" cellspacing="0">
    <tr>
-      <td class="th1" colspan="1"
+      <td class="th1" colspan="2"
          ><img id="shrinkExpand" src="shrink-10-48.png" style="height: 75%;  margin-top: 5px;"
                 onClick="shrinkExpandLeftPanel();"/></td>
       <td class="th1" colspan="4"><b>{$name}</b></td>
       <td class="th1" colspan="16"><input type="button" onClick="submitMainForm();"; return false;" value="Save Changes" class="button"/></td>
    </tr>
    <tr>
+      <td></td>
       <td class="th2">Office</td>
       {if $showDistrict } <td class="th2">Dist</td>    {/if}
       {if $showSubDist  } <td class="th2">{$regionColumnName}</td> {/if}
@@ -165,6 +179,7 @@
    </tr>
    {foreach from=$rows item=row}
       <tr>
+         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, '{$row['name']}');"><img src="trash.png" width="14"/></a></td>
          <td style="white-space: nowrap;"     class="smaller">{$row['shortname']}</td>
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}
@@ -201,7 +216,10 @@
    </div>
    <form id="addSeats1" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
    <form id="addSeats2" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
-      If there are actually more offices than shown above, you may add new ("empty") seats:
+      <div style="max-width: 40em;">
+         <b>New Seats:</b> If this page is missing some offices or seats, you may can add new "empty" seats, below.
+         Then proceed to fill in the data for each new seat.
+      </div>
       <p/>
       <table style="margin-left: 2em;">
          {foreach from=$expandableOrgs item=org}
@@ -210,21 +228,21 @@
                   <td>New county office:</td>
                   <td>
                       <input type="hidden" name="org" value="cnty" form="addSeats1" />
-                      <select name="office" onClick="return warnAboutChangedData();" form="addSeats1">
+                      <select name="office" onClick="return continueIfDataUnChanged();" form="addSeats1">
                           <option value="">(choose one)</option>
                           {foreach from=$offices item=office}
                               <option value="{$office.office}">{$office.shortname}</option>
                           {/foreach}
                        </select>
                   </td>
-                  <td>&nbsp;<button type="submit" onClick="return warnAboutChangedData();" form="addSeats1">Add</button></td>
+                  <td>&nbsp;<button type="submit" onClick="return continueIfDataUnChanged();" form="addSeats1">Add</button></td>
 
                {elseif $org == 'cnty-cou'}
                   <input type="hidden" name="org" value="cnty-com" form="addSeats2" />
                   <td>New county commissioner:&nbsp;&nbsp;</td>
-                  <td>District #&nbsp; <input type="text" name="subdist" size="2" style="border: 1px solid;"
-                                           class="char1" onClick="return warnAboutChangedData();" form="addSeats2" />&nbsp;&nbsp;</td>
-                  <td>&nbsp;<button type="submit" onClick="return warnAboutChangedData();" form="addSeats2">Add</button></td>
+                  <td>District #&nbsp; <input type="text" name="subdist" size="2" style="border: 1px solid;" class="char1"
+                                                  onClick="return continueIfDataUnChanged();" form="addSeats2" />&nbsp;&nbsp;</td>
+                  <td>&nbsp;<button type="submit" onClick="return continueIfDataUnChanged();" form="addSeats2">Add</button></td>
 
                {elseif $org == 'city'}     <td>New city office:</td>          <td>(select office)</td>
                {elseif $org == 'city-cou'} <td>New city council:</td>         <td>(select ward/subdist, can be 0) (select seatnum)</td>
@@ -241,14 +259,23 @@
       </table>
    </form>
 {/if}
+<div style="max-width: 40em;">
+   <b>Deleting Seats:</b>  We may list seats that don't actually exist.&nbsp;
+   This is usually the result of missing information in the county election reports, such as term length.&nbsp;
+   <p/>
+    You can delete a set with the trash-can icon at the left of each row.&nbsp;
+   But be <b>very careful</b> about deleting seats.&nbsp;
+   In particular, don't delete a seat if you're simply replacing one person with another -- just edit their
+   name, contact information, and so on.
+</div>
 
 <pre>
+<!--
 qsOrgs    ={$qsOrgs}
 qsDistrict={$qsDistrict}
 qsShow={$qsShow}
-
+-->
 {$error}
-
 {$rowText}
 </pre>
 

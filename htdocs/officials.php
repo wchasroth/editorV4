@@ -27,8 +27,14 @@ $qsDistrict = HttpGet::value('district');
 $qsShow     = HttpGet::value('show');
 $showSaved  = 0;
 
-//====Handle data changes (form submission)
+//---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");
+$office     = HttpPost::value('office');
+$subdist    = HttpPost::value('subdist');
+$org        = HttpPost::value('org');
+$deleteSeat = HttpPost::value('deleteSeat');
+
+//---Handle data changes (form submission).
 if (! empty($fieldsChanged)) {
    foreach (Str::split($fieldsChanged, ",") as $field) {
       $value = HttpPost::value($field);
@@ -43,18 +49,26 @@ if (! empty($fieldsChanged)) {
    $showSaved = 1;
 }
 
-//====Handle adding new seats (form submission)
-$office  = HttpPost::value('office');
-$subdist = HttpPost::value('subdist');
-$org     = HttpPost::value('org');
-if (! empty($office)) {
+//---Handle new offices (form submission)
+else if (! empty($office)) {
    $sql = "INSERT INTO v4seats (org, office, district, seatnum) VALUES ('$org', '$office', '$qsDistrict', 1)";
-   $logger->log($sql);
+   $pdo->run($sql);
 }
-if (! empty($subdist)) {
+
+//---Handle new seats on commission/council (form submission)
+else if (! empty($subdist)) {
    $sql = "INSERT INTO v4seats (org, district, subdist) VALUES ('$org', '$qsDistrict', $subdist)";
-   $logger->log($sql);
+   $pdo->run($sql);
 }
+
+else if (! empty($deleteSeat)) {
+   $sql = "DELETE FROM v4seats WHERE id = (SELECT seat_id FROM v4incumbents WHERE id=$deleteSeat)";
+   $pdo->run($sql);
+   $sql = "DELETE FROM v4incumbents WHERE id = $deleteSeat";
+   $pdo->run($sql);
+   // renumber seats?
+}
+
 
 //$orgs         = Str::split($qsOrgs, ",");
 $orgs         = Str::split(translateOrgs($qsOrgs), ",");
@@ -158,11 +172,13 @@ function nextElectionYearForSeat(array $row, int $thisYear): string {
    return strval($termcycle);
 }
 
-function stripHttps(string $url): string {
+function stripHttps(?string $url): string {
+   if (empty($url))  return "";
    return (Str::startsWith($url, "https://") ? Str::substringAfter($url, "https://") : $url);
 }
 
-function correctCase(string $name): string {
+function correctCase(?string $name): string {
+   if (empty($name))  return "";
    $upper = strtoupper($name);
    if ($upper != $name)  return $name;
    return ucwords(strtolower($name));

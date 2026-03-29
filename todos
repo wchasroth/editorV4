@@ -1,3 +1,4 @@
+Circuit Courts: no name found
 
 Seat # showing up for newly created seats, even
   when there normally is only one seat (e.g. village clerk)
@@ -10,6 +11,9 @@ Left panel: indent when long name wraps
    E.g. Berrien, school districts, hagar township district 6
 
 Renumbering seats after seat deletion???
+
+Un-do all accordions?  Or accordions below a particular level(??)
+  (or just hit refresh!)
 
 =====================================================
 query to compare completed counts v4 vs 2024

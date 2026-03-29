@@ -1,0 +1,17 @@
+
+Seat # showing up for newly created seats, even
+  when there normally is only one seat (e.g. village clerk)
+
+Existing village council, showing up with only one seat, no seat #
+
+Deleting a seat that has no incumbent name -- show office, at least?
+
+Left panel: indent when long name wraps
+   E.g. Berrien, school districts, hagar township district 6
+
+Renumbering seats after seat deletion???
+
+=====================================================
+query to compare completed counts v4 vs 2024
+
+remove entity26, find a better way to get that info

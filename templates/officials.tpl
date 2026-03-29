@@ -224,17 +224,22 @@
       <table style="margin-left: 2em;">
          {foreach from=$expandableOrgs item=org}
             <tr>
-               {if     $org == 'cnty'}     {include file="inc_office.tpl"  org=$org title="county office"}
+               {if     $org == 'cnty'}       {include file="inc_office.tpl"  org=$org title="county office"}
 
-               {elseif $org == 'cnty-com'} {include file="inc_council.tpl" org=$org title="county commissioner"  dt="District"}
+               {elseif $org == 'cnty-com'}   {include file="inc_council.tpl" org=$org title="county commissioner"  dt="District"}
 
-               {elseif $org == 'city'}     {include file="inc_office.tpl"  org=$org title="city office:"}
-               {elseif $org == 'city-cou'} {include file="inc_council.tpl" org=$org title="city council"         dt="Ward"}
+               {elseif $org == 'city'}       {include file="inc_office.tpl"  org=$org title="city office:"}
+               {elseif $org == 'city-cou'}   {include file="inc_council.tpl" org=$org title="city council"         dt="Ward"}
 
-               {elseif $org == 'town'}     {include file="inc_office.tpl"  org=$org title="township office:"}
-               {elseif $org == 'town-cou'} {include file="inc_council.tpl" org=$org title="township trustee"}
+               {elseif $org == 'town'}       {include file="inc_office.tpl"  org=$org title="township office:"}
+               {elseif $org == 'town-cou'}   {include file="inc_council.tpl" org=$org title="township trustee"}
 
-               {elseif $org == 'schl-cou'} {include file="inc_council.tpl" org=$org title="school board"}
+               {elseif $org == 'vil'}        {include file="inc_office.tpl"  org=$org title="village office:"}
+               {elseif $org == 'vil-cou'}    {include file="inc_council.tpl" org=$org title="village trustee"}
+
+               {elseif $org == 'schl-cou'}   {include file="inc_council.tpl" org=$org title="school board"}
+
+               {elseif $org == 'comcol-cou'} {include file="inc_council.tpl" org=$org title="board member"}
 
                {elseif $org|substr:0:3 == 'crt'}  {include file="inc_council.tpl" org=$org title="judge"}
                {/if}
@@ -243,18 +248,20 @@
          {/foreach}
       </table>
    </form>
+
+   <div style="max-width: 40em;">
+      <b>Deleting Seats:</b>  We may list seats that don't actually exist.&nbsp;
+      This is usually the result of missing information in the county election reports, such as term length.&nbsp;
+      (If we don't know the term length, we don't know when they were replaced.)&nbsp;
+      Resignations can also cause problems.
+      <p/>
+      You can delete a set with the trash-can icon at the left of each row.&nbsp;
+      But be <b>very careful</b> about deleting seats.&nbsp;
+      In particular, don't delete a seat if you're simply replacing one person with another -- just edit their
+      name, contact information, and so on.
+   </div>
 {/if}
-<div style="max-width: 40em;">
-   <b>Deleting Seats:</b>  We may list seats that don't actually exist.&nbsp;
-   This is usually the result of missing information in the county election reports, such as term length.&nbsp;
-   (If we don't know the term length, we don't know when they were replaced.)&nbsp;
-   Resignations can also cause problems.
-   <p/>
-    You can delete a set with the trash-can icon at the left of each row.&nbsp;
-   But be <b>very careful</b> about deleting seats.&nbsp;
-   In particular, don't delete a seat if you're simply replacing one person with another -- just edit their
-   name, contact information, and so on.
-</div>
+
 
 <pre>
 <!--

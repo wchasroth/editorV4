@@ -37,7 +37,7 @@ $org        = HttpPost::value('org');
 $deleteSeat = HttpPost::value('deleteSeat');
 
 //---Handle data changes (form submission).
-if (! empty($fieldsChanged)) {
+if (! Str::isReallyEmpty($fieldsChanged)) {
    foreach (Str::split($fieldsChanged, ",") as $field) {
       $value = HttpPost::value($field);
       $parts = Str::split($field, ':');
@@ -52,22 +52,23 @@ if (! empty($fieldsChanged)) {
 }
 
 //---Handle new offices (form submission)
-else if (! empty($office)) {
+else if (! Str::isReallyEmpty($office)) {
    $sql = "INSERT INTO v4seats (org, office, district, seatnum) VALUES ('$org', '$office', '$qsDistrict', 1)";
    $pdo->run($sql);
 }
 
 //---Handle new seats on commission/council (form submission)
-else if (! empty($subdist)) {
+else if (! Str::isReallyEmpty($subdist)) {
    $logger->log("subdist=$subdist");
    $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdist";
    $result = runQueryReportErrors($pdo, $logger, $sql);
    $highseat = intval($result->getSingleValue('highseat')) + 1;
-   $sql = "INSERT INTO v4seats (org, district, subdist, seatnum) VALUES ('$org', '$qsDistrict', $subdist, $highseat)";
+   $newOffice = (Str::contains($org, "town-cou", "vil-cou") ? "council" : "");
+   $sql = "INSERT INTO v4seats (org, office, district, subdist, seatnum) VALUES ('$org', '$newOffice', '$qsDistrict', $subdist, $highseat)";
    runQueryReportErrors($pdo, $logger, $sql, true);
 }
 
-else if (! empty($deleteSeat)) {
+else if (! Str::isReallyEmpty($deleteSeat)) {
    runQueryReportErrors($pdo, $logger, "INSERT INTO v4deletedIncumbents SELECT * FROM v4incumbents WHERE seat_id = $deleteSeat");
    runQueryReportErrors($pdo, $logger, "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat");
    $sql = "INSERT INTO v4deletedSeats (id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, whodid) "
@@ -88,6 +89,7 @@ $showSeat     = Str::contains($qsShow, 's');
 
 for ($i=0;   $i<count($orgs);   $i++) $orgs[$i] = "'$orgs[$i]'";
 $quotedOrgs = Str::join($orgs, ",");
+$logger->log("quotedOrgs: $quotedOrgs");
 
 $counties = [];
 $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i.web, "
@@ -109,7 +111,7 @@ if ($result->failed()) $logger->log("Failed main select: " . $result->getError()
 $rows  = $result->getRows();
 $count = $result->getRowCount();
 for ($i=0;   $i<$count;   $i++) {
-   if (empty($rows[$i]['inc_id'])) {
+   if (Str::isReallyEmpty($rows[$i]['inc_id'])) {
       $insertIncumbent = "INSERT INTO v4incumbents (seat_id) VALUES ({$rows[$i]['id']}) ";
       $insertResult    = $pdo->run($insertIncumbent);
       if ($insertResult->failed())  $logger->log("Failed new empty v4seats: " . $insertResult->getError() . "  $insertIncumbent");
@@ -119,7 +121,7 @@ for ($i=0;   $i<$count;   $i++) {
 }
 
 $expandableOrgs = array_intersect(getUniqueOrgsFoundIn($rows),
-   ['city', 'city-cou', 'cnty', 'cnty-com', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou']);
+   ['city', 'city-cou', 'cnty', 'cnty-com', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou', 'comcol-cou']);
 //$offices = [];
 //foreach ($expandableOrgs as $org) {
 //   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ";
@@ -152,7 +154,7 @@ $smarty->assign('regionColumnName', $regionColumnName);
 $smarty->assign('qsOrgs',     translateOrgs($qsOrgs));      // for <form> action querystring.
 $smarty->assign('qsDistrict', $qsDistrict);
 $smarty->assign('qsShow',     $qsShow);
-$smarty->assign('offices',    computeOfficeNames($pdo, $org1));
+$smarty->assign('offices',    computeOfficeNames($pdo, $org1, $logger));
 
 $smarty->assign('sql', $sql);
 $smarty->assign('showSaved', $showSaved);
@@ -169,11 +171,11 @@ function runQueryReportErrors($pdo, DumbFileLogger $logger, string $sql, $always
 }
 
 function addProtocol (string $url): string {
-   if (! empty($url)  &&  ! Str::startsWith($url, "http://"))  $url = "https://$url";
+   if (! Str::isReallyEmpty($url)  &&  ! Str::startsWith($url, "http://"))  $url = "https://$url";
    return $url;
 }
 
-function computeOfficeNames($pdo, $org): array {
+function computeOfficeNames($pdo, $org, $logger): array {
    $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ORDER BY shortname ";
    $result = $pdo->run($sql);
    return $result->getRows();
@@ -188,12 +190,12 @@ function nextElectionYearForSeat(array $row, int $thisYear): string {
 }
 
 function stripHttps(?string $url): string {
-   if (empty($url))  return "";
+   if (Str::isReallyEmpty($url))  return "";
    return (Str::startsWith($url, "https://") ? Str::substringAfter($url, "https://") : $url);
 }
 
 function correctCase(?string $name): string {
-   if (empty($name))  return "";
+   if (Str::isReallyEmpty($name))  return "";
    $upper = strtoupper($name);
    if ($upper != $name)  return $name;
    return ucwords(strtolower($name));

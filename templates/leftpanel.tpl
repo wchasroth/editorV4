@@ -66,20 +66,34 @@
            ><span id='A{$county.cnty[1]}' class="arrow">&#9654;</span> {$county.cnty[2]}</a>
          <ul id="C{$county.cnty[1]}" style="display: none;">
             <li><span class="arrow">&nbsp;</span> <a href="#" onClick="return loadOfficials('cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a></li>
-            <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}J');"
-                   ><span id='A{$county.cnty[1]}J' class="arrow">&#9654;</span> Jurisdictions</a>
-               <ul id="C{$county.cnty[1]}J" style="display: none;">
-                  {foreach from=$county.juris item=juris}
-                     {if $juris[3] == 1}
-                        <li><a href="#" onClick="return loadOfficials('city,city-cou,town,town-cou', '{$juris[1]}', 'ws', 1);" class="child"     >{$juris[2]}</a></li>
+
+            <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}Y');"
+                   ><span id='A{$county.cnty[1]}Y' class="arrow">&#9654;</span> Cities</a>
+               <ul id="C{$county.cnty[1]}Y" style="display: none;">
+                  {foreach from=$county.city item=city}
+                     {if $city[3] == 1}
+                        <li><a href="#" onClick="return loadOfficials('city,city-cou', '{$city[1]}', 'ws', 1);" class="child"     >{$city[2]}</a></li>
                      {else}
-                        <li><a href="#" onClick="return loadOfficials('city,city-cou,town,town-cou', '{$juris[1]}', 'ws', 0);" class="incomplete">{$juris[2]}</a></li>
+                        <li><a href="#" onClick="return loadOfficials('city,city-cou', '{$city[1]}', 'ws', 0);" class="incomplete">{$city[2]}</a></li>
                      {/if}
                   {/foreach}
                </ul>
             </li>
 
-            {if $county.vil|count > 0 }
+            <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}P');"
+                ><span id='A{$county.cnty[1]}P' class="arrow">&#9654;</span> Townships</a>
+                <ul id="C{$county.cnty[1]}P" style="display: none;">
+                    {foreach from=$county.town item=town}
+                        {if $town[3] == 1}
+                            <li><a href="#" onClick="return loadOfficials('town,town-cou', '{$town[1]}', 'ws', 1);" class="child"     >{$town[2]}</a></li>
+                        {else}
+                            <li><a href="#" onClick="return loadOfficials('town,town-cou', '{$town[1]}', 'ws', 0);" class="incomplete">{$town[2]}</a></li>
+                        {/if}
+                    {/foreach}
+                </ul>
+            </li>
+
+             {if $county.vil|count > 0 }
                <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}V');"
                      ><span id='A{$county.cnty[1]}V' class="arrow">&#9654;</span> Villages</a>
                   <ul id="C{$county.cnty[1]}V" style="display: none";>

@@ -75,12 +75,15 @@ foreach ($countyNums as $countyNum) {
       switch ($org) {
          case 'cnty':
             $name = Str::replaceAll($name, " County", "");
-            $counties[$countyNum] = ['cnty' => [$org, $district, $name], 'juris' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => []];
+            $counties[$countyNum] = ['cnty' => [$org, $district, $name], 'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => []];
             break;
 
          case 'city':
+            $counties[$countyNum]['city'][] = [$org, $district, $name, $link];
+            break;
+
          case 'town':
-            $counties[$countyNum]['juris'][] = [$org, $district, $name, $link];
+            $counties[$countyNum]['town'][] = [$org, $district, $name, $link];
             break;
 
          case 'vil':

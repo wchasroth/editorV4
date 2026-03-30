@@ -161,7 +161,7 @@ $smarty = new SmartyPage();
 $smarty->assign('rows', $rows);
 $smarty->assign('name', calculatePageName($pdo, $orgs, $district, $logger));
 $smarty->assign('showDistrict', $showDistrict);
-$smarty->assign('showSubDist',  $showSubDist && hasWards($rows));
+$smarty->assign('showSubDist',  $showSubDist && showSubDistricts($rows));
 $smarty->assign('showSeat',     $showSeat);
 $smarty->assign('expandableOrgs', $expandableOrgs);
 $smarty->assign('regionColumnName', $regionColumnName);
@@ -201,11 +201,15 @@ function computeExistingSingleSeatOffices(array $rows): array {
    return array_keys($results);
 }
 
-function hasWards(array $rows): bool {
+function showSubDistricts(array $rows): bool {
+   $result = true;
    foreach ($rows as $row) {
-      if ($row['org'] === 'city-cou'  &&  intval($row['subdist']) > 0)  return true;
+      if ($row['org'] === 'city-cou') {
+         $result = false;
+         if (intval($row['subdist']) > 0)  return true;
+      }
    }
-   return false;
+   return $result;
 }
 
 function computeOfficeNames($pdo, $org, array $existing1SeatOffices, $logger): array {

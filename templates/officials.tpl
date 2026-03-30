@@ -236,7 +236,9 @@
                {elseif $org == 'cnty-com'}   {include file="inc_council.tpl" org=$org title="county commissioner"  dt="District"}
 
                {elseif $org == 'city'}       {include file="inc_office.tpl"  org=$org title="city office:"}
-               {elseif $org == 'city-cou'}   {include file="inc_council.tpl" org=$org title="city council"         dt="Ward"}
+               {elseif $org == 'city-cou'}
+                  {$ward = ($showSubDist ? 'Ward' : '') }
+                  {include file="inc_council.tpl" org=$org title="city council"         dt=$ward}
 
                {elseif $org == 'town'}       {include file="inc_office.tpl"  org=$org title="township office:"}
                {elseif $org == 'town-cou'}   {include file="inc_council.tpl" org=$org title="township trustee/council"}

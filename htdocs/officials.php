@@ -70,6 +70,22 @@ else if (! Str::isReallyEmpty($subdist)) {
 }
 
 else if (! Str::isReallyEmpty($deleteSeat)) {
+   //---Handle renumbering seats (if necessary).  (Extract into function?)
+   $sql = "SELECT org, office, district, subdist, seatnum FROM v4seats WHERE id=$deleteSeat";
+   $result = runQueryReportErrors($pdo, $logger, $sql);
+   if ($result->getRowCount() > 0) {
+      $row     = $result->getRows()[0];
+      $seatnum = $row['seatnum'];
+      $sqlFields = new SqlFields(['org' => $row['org'], 'office' => $row['office'], 'district' => $row['district'], 'subdist' => $row['subdist']]);
+      $sql = "SELECT id FROM v4seats WHERE seatnum > $seatnum AND " . $sqlFields->getSelectFragment();
+      $result = $pdo->run($sql);
+      foreach ($result->getRows() as $row) {
+         $sql = "UPDATE v4seats SET seatnum=$seatnum WHERE id=" . $row['id'];
+         $pdo->run($sql);
+         ++$seatnum;
+      }
+   }
+
    runQueryReportErrors($pdo, $logger, "INSERT INTO v4deletedIncumbents SELECT * FROM v4incumbents WHERE seat_id = $deleteSeat");
    runQueryReportErrors($pdo, $logger, "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat");
    $sql = "INSERT INTO v4deletedSeats (id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, whodid) "
@@ -103,7 +119,7 @@ $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i
      . makeDistrictClause($district) . "\n"
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 $result = $pdo->run($sql);
-$logger->log("BIG SQL: $sql");
+//$logger->log("BIG SQL: $sql");
 if ($result->failed()) $logger->log("Failed main select: " . $result->getError() . "  $sql");
 
 //---Where the LEFT JOIN v4incumbents found no incumbent rows, create empty ones, with the seat_id set.

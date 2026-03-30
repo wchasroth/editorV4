@@ -51,7 +51,11 @@ if (! Str::isReallyEmpty($fieldsChanged)) {
 
 //---Handle new offices (form submission)
 else if (! Str::isReallyEmpty($office)) {
-   $sql = "INSERT INTO v4seats (org, office, district, seatnum) VALUES ('$org', '$office', '$qsDistrict', 1)";
+   $sql = "SELECT seats FROM v4titles WHERE org='$org' AND office='$office'";
+   $result = $pdo->run($sql);
+   $logger->log("seatmax: $sql   " . $result->getError());
+   $seatmax = intval($result->getSingleValue('seats'));
+   $sql = "INSERT INTO v4seats (org, office, district, seatnum, seatmax) VALUES ('$org', '$office', '$qsDistrict', 1, $seatmax)";
    $pdo->run($sql);
 }
 
@@ -90,9 +94,8 @@ $quotedOrgs = Str::join($orgs, ",");
 $counties = [];
 $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i.web, "
 //   . "            i.votes_C, i.votes_D, i.votes_R, i.votes_O, i.votes_T,
-     . "            i.id AS inc_id, \n"
-     . "            (ROUND((i.votes_C * 100) / i.votes_T) * GREATEST(i.num2elect, 1)) as PCT, i.id AS inc_id \n"
-//   . "            ROUND((i.votes_C * 100) / i.votes_T) as PCT, i.id AS inc_id \n"
+     . "            i.id AS inc_id, t.seats \n"
+//   . "            (ROUND((i.votes_C * 100) / i.votes_T) * GREATEST(i.num2elect, 1)) as PCT, i.id AS inc_id \n"
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4incumbents AS i   ON (s.id = i.seat_id) \n"
      . "  LEFT JOIN v4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
@@ -129,7 +132,7 @@ $thisYear = intval(date('Y'));
 for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['name']      = correctCase($rows[$i]['name']);  // Fix all-upper-case names
    $rows[$i]['termcycle'] = nextElectionYearForSeat($rows[$i], $thisYear);
-   if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
+// if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
    $rows[$i]['web'] = stripHttps ($rows[$i]['web']);
    $rows[$i]['url'] = addProtocol($rows[$i]['web']);
 }
@@ -149,7 +152,11 @@ $smarty->assign('regionColumnName', $regionColumnName);
 $smarty->assign('qsOrgs',     translateOrgs($qsOrgs));      // for <form> action querystring.
 $smarty->assign('qsDistrict', $qsDistrict);
 $smarty->assign('qsShow',     $qsShow);
-$smarty->assign('offices',    computeOfficeNames($pdo, $org1, $logger));
+
+$existing1SeatOffices   = computeExistingSingleSeatOffices($rows);
+$allAddableOfficeNames  = computeOfficeNames($pdo, $org1, $existing1SeatOffices, $logger);
+$smarty->assign('offices',    $allAddableOfficeNames);
+$smarty->assign('singleSeat', Str::join(computeExistingSingleSeatOffices($rows), ", "));
 
 $smarty->assign('sql', $sql);
 $smarty->assign('showSaved', $showSaved);
@@ -170,10 +177,24 @@ function addProtocol (string $url): string {
    return $url;
 }
 
-function computeOfficeNames($pdo, $org, $logger): array {
+function computeExistingSingleSeatOffices(array $rows): array {
+   $results = [];
+   foreach ($rows as $row) {
+      if (intval($row['seats']) == 1) $results[$row['office']] = 1;
+   }
+   return array_keys($results);
+}
+
+function computeOfficeNames($pdo, $org, array $existing1SeatOffices, $logger): array {
    $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ORDER BY shortname ";
    $result = $pdo->run($sql);
-   return $result->getRows();
+   $rows = $result->getRows();
+   $rowCount = $result->getRowCount();
+   // Remove the ones that already exist as 1-seaters
+   for ($i=0;   $i<$rowCount;   ++$i) {
+      if (in_array($rows[$i]['office'], $existing1SeatOffices)) unset($rows[$i]);
+   }
+   return $rows;
 }
 
 function nextElectionYearForSeat(array $row, int $thisYear): string {

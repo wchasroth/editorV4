@@ -34,6 +34,15 @@
       .th2 {
          position: sticky;
          top: 2.6em;
+         background-color: #53d5fd;
+         /* background-color: #d2d2d2; */
+         z-index: 100;
+         text-align: left;
+         font-weight: bold;
+      }
+      .th2a {
+         position: sticky;
+         top: 2.6em;
          background-color: #d2d2d2;
          z-index: 100;
          text-align: left;
@@ -161,20 +170,20 @@
       <td class="th1" colspan="16"><input type="button" onClick="submitMainForm();"; return false;" value="Save Changes" class="button"/></td>
    </tr>
    <tr>
-      <td></td>
+      <td class="th2"></td>
       <td class="th2">Office</td>
       {if $showDistrict } <td class="th2">Dist</td>    {/if}
       {if $showSubDist  } <td class="th2">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2">S#</td>      {/if}
       <td class="th2">TL</td>
       <td class="th2">&nbsp;Next</td>
-      <td class="th2">Name</td>
-      <td class="th2">Pty</td>
-      <td></td>
-      <td class="th2">Web</td>
-      <td class="th2">Email</td>
-      <td class="th2">Phone</td>
-      <td class="th2">Address</td>
+      <td class="th2a">&nbsp;Name</td>
+      <td class="th2a">Pty</td>
+      <td class="th2a"></td>
+      <td class="th2a">Web</td>
+      <td class="th2a">Email</td>
+      <td class="th2a">Phone</td>
+      <td class="th2a">Address</td>
    </tr>
    {foreach from=$rows item=row}
       <tr>
@@ -230,7 +239,7 @@
                {elseif $org == 'city-cou'}   {include file="inc_council.tpl" org=$org title="city council"         dt="Ward"}
 
                {elseif $org == 'town'}       {include file="inc_office.tpl"  org=$org title="township office:"}
-               {elseif $org == 'town-cou'}   {include file="inc_council.tpl" org=$org title="township trustee"}
+               {elseif $org == 'town-cou'}   {include file="inc_council.tpl" org=$org title="township trustee/council"}
 
                {elseif $org == 'vil'}        {include file="inc_office.tpl"  org=$org title="village office:"}
                {elseif $org == 'vil-cou'}    {include file="inc_council.tpl" org=$org title="village trustee"}
@@ -258,6 +267,7 @@
       In particular, don't delete a seat if you're simply replacing one person with another -- just edit their
       name, contact information, and so on.
    </div>
+   singleSeat={$singleSeat}<br/>
 {/if}
 
 

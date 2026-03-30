@@ -267,7 +267,6 @@
       In particular, don't delete a seat if you're simply replacing one person with another -- just edit their
       name, contact information, and so on.
    </div>
-   singleSeat={$singleSeat}<br/>
 {/if}
 
 

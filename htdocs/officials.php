@@ -156,7 +156,6 @@ $smarty->assign('qsShow',     $qsShow);
 $existing1SeatOffices   = computeExistingSingleSeatOffices($rows);
 $allAddableOfficeNames  = computeOfficeNames($pdo, $org1, $existing1SeatOffices, $logger);
 $smarty->assign('offices',    $allAddableOfficeNames);
-$smarty->assign('singleSeat', Str::join(computeExistingSingleSeatOffices($rows), ", "));
 
 $smarty->assign('sql', $sql);
 $smarty->assign('showSaved', $showSaved);

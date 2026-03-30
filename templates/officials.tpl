@@ -196,7 +196,7 @@
              </td>
          {/if}
          {if $showSeat}
-            {if $row['seatmax'] != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
+            {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
          <td><input name="s:{$row['id']    }:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td><input name="s:{$row['id']    }:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
@@ -228,7 +228,7 @@
          Then proceed to fill in the data for each new seat.
       </div>
       <p/>
-      <table style="margin-left: 2em;">
+      <table style="margin-left: 2em;" border="0">
          {foreach from=$expandableOrgs item=org}
             <tr>
                {if     $org == 'cnty'}       {include file="inc_office.tpl"  org=$org title="county office"}
@@ -242,7 +242,7 @@
                {elseif $org == 'town-cou'}   {include file="inc_council.tpl" org=$org title="township trustee/council"}
 
                {elseif $org == 'vil'}        {include file="inc_office.tpl"  org=$org title="village office:"}
-               {elseif $org == 'vil-cou'}    {include file="inc_council.tpl" org=$org title="village trustee"}
+               {elseif $org == 'vil-cou'}    {include file="inc_council.tpl" org=$org title="village trustee/council"}
 
                {elseif $org == 'schl-cou'}   {include file="inc_council.tpl" org=$org title="school board"}
 

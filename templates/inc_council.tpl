@@ -1,5 +1,5 @@
 
-<td>New {$title}:&nbsp;&nbsp;</td>
+<td colspan="1">New {$title}:&nbsp;&nbsp;</td>
 <td>
    <input type="hidden" name="org" value="{$org}" form="addSeats2" />
    {if $dt != ""}

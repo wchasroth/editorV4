@@ -166,7 +166,7 @@
       <td class="th1" colspan="2"
          ><img id="shrinkExpand" src="shrink-10-48.png" style="height: 75%;  margin-top: 5px;"
                 onClick="shrinkExpandLeftPanel();"/></td>
-      <td class="th1" colspan="4"><b>{$name}</b></td>
+      <td class="th1" colspan="5"><b>{$name}</b></td>
       <td class="th1" colspan="16"><input type="button" onClick="submitMainForm();"; return false;" value="Save Changes" class="button"/></td>
    </tr>
    <tr>
@@ -187,7 +187,7 @@
    </tr>
    {foreach from=$rows item=row}
       <tr>
-         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, '{$row['name']}');"><img src="trash.png" width="14"/></a></td>
+         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, '{$row['shortname']}: {$row['name']}');"><img src="trash.png" width="14"/></a></td>
          <td style="white-space: nowrap;"     class="smaller">{$row['shortname']}</td>
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}
@@ -201,7 +201,7 @@
          <td><input name="s:{$row['id']    }:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td><input name="s:{$row['id']    }:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
          <td><input name="i:{$row['inc_id']}:name"      type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
-         <td><input name="i:{$row['inc_id']}:party"     type="text"  size="1"  class="char1"                          onChange="changed(this.name);"  value="{$row['party']}"/></td>
+         <td><input name="i:{$row['inc_id']}:party"     type="text"  size="1"  class="char1"     pattern="[A-Za-z]*"  onChange="changed(this.name);"  value="{$row['party']}"/></td>
          <td style="vertical-align: bottom;">
              {if $row['url'] != ''}
                 <a href="{$row['url']}" target="_blank"><img src="external3.png" width="15"></a>

@@ -1,12 +1,3 @@
-Circuit Courts: no name found
-
-Seat # showing up for newly created seats, even
-  when there normally is only one seat (e.g. village clerk)
-
-Existing village council, showing up with only one seat, no seat #
-
-Deleting a seat that has no incumbent name -- show office, at least?
-
 Left panel: indent when long name wraps
    E.g. Berrien, school districts, hagar township district 6
 
@@ -14,6 +5,19 @@ Renumbering seats after seat deletion???
 
 Un-do all accordions?  Or accordions below a particular level(??)
   (or just hit refresh!)
+
+Chippewa / Comm Colleges -- shows nothing.  Odd?
+
+=====================================================
+Data consistency
+   format for phone numbers
+   Addresses to use "MI" instead of "Michigan"
+
+=====================================================
+Weird data?
+   Arenac, 81st district court.  Only seems to have incumbents for crt-p, seems odd.
+
+   Chippewa, courts, 91st district.  No incumbents?
 
 =====================================================
 query to compare completed counts v4 vs 2024

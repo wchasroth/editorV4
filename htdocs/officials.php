@@ -145,7 +145,7 @@ $smarty = new SmartyPage();
 $smarty->assign('rows', $rows);
 $smarty->assign('name', calculatePageName($pdo, $orgs, $district, $logger));
 $smarty->assign('showDistrict', $showDistrict);
-$smarty->assign('showSubDist',  $showSubDist);
+$smarty->assign('showSubDist',  $showSubDist && hasWards($rows));
 $smarty->assign('showSeat',     $showSeat);
 $smarty->assign('expandableOrgs', $expandableOrgs);
 $smarty->assign('regionColumnName', $regionColumnName);
@@ -183,6 +183,13 @@ function computeExistingSingleSeatOffices(array $rows): array {
       if (intval($row['seats']) == 1) $results[$row['office']] = 1;
    }
    return array_keys($results);
+}
+
+function hasWards(array $rows): bool {
+   foreach ($rows as $row) {
+      if ($row['org'] === 'city-cou'  &&  intval($row['subdist']) > 0)  return true;
+   }
+   return false;
 }
 
 function computeOfficeNames($pdo, $org, array $existing1SeatOffices, $logger): array {
@@ -236,15 +243,33 @@ function calculatePageName(AlfredPDO $pdo, array $orgs, string $district, DumbFi
       if (Str::startsWith($orgs[0], "'vil'")) {
          $sql = "SELECT name FROM v4villages WHERE id=$district";
          $result = $pdo->run($sql);
-         $name = $result->getSingleValue('name');
-         if (! Str::contains(strtolower($name), "village")) $name = "Village of " . ucwords(strtolower($name));
+         $name = correctCase($result->getSingleValue('name'));
+         if (! Str::contains(strtolower($name), "village")) $name = "Village of $name";
          return $name;
       }
       if (Str::startsWith($orgs[0], "'comcol")) {
          $sql = "SELECT name FROM v4commcolleges WHERE id=$district";
          $result = $pdo->run($sql);
          $name = $result->getSingleValue('name');
-         return $name;
+         return correctCase($name);
+      }
+      if (Str::startsWith($orgs[0], "'town")) {
+         $sql = "SELECT name FROM v4jurisdictions WHERE type='t' AND id=$district";
+         $result = $pdo->run($sql);
+         $name = $result->getSingleValue('name');
+         return correctCase($name);
+      }
+      if (Str::startsWith($orgs[0], "'city")) {
+         $sql = "SELECT name FROM v4jurisdictions WHERE type='c' AND id=$district";
+         $result = $pdo->run($sql);
+         $name = $result->getSingleValue('name');
+         return correctCase($name);
+      }
+      if (Str::startsWith($orgs[0], "'schl")) {
+         $sql = "SELECT name FROM v4schools WHERE  id=$district";
+         $result = $pdo->run($sql);
+         $name = $result->getSingleValue('name');
+         return correctCase($name);
       }
    }
    return ucwords(strtolower((count($rows) > 0) ? $rows[0]['name'] : "No Name Found"));

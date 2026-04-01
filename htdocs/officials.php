@@ -110,7 +110,7 @@ $quotedOrgs = Str::join($orgs, ",");
 $counties = [];
 $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i.web, "
 //   . "            i.votes_C, i.votes_D, i.votes_R, i.votes_O, i.votes_T,
-     . "            i.id AS inc_id, t.seats \n"
+     . "            i.id AS inc_id, t.seats, 0 AS appointed \n"
 //   . "            (ROUND((i.votes_C * 100) / i.votes_T) * GREATEST(i.num2elect, 1)) as PCT, i.id AS inc_id \n"
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4incumbents AS i   ON (s.id = i.seat_id) \n"
@@ -152,6 +152,7 @@ for ($i=0;   $i<$count;   $i++) {
 // if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
    $rows[$i]['web'] = stripHttps ($rows[$i]['web']);
    $rows[$i]['url'] = addProtocol($rows[$i]['web']);
+   if (Str::contains($rows[$i]['office'], '-appt') ) $rows[$i]['appointed'] = 1;
 }
 
 $regionColumnName = "Reg";

@@ -198,8 +198,9 @@
          {if $showSeat}
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
-         <td><input name="s:{$row['id']    }:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
-         <td><input name="s:{$row['id']    }:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
+         {$hidden = ($row['appointed'] == '1' ? "hidden" : "") }
+         <td><input {$hidden} name="s:{$row['id']    }:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
+         <td><input {$hidden} name="s:{$row['id']    }:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
          <td><input name="i:{$row['inc_id']}:name"      type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
          <td><input name="i:{$row['inc_id']}:party"     type="text"  size="1"  class="char1"     pattern="[A-Za-z]*"  onChange="changed(this.name);"  value="{$row['party']}"/></td>
          <td style="vertical-align: bottom;">

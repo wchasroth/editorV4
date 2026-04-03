@@ -23,8 +23,9 @@ $email  = EnvHelper::getEmail($env);
 $pdo    = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
 
-$qsOrgs     = HttpGet::value('orgs');
-$qsDistrict = HttpGet::value('district');
+$qsOrgs      = HttpGet::value('orgs');
+$qsDistrict  = HttpGet::value('district');
+$reviewedKey = $qsOrgs . ":" . $qsDistrict;
 $qsShow     = HttpGet::value('show');
 $showSaved  = 0;
 
@@ -38,14 +39,22 @@ $deleteSeat = HttpPost::value('deleteSeat');
 //---Handle data changes (form submission).
 if (! Str::isReallyEmpty($fieldsChanged)) {
    foreach (Str::split($fieldsChanged, ",") as $field) {
-      $value = HttpPost::value($field);
-      $parts = Str::split($field, ':');
-      $sql   = "UPDATE " . ($parts[0] == 'i' ? "v4incumbents" : "v4seats") . " SET ";
-      if (Str::startsWith($parts[2], "term"))  $value = intval($value);
-      $sqlFields = new SqlFields([$parts[2] => $value]);
-      $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
-      $result = $pdo->run($query);
+      if ($field == "reviewed") {
+         $reviewed = intval(HttpPost::value('reviewed'));
+         if ($reviewed === 1) $pdo->run("INSERT INTO v4pagesReviewed (page) VALUES ('$reviewedKey')");
+         else                 $pdo->run("DELETE FROM v4pagesReviewed  WHERE    page='$reviewedKey'");
+      }
+      else {
+         $value = HttpPost::value($field);
+         $parts = Str::split($field, ':');
+         $sql = "UPDATE " . ($parts[0] == 'i' ? "v4incumbents" : "v4seats") . " SET ";
+         if (Str::startsWith($parts[2], "term")) $value = intval($value);
+         $sqlFields = new SqlFields([$parts[2] => $value]);
+         $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
+         $result = $pdo->run($query);
+      }
    }
+
    $showSaved = 1;
 }
 
@@ -107,6 +116,9 @@ $showSeat     = Str::contains($qsShow, 's');
 for ($i=0;   $i<count($orgs);   $i++) $orgs[$i] = "'$orgs[$i]'";
 $quotedOrgs = Str::join($orgs, ",");
 
+$sql = "SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page='$reviewedKey'";
+$reviewed = intval($pdo->run($sql)->getSingleValue('reviewed'));
+
 $counties = [];
 $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i.web, "
 //   . "            i.votes_C, i.votes_D, i.votes_R, i.votes_O, i.votes_T,
@@ -166,6 +178,7 @@ $smarty->assign('showSubDist',  $showSubDist && showSubDistricts($rows));
 $smarty->assign('showSeat',     $showSeat);
 $smarty->assign('expandableOrgs', $expandableOrgs);
 $smarty->assign('regionColumnName', $regionColumnName);
+$smarty->assign('reviewedChecked', ($reviewed == 1 ? "checked" : ""));
 
 $smarty->assign('qsOrgs',     translateOrgs($qsOrgs));      // for <form> action querystring.
 $smarty->assign('qsDistrict', $qsDistrict);

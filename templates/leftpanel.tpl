@@ -63,12 +63,15 @@
 
    {foreach from=$counties item=county}
       <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}');"
-           ><span id='A{$county.cnty[1]}' class="arrow">&#9654;</span> {$county.cnty[2]}</a> <!-- <img src="green-check.png" width="12"/> -->
+           ><span id='A{$county.cnty[1]}' class="arrow">&#9654;</span> {$county.cnty[2]}</a>
          <ul id="C{$county.cnty[1]}" style="display: none;">
-            <li><span class="arrow">&nbsp;</span> <a href="#" onClick="return loadOfficials('cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a></li>
+            <li><span class="arrow">&nbsp;</span>
+                <a href="#" onClick="return loadOfficials('cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a>
+                {if $county.cnty[4] == 1} (14) <img src="green-check.png" width="12"/> {else} (10) {/if}
+            </li>
 
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}Y');"
-                   ><span id='A{$county.cnty[1]}Y' class="arrow">&#9654;</span> Cities</a>
+                   ><span id='A{$county.cnty[1]}Y' class="arrow">&#9654;</span> Cities</a> (4/11)
                <ul id="C{$county.cnty[1]}Y" style="display: none;">
                   {foreach from=$county.city item=city}
                      {if $city[3] == 1}

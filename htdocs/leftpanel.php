@@ -31,35 +31,37 @@ $countyNums = $result->getArrayOf('id');
 $counties = [];
 foreach ($countyNums as $countyNum) {
 
-   $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link "
+// $green = "SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page=CONCAT('cnty,cnty-com:', id)";
+// $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link "
+   $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, (SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page=CONCAT('cnty,cnty-com:', id)) AS reviewed "
         . "     FROM v4counties WHERE id = $countyNum "
         . "UNION "
-        . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link "
+        . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link, 1 AS reviewed "
         . "     FROM      v4jurisdictions AS j "
         . "     LEFT JOIN v4completed     AS c  ON (c.id = j.id  AND c.type='city') "
         . "    WHERE j.type='c'  AND  j.county_id = $countyNum "
         . "UNION "
-        . "   SELECT 'town' AS org, j.id, j.name, 1 AS link "
+        . "   SELECT 'town' AS org, j.id, j.name, 1 AS link , 1 AS reviewed"
         . "     FROM      v4jurisdictions AS j "
         . "    WHERE j.type='t'  AND  j.county_id = $countyNum "
         . "UNION "
-        . "   SELECT 'vil' AS org, v.id, v.name, IF(c.id IS NULL, 0, 1) AS link "
+        . "   SELECT 'vil' AS org, v.id, v.name, IF(c.id IS NULL, 0, 1) AS link, 1 AS reviewed "
         . "     FROM      v4villages  AS v "
         . "     LEFT JOIN v4completed AS c  ON (c.id = v.id  AND c.type='village') "
         . "    WHERE v.county_id = $countyNum "
         . "UNION "
-        . "   SELECT 'schl-cou' AS org, s.id, s.name, IF(c.id IS NULL, 0, 1) AS link "
+        . "   SELECT 'schl-cou' AS org, s.id, s.name, IF(c.id IS NULL, 0, 1) AS link , 1 AS reviewed"
         . "     FROM      v4schools   AS s "
         . "     LEFT JOIN v4completed AS c  ON (c.id = s.id  AND c.type='school') "
         . "    WHERE s.county_id = $countyNum "
         . "UNION "
-        . "   SELECT 'comcol-cou' AS org, m.id, m.name, IF(c.id IS NULL, 0, 1) AS link "
+        . "   SELECT 'comcol-cou' AS org, m.id, m.name, IF(c.id IS NULL, 0, 1) AS link, 1 AS reviewed "
         . "     FROM      v4commcolleges        AS m "
         . "     LEFT JOIN v4commcolleges_county AS y  ON (m.id = y.id) "
         . "     LEFT JOIN v4completed           AS c  ON (c.id = m.id  AND c.type='college') "
         . "    WHERE y.county_id = $countyNum "
         . "UNION "
-        . "   SELECT type AS org, shortname AS id, name, 1 AS link "
+        . "   SELECT type AS org, shortname AS id, name, 1 AS link, 1 AS reviewed "
         . "    FROM  court "
         . "    WHERE county_id = $countyNum "
         . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'A', 'C', 'D', 'PD', 'P'), name ";
@@ -71,31 +73,33 @@ foreach ($countyNums as $countyNum) {
       $name = simplifyName($row['name']);
       $district = $row['id'];
       $link     = intval($row['link']);
+      $reviewed = intval($row['reviewed']);
 //    $logger->log("Got: " . showArray($row));
       switch ($org) {
          case 'cnty':
             $name = Str::replaceAll($name, " County", "");
-            $counties[$countyNum] = ['cnty' => [$org, $district, $name], 'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => []];
+            $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $reviewed],
+               'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => []];
             break;
 
          case 'city':
-            $counties[$countyNum]['city'][] = [$org, $district, $name, $link];
+            $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $reviewed];
             break;
 
          case 'town':
-            $counties[$countyNum]['town'][] = [$org, $district, $name, $link];
+            $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $reviewed];
             break;
 
          case 'vil':
-            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link];
+            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $reviewed];
             break;
 
          case 'schl-cou':
-            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link];
+            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $reviewed];
             break;
 
          case 'comcol-cou':
-            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link];
+            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $reviewed];
 //          $logger->log("COMM: $countyNum: " . showArray([$org, $district, $name, $org]));
             break;
 
@@ -109,7 +113,7 @@ foreach ($countyNums as $countyNum) {
          case 'D':
          case 'PD':
          case 'P':
-            $counties[$countyNum]['crt']     [] = [$org, $district, $name, $org];
+            $counties[$countyNum]['crt']     [] = [$org, $district, $name, $org, $reviewed];
 //          $logger->log("CRT: " . showArray([$org, $district, $name, $org]));
             break;
       }

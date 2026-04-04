@@ -64,6 +64,7 @@
    {foreach from=$counties item=county}
       <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}');"
            ><span id='A{$county.cnty[1]}' class="arrow">&#9654;</span> {$county.cnty[2]}</a>
+          ({$county.grd_num}/{$county.grd_den})
          <ul id="C{$county.cnty[1]}" style="display: none;">
             <li><span class="arrow">&nbsp;</span>
                 <a href="#" onClick="return loadOfficials('cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a>

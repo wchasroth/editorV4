@@ -94,38 +94,35 @@ foreach ($countyNums as $countyNum) {
                'vil_num'  => 0, 'vil_den'  => 0,
                'schl_num' => 0, 'schl_den' => 0,
                'col_num'  => 0, 'col_den'  => 0,
-               'crt_num'  => 0, 'crt_den'  => 0
+               'crt_num'  => 0, 'crt_den'  => 0,
+               'grd_num'  => $seats * $reviewed,
+               'grd_den'  => $seats
             ];
             break;
 
          case 'city':
             $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $reviewed, $seats];
-            $counties[$countyNum]['city_num'] += $seats * $reviewed;
-            $counties[$countyNum]['city_den'] += $seats;
+            rollUp($counties[$countyNum], 'city', $seats, $reviewed);
             break;
 
          case 'town':
             $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $reviewed, $seats];
-            $counties[$countyNum]['town_num'] += $seats * $reviewed;
-            $counties[$countyNum]['town_den'] += $seats;
+            rollUp($counties[$countyNum], 'town', $seats, $reviewed);
             break;
 
          case 'vil':
             $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $reviewed, $seats];
-            $counties[$countyNum]['vil_num'] += $seats * $reviewed;
-            $counties[$countyNum]['vil_den'] += $seats;
+            rollUp($counties[$countyNum], 'vil', $seats, $reviewed);
             break;
 
          case 'schl-cou':
             $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $reviewed, $seats];
-            $counties[$countyNum]['schl_num'] += $seats * $reviewed;
-            $counties[$countyNum]['schl_den'] += $seats;
+            rollUp($counties[$countyNum], 'schl', $seats, $reviewed);
             break;
 
          case 'comcol-cou':
             $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $reviewed, $seats];
-            $counties[$countyNum]['col_num'] += $seats * $reviewed;
-            $counties[$countyNum]['col_den'] += $seats;
+            rollUp($counties[$countyNum], 'col', $seats, $reviewed);
             break;
 
 //         case 'crt-a':
@@ -140,8 +137,7 @@ foreach ($countyNums as $countyNum) {
          case 'crt-p':
          case 'crt-m':
             $counties[$countyNum]['crt'] [] = [$org, $district, $name, $org, $reviewed, $seats];
-            $counties[$countyNum]['crt_num'] += $seats * $reviewed;
-            $counties[$countyNum]['crt_den'] += $seats;
+            rollUp($counties[$countyNum], 'crt', $seats, $reviewed);
             break;
       }
    }
@@ -151,6 +147,13 @@ $smarty = new SmartyPage();
 $smarty->assign('allowedState', $allowedState);
 $smarty->assign('counties', $counties);
 $smarty->display('leftpanel.tpl');
+
+function rollUp(array &$county, string $org, int $seats, int $reviewed): void {
+   $county["{$org}_num"] += $seats * $reviewed;
+   $county['grd_num']    += $seats * $reviewed;
+   $county["{$org}_den"] += $seats;
+   $county['grd_den']    += $seats;
+}
 
 function calculateSeats (string $orgs, string $districtField): string {
    return "(SELECT COUNT(*) FROM v4seats WHERE org IN ($orgs) AND district=$districtField) AS seats ";

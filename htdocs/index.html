@@ -9,11 +9,16 @@
          height: 100vh;
          min-height: 100%;
       }
+      .draggable {
+         resize: horizontal;
+         overflow: auto;
+         border-right: 1px solid black;
+      }
    </style>
 </head>
 
 <body style="margin: 0; display: flex; width: 100%;">
-   <iframe id='f1' class="myframe" style="width: 15em;" src="leftpanel.php"></iframe>
+   <iframe id='f1' class="myframe draggable" style="width: 16em;" src="leftpanel.php"></iframe>
    <iframe id='f2' class="myframe" style="padding-left: 0.0em; flex: 1;"   ></iframe>
 </body>
 </html>

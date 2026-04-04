@@ -88,28 +88,44 @@ foreach ($countyNums as $countyNum) {
          case 'cnty':
             $name = Str::replaceAll($name, " County", "");
             $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $reviewed, $seats],
-               'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => []];
+               'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => [],
+               'city_num' => 0, 'city_den' => 0,
+               'town_num' => 0, 'town_den' => 0,
+               'vil_num'  => 0, 'vil_den'  => 0,
+               'schl_num' => 0, 'schl_den' => 0,
+               'col_num'  => 0, 'col_den'  => 0,
+               'crt_num'  => 0, 'crt_den'  => 0
+            ];
             break;
 
          case 'city':
             $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['city_num'] += $seats * $reviewed;
+            $counties[$countyNum]['city_den'] += $seats;
             break;
 
          case 'town':
             $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['town_num'] += $seats * $reviewed;
+            $counties[$countyNum]['town_den'] += $seats;
             break;
 
          case 'vil':
             $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['vil_num'] += $seats * $reviewed;
+            $counties[$countyNum]['vil_den'] += $seats;
             break;
 
          case 'schl-cou':
             $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['schl_num'] += $seats * $reviewed;
+            $counties[$countyNum]['schl_den'] += $seats;
             break;
 
          case 'comcol-cou':
             $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $reviewed, $seats];
-//          $logger->log("COMM: $countyNum: " . showArray([$org, $district, $name, $org]));
+            $counties[$countyNum]['col_num'] += $seats * $reviewed;
+            $counties[$countyNum]['col_den'] += $seats;
             break;
 
 //         case 'crt-a':
@@ -123,8 +139,9 @@ foreach ($countyNums as $countyNum) {
          case 'crt-pd':
          case 'crt-p':
          case 'crt-m':
-            $counties[$countyNum]['crt']     [] = [$org, $district, $name, $org, $reviewed, $seats];
-//          $logger->log("CRT: " . showArray([$org, $district, $name, $org]));
+            $counties[$countyNum]['crt'] [] = [$org, $district, $name, $org, $reviewed, $seats];
+            $counties[$countyNum]['crt_num'] += $seats * $reviewed;
+            $counties[$countyNum]['crt_den'] += $seats;
             break;
       }
    }

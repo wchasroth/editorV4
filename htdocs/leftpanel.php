@@ -29,6 +29,7 @@ $result = $pdo->run($sql);
 $countyNums = $result->getArrayOf('id');
 
 $counties = [];
+$time0 = (int) (microtime(true) * 1000);
 foreach ($countyNums as $countyNum) {
 
    $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, " . calculateReviewed('cnty,cnty-com', 'c.id') . ","
@@ -72,7 +73,7 @@ foreach ($countyNums as $countyNum) {
         . "    WHERE county_id = $countyNum "
         . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-pd', 'crt-p', 'crt-m'), name ";
 
-   if ($countyNum === 81) $logger->log("Big: $sql");
+// if ($countyNum === 81) $logger->log("Big: $sql");
 
    $result = $pdo->run($sql);
    if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");
@@ -83,7 +84,6 @@ foreach ($countyNums as $countyNum) {
       $link     = intval($row['link']);
       $reviewed = intval($row['reviewed']);
       $seats    = intval($row['seats']);
-//    $logger->log("Got: " . showArray($row));
       switch ($org) {
          case 'cnty':
             $name = Str::replaceAll($name, " County", "");
@@ -142,6 +142,8 @@ foreach ($countyNums as $countyNum) {
       }
    }
 }
+$time1 = (int) (microtime(true) * 1000);
+$logger->log("Time: " . strval($time1 - $time0));
 
 $smarty = new SmartyPage();
 $smarty->assign('allowedState', $allowedState);

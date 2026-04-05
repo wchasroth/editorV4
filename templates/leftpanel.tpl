@@ -62,7 +62,11 @@
 
 <ul style="padding-left: 0;">
    {if $allowedState }
-      <li><a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a></li>
+      <li>
+          <a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a>
+          ({$topOffices.us[0]})
+          {if $topOffices.us[1] == 1} <img src="green-check.png" width="12"/>{/if}
+      </li>
       <li><a href="#" onClick="return loadOfficials('mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a></li>
       <li><a href="#" onClick="return loadOfficials('mi-sen', '', 'd');" class="child">MI Senate</a></li>
       <li><a href="#" onClick="return loadOfficials('mi-hou', '', 'd');" class="child">MI House</a></li>

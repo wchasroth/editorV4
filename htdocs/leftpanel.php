@@ -28,6 +28,19 @@ $sql = "SELECT id FROM v4completed WHERE type='county' AND id IN ($allowedCounti
 $result = $pdo->run($sql);
 $countyNums = $result->getArrayOf('id');
 
+//<li><a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a></li>
+//      <li><a href="#" onClick="return loadOfficials('mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a></li>
+//      <li><a href="#" onClick="return loadOfficials('mi-sen', '', 'd');" class="child">MI Senate</a></li>
+//      <li><a href="#" onClick="return loadOfficials('mi-hou', '', 'd');" class="child">MI House</a></li>
+//     <li><a href="#" onClick="return loadOfficials('mi-boe,mi-msu,mi-um,mi-wsu', '', 's');" class="child">MI Education</a></li>
+
+$sql = "SELECT 'us' AS org, "
+     .  "      (SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page='us,us-vp,us-sen,us-hou:') AS reviewed, "
+     .  "      (SELECT COUNT(*) FROM v4seats WHERE org IN ('us', 'us-sen', 'us-hou')) AS seats ";
+$result = $pdo->run($sql);
+$topOffices = [];
+foreach ($result->getRows() as $row)   $topOffices[$row['org']] = [$row['seats'], $row['reviewed']];
+
 $counties = [];
 $time0 = (int) (microtime(true) * 1000);
 foreach ($countyNums as $countyNum) {
@@ -148,6 +161,7 @@ $logger->log("Time: " . strval($time1 - $time0));
 $smarty = new SmartyPage();
 $smarty->assign('allowedState', $allowedState);
 $smarty->assign('counties', $counties);
+$smarty->assign('topOffices', $topOffices);
 $smarty->display('leftpanel.tpl');
 
 function rollUp(array &$county, string $org, int $seats, int $reviewed): void {

@@ -64,13 +64,29 @@
    {if $allowedState }
       <li>
           <a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a>
-          ({$topOffices.us[0]})
+            ({$topOffices.us[0]})
           {if $topOffices.us[1] == 1} <img src="green-check.png" width="12"/>{/if}
       </li>
-      <li><a href="#" onClick="return loadOfficials('mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a></li>
-      <li><a href="#" onClick="return loadOfficials('mi-sen', '', 'd');" class="child">MI Senate</a></li>
-      <li><a href="#" onClick="return loadOfficials('mi-hou', '', 'd');" class="child">MI House</a></li>
-      <li><a href="#" onClick="return loadOfficials('mi-boe,mi-msu,mi-um,mi-wsu', '', 's');" class="child">MI Education</a></li>
+      <li>
+          <a href="#" onClick="return loadOfficials('mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a>
+            ({$topOffices.mi[0]})
+          {if $topOffices.mi[1] == 1} <img src="green-check.png" width="12"/>{/if}
+      </li>
+      <li>
+          <a href="#" onClick="return loadOfficials('mi-sen', '', 'd');" class="child">MI Senate</a>
+            ({$topOffices.mi_sen[0]})
+          {if $topOffices.mi_sen[1] == 1} <img src="green-check.png" width="12"/>{/if}
+      </li>
+      <li>
+          <a href="#" onClick="return loadOfficials('mi-hou', '', 'd');" class="child">MI House</a>
+            ({$topOffices.mi_hou[0]})
+          {if $topOffices.mi_hou[1] == 1} <img src="green-check.png" width="12"/>{/if}
+      </li>
+      <li>
+         <a href="#" onClick="return loadOfficials('mi-boe,mi-msu,mi-um,mi-wsu', '', 's');" class="child">MI Education</a>
+           ({$topOffices.mi_boe[0]})
+         {if $topOffices.mi_boe[1] == 1} <img src="green-check.png" width="12"/>{/if}
+      </li>
    {/if}
 
    {foreach from=$counties item=county}

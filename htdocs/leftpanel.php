@@ -28,15 +28,25 @@ $sql = "SELECT id FROM v4completed WHERE type='county' AND id IN ($allowedCounti
 $result = $pdo->run($sql);
 $countyNums = $result->getArrayOf('id');
 
-//<li><a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a></li>
-//      <li><a href="#" onClick="return loadOfficials('mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a></li>
-//      <li><a href="#" onClick="return loadOfficials('mi-sen', '', 'd');" class="child">MI Senate</a></li>
-//      <li><a href="#" onClick="return loadOfficials('mi-hou', '', 'd');" class="child">MI House</a></li>
 //     <li><a href="#" onClick="return loadOfficials('mi-boe,mi-msu,mi-um,mi-wsu', '', 's');" class="child">MI Education</a></li>
 
-$sql = "SELECT 'us' AS org, "
-     .  "      (SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page='us,us-vp,us-sen,us-hou:') AS reviewed, "
-     .  "      (SELECT COUNT(*) FROM v4seats WHERE org IN ('us', 'us-sen', 'us-hou')) AS seats ";
+function calculateTopReviewed(string $page): string {
+   return " (SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page='$page:') AS reviewed ";
+}
+function calculateTopSeats (string $orgs): string {
+   return " (SELECT COUNT(*) FROM v4seats WHERE org IN ($orgs)) AS seats ";
+}
+
+$sql = "   SELECT 'us' AS org, " . calculateTopReviewed('us,us-vp,us-sen,us-hou')         . ", " . calculateTopSeats("'us', 'us-sen', 'us-hou'")
+     . "UNION "
+     . "   SELECT 'mi' AS org, " . calculateTopReviewed('mi,mi-lt,mi-sos,mi-ag,crt-sup')  . ", " . calculateTopSeats("'mi', 'mi-sos', 'mi-ag', 'crt-sup'")
+     . "UNION "
+     . "   SELECT 'mi_sen' AS org, " . calculateTopReviewed('mi-sen')                     . ", " . calculateTopSeats("'mi-sen'")
+     . "UNION "
+     . "   SELECT 'mi_hou' AS org, " . calculateTopReviewed('mi-hou')                     . ", " . calculateTopSeats("'mi-hou'")
+     . "UNION "
+     . "   SELECT 'mi_boe' AS org, " . calculateTopReviewed('mi-boe,mi-msu,mi-um,mi-wsu') . ", " . calculateTopSeats("'mi-boe','mi-msu','mi-um','mi-wsu'")
+;
 $result = $pdo->run($sql);
 $topOffices = [];
 foreach ($result->getRows() as $row)   $topOffices[$row['org']] = [$row['seats'], $row['reviewed']];

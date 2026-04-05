@@ -48,10 +48,18 @@
          else           officialsFrame.location.href = "incomplete.php?orgs=" + orgs + "&district=" + district + "&show=" + show;
          return false;
       }
+
+      function forceReload() {
+          document.body.innerHTML = "<p>&nbsp;</p>&nbsp;&nbsp;<i>(...working...)</i>";
+          reloader = window.location.pathname + "?" + new Date().getTime();
+          window.location.href = reloader;
+      }
    </script>
 </head>
 
 <body style='max-width: 65em; background-color: #CCE6FF;'>
+<button style="position: fixed; top: 10px; right: 20px;" onClick="forceReload();">Refresh</button>
+
 <ul style="padding-left: 0;">
    {if $allowedState }
       <li><a href="#" onClick="return loadOfficials('us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a></li>

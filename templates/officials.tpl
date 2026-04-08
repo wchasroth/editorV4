@@ -4,6 +4,10 @@
 <head>
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto">
    <style>
+      td, input { font-size: 90%;  margin: 0; padding: 0;}
+      input { border: 0;  background-color: inherit; }
+      td    { background-color: inherit; }
+
       body, td, li {
         font-family: 'Roboto';
         /* font-size: 0.8rem; */
@@ -13,6 +17,9 @@
          tr:nth-child(even) {
             background-color: #d2d2d2;
          }
+         tr:nth-child(odd) {
+            background-color: #FFFFFF;
+         }
          tr:hover { background-color: aquamarine; }
          td,th { padding-right: 0.5em;  padding-top: 0.1em;  padding-bottom: 0.1em;}
       }
@@ -20,7 +27,7 @@
       .char1  { width: 1em; }
       .char4  { width: 2.75em; }
       .char7  { width: 4em; }
-      .char12 { width: 7em; }
+      .char12 { width: 12em; }
       .number { text-align: right; }
       .th1 {
          position: sticky;
@@ -54,10 +61,15 @@
       .expandable:focus {
          width: 20em;
       }
-      input {
-         /* background-color: inherit; border: 1px solid #000; */
-         background-color: inherit; border: 0;
-      }
+      .spacer    {  max-width:  2em;  }
+      .col_email {  max-width: 11em;  }
+      .col_name  {  max-width: 11em;  }
+      .col_web   {  max-width: 18em;  }
+      .col_addr  {  max-width: 15em;  }
+      .col_phone {  max-width:  6em;  }
+      .col_term  {  max-width:  3em;  }
+      .col_year  {  max-width:  3em;  }
+
       .button {
          background-color: #0d6dfb;
          color: white;
@@ -147,6 +159,18 @@
           showPopUp('pop-up-changed');
           return false;
       }
+
+      function expand(element) {
+         element.oldzindex = element.style.zIndex;
+         element.oldcolor  = element.style.backgroundColor;
+         element.style.zIndex = 100;
+         element.style.backgroundColor = "cyan";
+      }
+
+      function shrink(element) {
+         element.style.zIndex          = element.oldzindex;
+         element.style.backgroundColor = element.oldcolor;
+      }
    </script>
 </head>
 
@@ -183,9 +207,9 @@
       <td class="th2a">&nbsp;Name</td>
       <td class="th2a">Pty</td>
       <td class="th2a"></td>
-      <td class="th2a">Web</td>
-      <td class="th2a">Email</td>
-      <td class="th2a">Phone</td>
+      <td class="th2a" colspan='2'>Web</td>
+      <td class="th2a" colspan='2'>Email</td>
+      <td class="th2a" colspan='2'>Phone</td>
       <td class="th2a">Address</td>
    </tr>
    {foreach from=$rows item=row}
@@ -211,10 +235,27 @@
                 <a href="{$row['url']}" target="_blank"><img src="external3.png" width="15"></a>
              {/if}
          </td>
-         <td><input name="i:{$row['inc_id']}:web"       type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['web']}"/></td>
-         <td><input name="i:{$row['inc_id']}:email"     type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['email']}"/></td>
-         <td><input name="i:{$row['inc_id']}:phone"     type="text"  size="12" class="char12"                         onChange="changed(this.name);"  value="{$row['phone']}"/></td>
-         <td><input name="i:{$row['inc_id']}:address"   type="text"  size="27"                                        onChange="changed(this.name);"  value="{$row['address']}"/></td>
+
+         <td class="col_web"><input type="text" name="i:{$row['inc_id']}:web"  size="60" value="{$row['web']}"
+             style="position: relative; z-index: 3;"
+             onFocus="expand(this);" onBlur="shrink(this);" onChange="changed(this.name);" /></td>
+
+         <td class="spacer" style="position: relative; z-index: 4;">&nbsp;&nbsp;</td>
+
+         <td class="col_email"><input type="text" name="i:{$row['inc_id']}:email" size="45"  value="{$row['email']}"
+             style="position: relative; z-index: 5;"
+             onFocus="expand(this);" onBlur="shrink(this);" onChange="changed(this.name);" /></td>
+
+         <td class="spacer" style="position: relative; z-index: 6;">&nbsp;&nbsp;</td>
+
+         <td class="col_phone"><input name="i:{$row['inc_id']}:phone"     type="text"  size="18" class="char12"  onChange="changed(this.name);" 
+               value="{$row['phone']}" style="position: relative; z-index: 7;"
+             onFocus="expand(this);" onBlur="shrink(this);" onChange="changed(this.name);" /></td>
+
+         <td class="spacer" style="position: relative; z-index: 8;">&nbsp;&nbsp;</td>
+
+         <td><input name="i:{$row['inc_id']}:address"   type="text"  size="27"  onChange="changed(this.name);"  value="{$row['address']}"
+               style="position: relative; z-index: 9;" /></td>
       </tr>
    {/foreach}
 </table>

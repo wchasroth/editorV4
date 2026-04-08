@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace CharlesRothDotNet\EditorV4;
 
 use CharlesRothDotNet\Alfred\AlfredPDO;
+use CharlesRothDotNet\Alfred\FieldFormatFixer;
 use CharlesRothDotNet\Alfred\PdoRunResult;
 use CharlesRothDotNet\Alfred\SqlFields;
 use CharlesRothDotNet\Alfred\Str;
@@ -49,6 +50,9 @@ if (! Str::isReallyEmpty($fieldsChanged)) {
          $parts = Str::split($field, ':');
          $sql = "UPDATE " . ($parts[0] == 'i' ? "v4incumbents" : "v4seats") . " SET ";
          if (Str::startsWith($parts[2], "term")) $value = intval($value);
+         if      ($parts[2] == "web")     $value = addProtocol(stripHttps($value));
+         else if ($parts[2] == "phone")   $value = FieldFormatFixer::fixPhone($value);
+         else if ($parts[2] == "address") $value = FieldFormatFixer::fixMI($value);
          $sqlFields = new SqlFields([$parts[2] => $value]);
          $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
          $result = $pdo->run($query);

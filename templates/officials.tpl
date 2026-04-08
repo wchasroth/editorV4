@@ -254,7 +254,7 @@
 
          <td class="spacer" style="position: relative; z-index: 8;">&nbsp;&nbsp;</td>
 
-         <td><input name="i:{$row['inc_id']}:address"   type="text"  size="27"  onChange="changed(this.name);"  value="{$row['address']}"
+         <td><input name="i:{$row['inc_id']}:address"   type="text"  size="40"  onChange="changed(this.name);"  value="{$row['address']}"
                style="position: relative; z-index: 9;" /></td>
       </tr>
    {/foreach}

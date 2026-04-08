@@ -93,6 +93,7 @@
       <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}');"
            ><span id='A{$county.cnty[1]}' class="arrow">&#9654;</span> {$county.cnty[2]}</a>
           ({$county.grd_num}/{$county.grd_den})
+          {if $county.grd_num == $county.grd_den} <img src="green-check.png" width="12"/> {/if}
          <ul id="C{$county.cnty[1]}" style="display: none;">
             <li><span class="arrow">&nbsp;</span>
                 <a href="#" onClick="return loadOfficials('cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a>
@@ -103,6 +104,7 @@
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}Y');"
                    ><span id='A{$county.cnty[1]}Y' class="arrow">&#9654;</span> Cities</a>
                    ({$county.city_num}/{$county.city_den})
+                   {if $county.city_num == $county.city_den} <img src="green-check.png" width="12"/> {/if}
                <ul id="C{$county.cnty[1]}Y" style="display: none;">
                   {foreach from=$county.city item=city}
                      <li>
@@ -121,6 +123,7 @@
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}P');"
                 ><span id='A{$county.cnty[1]}P' class="arrow">&#9654;</span> Townships</a>
                 ({$county.town_num}/{$county.town_den})
+                {if $county.town_num == $county.town_den} <img src="green-check.png" width="12"/> {/if}
                 <ul id="C{$county.cnty[1]}P" style="display: none;">
                     {foreach from=$county.town item=town}
                         <li>
@@ -140,6 +143,7 @@
                <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}V');"
                      ><span id='A{$county.cnty[1]}V' class="arrow">&#9654;</span> Villages</a>
                      ({$county.vil_num}/{$county.vil_den})
+                     {if $county.vil_num == $county.vil_den} <img src="green-check.png" width="12"/> {/if}
                   <ul id="C{$county.cnty[1]}V" style="display: none";>
                      {foreach from=$county.vil item=vil}
                          <li>
@@ -159,6 +163,7 @@
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}S');"
                    ><span id='A{$county.cnty[1]}S' class="arrow">&#9654;</span> School Districts</a>
                    ({$county.schl_num}/{$county.schl_den})
+                   {if $county.schl_num == $county.schl_den} <img src="green-check.png" width="12"/> {/if}
                <ul id="C{$county.cnty[1]}S" style="display: none";>
                   {foreach from=$county.schl item=schl}
                       <li>
@@ -177,6 +182,7 @@
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}C');"
                  ><span id='A{$county.cnty[1]}C' class="arrow">&#9654;</span> Comm Colleges</a>
                  ({$county.col_num}/{$county.col_den})
+                 {if $county.col_num == $county.col_den} <img src="green-check.png" width="12"/> {/if}
                  <ul id="C{$county.cnty[1]}C" style="display: none";>
                      {foreach from=$county.comcol item=col}
                          <li>
@@ -195,6 +201,7 @@
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}T');"
                ><span id='A{$county.cnty[1]}T' class="arrow">&#9654;</span> Courts</a>
                ({$county.crt_num}/{$county.crt_den})
+               {if $county.crt_num == $county.crt_den} <img src="green-check.png" width="12"/> {/if}
                <ul id="C{$county.cnty[1]}T" style="display: none";>
                   {foreach from=$county.crt item=crt}
                      <li>

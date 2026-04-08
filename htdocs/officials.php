@@ -42,7 +42,7 @@ if (! Str::isReallyEmpty($fieldsChanged)) {
    foreach (Str::split($fieldsChanged, ",") as $field) {
       if ($field == "reviewed") {
          $reviewed = intval(HttpPost::value('reviewed'));
-         if ($reviewed === 1) $pdo->run("INSERT INTO v4pagesReviewed (page) VALUES ('$reviewedKey')");
+         if ($reviewed === 1) $pdo->run("INSERT INTO v4pagesReviewed (page, who) VALUES ('$reviewedKey', '$email')");
          else                 $pdo->run("DELETE FROM v4pagesReviewed  WHERE    page='$reviewedKey'");
       }
       else {
@@ -120,8 +120,11 @@ $showSeat     = Str::contains($qsShow, 's');
 for ($i=0;   $i<count($orgs);   $i++) $orgs[$i] = "'$orgs[$i]'";
 $quotedOrgs = Str::join($orgs, ",");
 
-$sql = "SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page='$reviewedKey'";
-$reviewed = intval($pdo->run($sql)->getSingleValue('reviewed'));
+$sql = "SELECT 1 AS reviewed, who, dt FROM v4pagesReviewed WHERE page='$reviewedKey'";
+$result = $pdo->run($sql);
+$reviewed = intval($result->getSingleValue('reviewed'));
+$reviewedBy = $result->getSingleValue('who');
+$reviewedDt = $result->getSingleValue('dt');
 
 $counties = [];
 $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i.web, "
@@ -183,6 +186,8 @@ $smarty->assign('showSeat',     $showSeat);
 $smarty->assign('expandableOrgs', $expandableOrgs);
 $smarty->assign('regionColumnName', $regionColumnName);
 $smarty->assign('reviewedChecked', ($reviewed == 1 ? "checked" : ""));
+$smarty->assign('reviewedBy', $reviewedBy);
+$smarty->assign('reviewedDt', $reviewedDt);
 
 $smarty->assign('qsOrgs',     translateOrgs($qsOrgs));      // for <form> action querystring.
 $smarty->assign('qsDistrict', $qsDistrict);

@@ -177,8 +177,8 @@ $smarty->display('leftpanel.tpl');
 function rollUp(array &$county, string $org, int $seats, int $reviewed): void {
    $county["{$org}_num"] += $seats * $reviewed;
    $county['grd_num']    += $seats * $reviewed;
-   $county["{$org}_den"] += $seats;
-   $county['grd_den']    += $seats;
+   $county["{$org}_den"] += max(1, $seats);
+   $county['grd_den']    += max(1, $seats);   // if we have zero seats, pretend we have at least one for roll-up purposes.
 }
 
 function calculateSeats (string $orgs, string $districtField): string {

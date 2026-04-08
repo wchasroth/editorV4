@@ -191,10 +191,15 @@
          ><img id="shrinkExpand" src="shrink-10-48.png" style="height: 75%;  margin-top: 5px;"
                 onClick="shrinkExpandLeftPanel();"/></td>
       <td class="th1" colspan="5"><b>{$name}</b></td>
-      <td class="th1" colspan="16"><input type="button" onClick="submitMainForm();"; return false;" value="Save Changes" class="button"/>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <td class="th1" colspan="18"><input type="button" onClick="submitMainForm();"; return false;" value="Save Changes" class="button"/>
+         &nbsp;&nbsp;&nbsp;&nbsp;
          <span class="font-size: 95%;">Reviewed:</span>
-         <input type="checkbox" {$reviewedChecked} name="reviewed" value="1" style="accent-color: lightgreen;" onChange="changed(this.name);"/></td>
+         <input type="checkbox" {$reviewedChecked} name="reviewed" value="1" style="accent-color: lightgreen;" onChange="changed(this.name);"/>
+         {if $reviewedChecked != ""}
+            &nbsp;&nbsp;
+            <span style="font-size: 70%;">(by {$reviewedBy} at {$reviewedDt})</span>
+         {/if}
+      </td>
    </tr>
    <tr>
       <td class="th2"></td>

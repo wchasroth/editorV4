@@ -1,0 +1,20 @@
+
+SELECT s.org, s.office, s.district, j.name, c.name AS countyName, s.subdist, i.name
+  FROM      v4seats         AS s
+  LEFT JOIN v4incumbents    AS i ON (i.seat_id = s.id)
+  LEFT JOIN v4jurisdictions AS j ON (s.district = j.id)
+  LEFT JOIN v4counties      AS c ON (c.id = j.county_id)
+ WHERE i.name IN (
+    SELECT name FROM
+       ( SELECT name, count(*) AS num FROM v4incumbents
+          GROUP BY name
+          ORDER BY name
+       ) AS dups
+     WHERE num > 1
+ )
+ AND i.name != '' AND i.name != 'vacant'
+ AND (s.org like 'city%' OR s.org like 'town%')
+ ORDER BY c.name, i.name
+
+
+

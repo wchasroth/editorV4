@@ -217,10 +217,10 @@ $smarty->assign('offices',    $allAddableOfficeNames);
 $smarty->assign('sql', $sql);
 $smarty->assign('showSaved', $showSaved);
 
-$smarty->display('debugSql', $debugSql);
-$smarty->display('debugAdmin', $debugAdmin);
-$smarty->display('debugAd', $debugAd);
-$smarty->display('debugEd', $debugEd);
+$smarty->assign('debugSql', $debugSql);
+$smarty->assign('debugAdmin', $debugAdmin);
+$smarty->assign('debugAd', $debugAd);
+$smarty->assign('debugEd', $debugEd);
 $smarty->display('officials.tpl');
 
 

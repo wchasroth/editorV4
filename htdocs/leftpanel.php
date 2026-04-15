@@ -17,17 +17,17 @@ require_once('../vendor/autoload.php');
 date_default_timezone_set("America/New_York");
 
 $env              = new EnvFile("_env");
+$logger           = new DumbFileLogger($env->get('logFile'));
 $email            = EnvHelper::getEmail($env);
 $editableCounties = EnvHelper::getEditableCounties($env);
-$allowedState     = Str::contains($editableCounties, "999");
+$pdo              = PdoHelper::makePdo($env);
 
-$pdo = PdoHelper::makePdo($env);
-$logger = new DumbFileLogger($env->get('logFile'));
 $sql = "SELECT readCounties FROM azure_users WHERE email='$email'";
 $result = $pdo->run($sql);
 $readableCounties = $result->getSingleValue('readCounties');
 
 $allowedCounties = getUnion($editableCounties, $readableCounties);
+$allowedState    = Str::contains($allowedCounties, "999");
 
 $sql = "SELECT id FROM v4completed WHERE type='county' AND id IN ($allowedCounties) ORDER by id";
 $result = $pdo->run($sql);

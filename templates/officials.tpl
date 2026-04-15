@@ -330,6 +330,11 @@ qsOrgs    ={$qsOrgs}
 qsDistrict={$qsDistrict}
 qsShow={$qsShow}
 -->
+sql={$debugSql}
+   Admin={$debugAdmin}
+   Ad={$debugAd}
+   Ed={$debugEd}
+
 {$error}
 {$rowText}
 </pre>

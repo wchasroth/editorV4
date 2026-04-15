@@ -331,6 +331,7 @@ qsDistrict={$qsDistrict}
 qsShow={$qsShow}
 -->
 sql={$debugSql}
+   canEdit={$canEdit}
    Admin={$debugAdmin}
    Ad={$debugAd}
    Ed={$debugEd}

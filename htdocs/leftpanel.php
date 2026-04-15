@@ -16,13 +16,18 @@ require_once('../vendor/autoload.php');
 
 date_default_timezone_set("America/New_York");
 
-$env             = new EnvFile("_env");
-$email           = EnvHelper::getEmail($env);
-$allowedCounties = EnvHelper::getCounties($env);
-$allowedState    = Str::contains($allowedCounties, "999");
+$env              = new EnvFile("_env");
+$email            = EnvHelper::getEmail($env);
+$editableCounties = EnvHelper::getEditableCounties($env);
+$allowedState     = Str::contains($editableCounties, "999");
 
 $pdo = PdoHelper::makePdo($env);
 $logger = new DumbFileLogger($env->get('logFile'));
+$sql = "SELECT readCounties FROM azure_users WHERE email='$email'";
+$result = $pdo->run($sql);
+$readableCounties = $result->getSingleValue('readCounties');
+
+$allowedCounties = getUnion($editableCounties, $readableCounties);
 
 $sql = "SELECT id FROM v4completed WHERE type='county' AND id IN ($allowedCounties) ORDER by id";
 $result = $pdo->run($sql);
@@ -201,4 +206,11 @@ function showArray (array $aa): string {
    $keyValues = [];
    foreach ($aa as $key => $value) $keyValues[] = "$key=>$value";
    return "[" . Str::join($keyValues, ", ") . "]";
+}
+
+function getUnion (string $counties1, string $counties2): string {
+   $c1 = Str::split($counties1, ",");
+   $c2 = Str::split($counties2, ",");
+   $union = array_unique(array_merge($c1, $c2));
+   return Str::join($union, ",");
 }

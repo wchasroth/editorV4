@@ -175,7 +175,7 @@
 </head>
 
 <body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
-<form id="mainForm" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
+<form id="mainForm" method="post" action="officials.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
 <input type="hidden" name="deleteSeat"    id="deleteSeat"    value="" />
 
@@ -191,13 +191,15 @@
          ><img id="shrinkExpand" src="shrink-10-48.png" style="height: 75%;  margin-top: 5px;"
                 onClick="shrinkExpandLeftPanel();"/></td>
       <td class="th1" colspan="5"><b>{$name}</b></td>
-      <td class="th1" colspan="18"><input type="button" onClick="submitMainForm();"; return false;" value="Save Changes" class="button"/>
+      <td class="th1" colspan="18">
+         {if $canEdit }
+            <input type="button" onClick="submitMainForm();"; return false;" value="Save Changes" class="button"/>
          &nbsp;&nbsp;&nbsp;&nbsp;
-         <span class="font-size: 95%;">Reviewed:</span>
-         <input type="checkbox" {$reviewedChecked} name="reviewed" value="1" style="accent-color: lightgreen;" onChange="changed(this.name);"/>
-         {if $reviewedChecked != ""}
-            &nbsp;&nbsp;
-            <span style="font-size: 70%;">(by {$reviewedBy} at {$reviewedDt})</span>
+            <span class="font-size: 95%;">Reviewed:</span>
+            <input type="checkbox" {$reviewedChecked} name="reviewed" value="1" style="accent-color: lightgreen;" onChange="changed(this.name);"/>
+            {if $reviewedChecked != ""}
+               <span style="font-size: 70%;">(by {$reviewedBy} at {$reviewedDt})</span>
+            {/if}
          {/if}
       </td>
    </tr>
@@ -267,12 +269,12 @@
 </form>
 <p/>
 
-{if $expandableOrgs|count > 0}
+{if $expandableOrgs|count > 0  and  $canEdit}
    <div id="pop-up-changed" class="pop-up" style="width: 300px;">
        Save changes first!
    </div>
-   <form id="addSeats1" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
-   <form id="addSeats2" method="post" action="officials.php?orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
+   <form id="addSeats1" method="post" action="officials.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
+   <form id="addSeats2" method="post" action="officials.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
       <div style="max-width: 40em;">
          <b>New Seats:</b> If this page is missing some offices or seats, you can add new "empty" seats, below.
          Then proceed to fill in the data for each new seat.

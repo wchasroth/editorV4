@@ -19,16 +19,24 @@ require_once('../vendor/autoload.php');
 
 date_default_timezone_set("America/New_York");
 
-$env    = new EnvFile("_env");
-$email  = EnvHelper::getEmail($env);
-$pdo    = PdoHelper::makePdo($env);
-$logger = new DumbFileLogger($env->get('logFile'));
+$env     = new EnvFile("_env");
+$email   = EnvHelper::getEmail($env);
+//$readall = EnvHelper::getReadall($env);
+$pdo     = PdoHelper::makePdo($env);
+$logger  = new DumbFileLogger($env->get('logFile'));
 
+$county      = HttpGet::value('county');
 $qsOrgs      = HttpGet::value('orgs');
 $qsDistrict  = HttpGet::value('district');
 $reviewedKey = $qsOrgs . ":" . $qsDistrict;
 $qsShow     = HttpGet::value('show');
 $showSaved  = 0;
+
+$sql = "SELECT admin, editCounties, adminCounties FROM azure_users WHERE email = '$email'";
+$result = $pdo->run($sql);
+$row = $result->getRows()[0];
+$canEdit = ($row['admin'] == '1') || foundCountyIn($county, $row['editCounties']) || foundCountyIn($county, $row['adminCounties']);
+$canEdit = false;
 
 //---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");
@@ -38,75 +46,77 @@ $org        = HttpPost::value('org');
 $deleteSeat = HttpPost::value('deleteSeat');
 
 //---Handle data changes (form submission).
-if (! Str::isReallyEmpty($fieldsChanged)) {
-   foreach (Str::split($fieldsChanged, ",") as $field) {
-      if ($field == "reviewed") {
-         $reviewed = intval(HttpPost::value('reviewed'));
-         if ($reviewed === 1) $pdo->run("INSERT INTO v4pagesReviewed (page, who) VALUES ('$reviewedKey', '$email')");
-         else                 $pdo->run("DELETE FROM v4pagesReviewed  WHERE    page='$reviewedKey'");
+if ($canEdit) {
+   if (! Str::isReallyEmpty($fieldsChanged)) {
+      foreach (Str::split($fieldsChanged, ",") as $field) {
+         if ($field == "reviewed") {
+            $reviewed = intval(HttpPost::value('reviewed'));
+            if ($reviewed === 1) $pdo->run("INSERT INTO v4pagesReviewed (page, who) VALUES ('$reviewedKey', '$email')");
+            else                 $pdo->run("DELETE FROM v4pagesReviewed  WHERE    page='$reviewedKey'");
+         }
+         else {
+            $value = HttpPost::value($field);
+            $parts = Str::split($field, ':');
+            $sql = "UPDATE " . ($parts[0] == 'i' ? "v4incumbents" : "v4seats") . " SET ";
+            if (Str::startsWith($parts[2], "term")) $value = intval($value);
+            if      ($parts[2] == "web")     $value = addProtocol(stripHttps($value));
+            else if ($parts[2] == "phone")   $value = FieldFormatFixer::fixPhone($value);
+            else if ($parts[2] == "address") $value = FieldFormatFixer::fixMI($value);
+            $sqlFields = new SqlFields([$parts[2] => $value]);
+            $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
+            $result = $pdo->run($query);
+         }
       }
-      else {
-         $value = HttpPost::value($field);
-         $parts = Str::split($field, ':');
-         $sql = "UPDATE " . ($parts[0] == 'i' ? "v4incumbents" : "v4seats") . " SET ";
-         if (Str::startsWith($parts[2], "term")) $value = intval($value);
-         if      ($parts[2] == "web")     $value = addProtocol(stripHttps($value));
-         else if ($parts[2] == "phone")   $value = FieldFormatFixer::fixPhone($value);
-         else if ($parts[2] == "address") $value = FieldFormatFixer::fixMI($value);
-         $sqlFields = new SqlFields([$parts[2] => $value]);
-         $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
-         $result = $pdo->run($query);
-      }
+   
+      $showSaved = 1;
    }
-
-   $showSaved = 1;
-}
-
-//---Handle new offices (form submission)
-else if (! Str::isReallyEmpty($office)) {
-   $sql = "SELECT seats FROM v4titles WHERE org='$org' AND office='$office'";
-   $result = $pdo->run($sql);
-   $logger->log("seatmax: $sql   " . $result->getError());
-   $seatmax = intval($result->getSingleValue('seats'));
-   $sql = "INSERT INTO v4seats (org, office, district, seatnum, seatmax) VALUES ('$org', '$office', '$qsDistrict', 1, $seatmax)";
-   $pdo->run($sql);
-}
-
-//---Handle new seats on commission/council (form submission)
-else if (! Str::isReallyEmpty($subdist)) {
-   $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdist";
-   $result = runQueryReportErrors($pdo, $logger, $sql);
-   $highseat = intval($result->getSingleValue('highseat')) + 1;
-   $newOffice = (Str::contains($org, "town-cou", "vil-cou") ? "council" : "");
-   $sql = "INSERT INTO v4seats (org, office, district, subdist, seatnum) VALUES ('$org', '$newOffice', '$qsDistrict', $subdist, $highseat)";
-   runQueryReportErrors($pdo, $logger, $sql);
-}
-
-else if (! Str::isReallyEmpty($deleteSeat)) {
-   //---Handle renumbering seats (if necessary).  (Extract into function?)
-   $sql = "SELECT org, office, district, subdist, seatnum FROM v4seats WHERE id=$deleteSeat";
-   $result = runQueryReportErrors($pdo, $logger, $sql);
-   if ($result->getRowCount() > 0) {
-      $row     = $result->getRows()[0];
-      $seatnum = $row['seatnum'];
-      $sqlFields = new SqlFields(['org' => $row['org'], 'office' => $row['office'], 'district' => $row['district'], 'subdist' => $row['subdist']]);
-      $sql = "SELECT id FROM v4seats WHERE seatnum > $seatnum AND " . $sqlFields->getSelectFragment();
+   
+   //---Handle new offices (form submission)
+   else if (! Str::isReallyEmpty($office)) {
+      $sql = "SELECT seats FROM v4titles WHERE org='$org' AND office='$office'";
       $result = $pdo->run($sql);
-      foreach ($result->getRows() as $row) {
-         $sql = "UPDATE v4seats SET seatnum=$seatnum WHERE id=" . $row['id'];
-         $pdo->run($sql);
-         ++$seatnum;
-      }
+      $logger->log("seatmax: $sql   " . $result->getError());
+      $seatmax = intval($result->getSingleValue('seats'));
+      $sql = "INSERT INTO v4seats (org, office, district, seatnum, seatmax) VALUES ('$org', '$office', '$qsDistrict', 1, $seatmax)";
+      $pdo->run($sql);
    }
-
-   runQueryReportErrors($pdo, $logger, "INSERT INTO v4deletedIncumbents SELECT * FROM v4incumbents WHERE seat_id = $deleteSeat");
-   runQueryReportErrors($pdo, $logger, "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat");
-   $sql = "INSERT INTO v4deletedSeats (id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, whodid) "
-        . "                     SELECT id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, '$email' "
-        . "   FROM v4seats WHERE id = $deleteSeat";
-   runQueryReportErrors($pdo, $logger, $sql);
-   runQueryReportErrors($pdo, $logger, "DELETE FROM v4seats WHERE id = $deleteSeat");
-   // renumber seats?
+   
+   //---Handle new seats on commission/council (form submission)
+   else if (! Str::isReallyEmpty($subdist)) {
+      $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdist";
+      $result = runQueryReportErrors($pdo, $logger, $sql);
+      $highseat = intval($result->getSingleValue('highseat')) + 1;
+      $newOffice = (Str::contains($org, "town-cou", "vil-cou") ? "council" : "");
+      $sql = "INSERT INTO v4seats (org, office, district, subdist, seatnum) VALUES ('$org', '$newOffice', '$qsDistrict', $subdist, $highseat)";
+      runQueryReportErrors($pdo, $logger, $sql);
+   }
+   
+   else if (! Str::isReallyEmpty($deleteSeat)) {
+      //---Handle renumbering seats (if necessary).  (Extract into function?)
+      $sql = "SELECT org, office, district, subdist, seatnum FROM v4seats WHERE id=$deleteSeat";
+      $result = runQueryReportErrors($pdo, $logger, $sql);
+      if ($result->getRowCount() > 0) {
+         $row     = $result->getRows()[0];
+         $seatnum = $row['seatnum'];
+         $sqlFields = new SqlFields(['org' => $row['org'], 'office' => $row['office'], 'district' => $row['district'], 'subdist' => $row['subdist']]);
+         $sql = "SELECT id FROM v4seats WHERE seatnum > $seatnum AND " . $sqlFields->getSelectFragment();
+         $result = $pdo->run($sql);
+         foreach ($result->getRows() as $row) {
+            $sql = "UPDATE v4seats SET seatnum=$seatnum WHERE id=" . $row['id'];
+            $pdo->run($sql);
+            ++$seatnum;
+         }
+      }
+   
+      runQueryReportErrors($pdo, $logger, "INSERT INTO v4deletedIncumbents SELECT * FROM v4incumbents WHERE seat_id = $deleteSeat");
+      runQueryReportErrors($pdo, $logger, "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat");
+      $sql = "INSERT INTO v4deletedSeats (id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, whodid) "
+           . "                     SELECT id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, '$email' "
+           . "   FROM v4seats WHERE id = $deleteSeat";
+      runQueryReportErrors($pdo, $logger, $sql);
+      runQueryReportErrors($pdo, $logger, "DELETE FROM v4seats WHERE id = $deleteSeat");
+      // renumber seats?
+   }
 }
 
 //$orgs         = Str::split($qsOrgs, ",");
@@ -192,6 +202,8 @@ $smarty->assign('reviewedDt', $reviewedDt);
 $smarty->assign('qsOrgs',     translateOrgs($qsOrgs));      // for <form> action querystring.
 $smarty->assign('qsDistrict', $qsDistrict);
 $smarty->assign('qsShow',     $qsShow);
+$smarty->assign('county',     $county);
+$smarty->assign('canEdit',    $canEdit);
 
 $existing1SeatOffices   = computeExistingSingleSeatOffices($rows);
 $allAddableOfficeNames  = computeOfficeNames($pdo, $org1, $existing1SeatOffices, $logger);
@@ -345,4 +357,8 @@ function translateOrgs(string $orgs):  string {  // Handle weird court orgs from
       else                          $results[] = $org;
    }
    return Str::join($results, ",");
+}
+
+function foundCountyIn(string $county, string $counties): bool {
+   return Str::contains(",$counties,", ",$county,");
 }

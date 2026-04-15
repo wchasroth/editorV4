@@ -193,7 +193,7 @@
       <td class="th1" colspan="5"><b>{$name}</b></td>
       <td class="th1" colspan="18">
          {if $canEdit }
-            <input type="button" onClick="submitMainForm();"; return false;" value="Save Changes" class="button"/>
+            <input type="button" onClick="submitMainForm();"; return false;" value=" Save Changes " class="button"/>
          &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="font-size: 95%;">Reviewed:</span>
             <input type="checkbox" {$reviewedChecked} name="reviewed" value="1" style="accent-color: lightgreen;" onChange="changed(this.name);"/>
@@ -329,12 +329,12 @@
 qsOrgs    ={$qsOrgs}
 qsDistrict={$qsDistrict}
 qsShow={$qsShow}
--->
 sql={$debugSql}
    canEdit={$canEdit}
    Admin={$debugAdmin}
    Ad={$debugAd}
    Ed={$debugEd}
+-->
 
 {$error}
 {$rowText}

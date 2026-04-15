@@ -35,10 +35,6 @@ $showSaved  = 0;
 $sql = "SELECT admin, editCounties, adminCounties FROM azure_users WHERE email = '$email'";
 $result = $pdo->run($sql);
 $row = $result->getRows()[0];
-$debugSql   = $sql;
-$debugAdmin = $row['admin'];
-$debugEd  = $row['editCounties'];
-$debugAd  = $row['adminCounties'];
 
 $canEdit = ($row['admin'] == '1') || foundCountyIn($county, $row['editCounties']) || foundCountyIn($county, $row['adminCounties']);
 
@@ -216,10 +212,6 @@ $smarty->assign('offices',    $allAddableOfficeNames);
 $smarty->assign('sql', $sql);
 $smarty->assign('showSaved', $showSaved);
 
-$smarty->assign('debugSql', $debugSql);
-$smarty->assign('debugAdmin', $debugAdmin);
-$smarty->assign('debugAd', $debugAd);
-$smarty->assign('debugEd', $debugEd);
 $smarty->display('officials.tpl');
 
 

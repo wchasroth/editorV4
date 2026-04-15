@@ -41,7 +41,6 @@ $debugEd  = $row['editCounties'];
 $debugAd  = $row['adminCounties'];
 
 $canEdit = ($row['admin'] == '1') || foundCountyIn($county, $row['editCounties']) || foundCountyIn($county, $row['adminCounties']);
-$canEdit = false;
 
 //---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");

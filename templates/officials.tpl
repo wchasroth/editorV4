@@ -120,9 +120,9 @@
          }
       }
 
-      function changed(id) {
+      function changed(name) {
          let fc = document.getElementById("fieldsChanged");
-         fc.value = fc.value + id + ",";
+         fc.value = fc.value + name + ",";
       }
 
       function submitMainForm() {
@@ -171,6 +171,28 @@
          element.style.zIndex          = element.oldzindex;
          element.style.backgroundColor = element.oldcolor;
       }
+
+      function partyMenuShow(base) {
+         let sel = document.getElementById(base + "sel");
+         sel.style.visibility = 'visible';
+         sel.focus();
+         sel.showPicker();
+         sel.selectedIndex = -1; /* so that ANY selection fires onChange */
+      }
+
+      function partyMenuHide(base) {
+         let sel = document.getElementById(base + "sel");
+         sel.style.visibility = 'hidden';
+      }
+
+      function partyMenuSet(base, name) {
+         let sel = document.getElementById(base + "sel");
+         let inp = document.getElementById(base + "inp");
+         inp.value = sel.value;
+         partyMenuHide(base);
+         changed(name);
+      }
+
    </script>
 </head>
 
@@ -236,7 +258,22 @@
          <td><input {$hidden} name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td><input {$hidden} name="s:{$row['id']}:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
          <td><input           name="i:{$row['inc_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
-         <td><input           name="i:{$row['inc_id']}:party" type="text"  size="1"  class="char1"      pattern="[A-Za-z]*" onChange="changed(this.name);"  value="{$row['party']}"/></td>
+
+         <td style="position: relative;">
+            {$id = $row['inc_id']}
+            <input  id="party{$id}inp" name="i:{$id}:party" type="text"  size="1"  class="char1" value="{$row['party']}" onClick="partyMenuShow('party{$id}');" />
+            <select id="party{$id}sel" style="position: absolute; z-index: 100; left: 0; top: 0; visibility: hidden;"
+                    onChange="partyMenuSet('party{$id}', 'i:{$id}:party');"  onBlur=" partyMenuHide('party{$id}');">
+               <option value='' >(unknown)</option>
+               <option value='D'>Dem</option>
+               <option value='L'>Lib</option>
+               <option value='N'>Non</option>
+               <option value='R'>Rep</option>
+               <option value='W'>Write-in</option>
+            </select>
+            &nbsp;
+         </td>
+
          <td style="vertical-align: bottom;">
              {if $row['url'] != ''}
                 <a href="{$row['url']}" target="_blank"><img src="external3.png" width="15"></a>

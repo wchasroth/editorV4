@@ -265,10 +265,10 @@
             <select id="party{$id}sel" style="position: absolute; z-index: 100; left: 0; top: 0; visibility: hidden;"
                     onChange="partyMenuSet('party{$id}', 'i:{$id}:party');"  onBlur=" partyMenuHide('party{$id}');">
                <option value='' >(unknown)</option>
-               <option value='D'>Dem</option>
-               <option value='L'>Lib</option>
-               <option value='N'>Non</option>
-               <option value='R'>Rep</option>
+               <option value='D'>Democrat</option>
+               <option value='L'>Libertarian</option>
+               <option value='N'>Non-partisan</option>
+               <option value='R'>Republican</option>
                <option value='W'>Write-in</option>
             </select>
             &nbsp;

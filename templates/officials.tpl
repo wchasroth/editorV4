@@ -243,7 +243,7 @@
    </tr>
    {foreach from=$rows item=row}
       <tr>
-         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, '{$row['shortname']}: {$row['name']}');"><img src="trash.png" width="14"/></a></td>
+         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, `{$row['shortname']}: {$row['name']}`);"><img src="trash.png" width="14"/></a></td>
          <td style="white-space: nowrap;"     class="smaller">{$row['shortname']}</td>
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}

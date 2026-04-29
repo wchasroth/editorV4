@@ -73,7 +73,7 @@ if ($canEdit) {
    
    //---Handle new offices (form submission)
    else if (! Str::isReallyEmpty($office)) {
-      $sql = "SELECT seats FROM v4titles WHERE org='$org' AND office='$office'";
+      $sql = "SELECT seats FROM s4titles WHERE org='$org' AND office='$office'";
       $result = $pdo->run($sql);
       $logger->log("seatmax: $sql   " . $result->getError());
       $seatmax = intval($result->getSingleValue('seats'));
@@ -143,7 +143,7 @@ $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i
 //   . "            (ROUND((i.votes_C * 100) / i.votes_T) * GREATEST(i.num2elect, 1)) as PCT, i.id AS inc_id \n"
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4incumbents AS i   ON (s.id = i.seat_id) \n"
-     . "  LEFT JOIN v4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
+     . "  LEFT JOIN s4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
      . "  WHERE s.org in ($quotedOrgs) \n"
      . makeDistrictClause($district) . "\n"
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
@@ -168,7 +168,7 @@ $expandableOrgs = array_intersect(getUniqueOrgsFoundIn($rows),
    ['city', 'city-cou', 'cnty', 'cnty-com', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou', 'comcol-cou']);
 //$offices = [];
 //foreach ($expandableOrgs as $org) {
-//   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ";
+//   $sql = "SELECT office, shortname FROM s4titles WHERE org='$org' AND shortname != '' ";
 //   $result = $pdo->run($sql);
 //   $offices[$org] = $result->getRows();
 //}
@@ -249,7 +249,7 @@ function showSubDistricts(array $rows): bool {
 }
 
 function computeOfficeNames($pdo, $org, array $existing1SeatOffices, $logger): array {
-   $sql = "SELECT office, shortname FROM v4titles WHERE org='$org' AND shortname != '' ORDER BY shortname ";
+   $sql = "SELECT office, shortname FROM s4titles WHERE org='$org' AND shortname != '' ORDER BY shortname ";
    $result = $pdo->run($sql);
    $rows = $result->getRows();
    $rowCount = $result->getRowCount();
@@ -297,32 +297,32 @@ function calculatePageName(AlfredPDO $pdo, array $orgs, string $district, DumbFi
    if (count($rows) == 0) {
 //    $logger->log("officials, nothing in entity26: $sql");
       if (Str::startsWith($orgs[0], "'vil'")) {
-         $sql = "SELECT name FROM v4villages WHERE id=$district";
+         $sql = "SELECT name FROM s4villages WHERE id=$district";
          $result = $pdo->run($sql);
          $name = correctCase($result->getSingleValue('name'));
          if (! Str::contains(strtolower($name), "village")) $name = "Village of $name";
          return $name;
       }
       if (Str::startsWith($orgs[0], "'comcol")) {
-         $sql = "SELECT name FROM v4commcolleges WHERE id=$district";
+         $sql = "SELECT name FROM s4commcolleges WHERE id=$district";
          $result = $pdo->run($sql);
          $name = $result->getSingleValue('name');
          return correctCase($name);
       }
       if (Str::startsWith($orgs[0], "'town")) {
-         $sql = "SELECT name FROM v4jurisdictions WHERE type='t' AND id=$district";
+         $sql = "SELECT name FROM s4jurisdictions WHERE type='t' AND id=$district";
          $result = $pdo->run($sql);
          $name = $result->getSingleValue('name');
          return correctCase($name);
       }
       if (Str::startsWith($orgs[0], "'city")) {
-         $sql = "SELECT name FROM v4jurisdictions WHERE type='c' AND id=$district";
+         $sql = "SELECT name FROM s4jurisdictions WHERE type='c' AND id=$district";
          $result = $pdo->run($sql);
          $name = $result->getSingleValue('name');
          return correctCase($name);
       }
       if (Str::startsWith($orgs[0], "'schl")) {
-         $sql = "SELECT name FROM v4schools WHERE  id=$district";
+         $sql = "SELECT name FROM s4schools WHERE  id=$district";
          $result = $pdo->run($sql);
          $name = $result->getSingleValue('name');
          return correctCase($name);

@@ -29,28 +29,28 @@ $qsShow     = HttpGet::value('show');
 $org = Str::substringBefore($qsOrgs . ',', ',');
 $sql = "SELECT '' ";
 if ($org === 'schl-cou') {
-   $sql = "SELECT name FROM v4counties "
-        . " WHERE id     IN (SELECT county_id FROM v4schools   WHERE id=$qsDistrict) "
+   $sql = "SELECT name FROM s4counties "
+        . " WHERE id     IN (SELECT county_id FROM s4schools   WHERE id=$qsDistrict) "
         . "   AND id NOT IN (SELECT id        FROM v4completed WHERE type='county') "
         . "  ORDER BY name";
 }
 else if ($org === 'city') {
-   $sql = "SELECT name FROM v4counties "
-      . "   WHERE id     IN (SELECT county_id FROM v4jurisdictions WHERE type='c' AND id=$qsDistrict) "
+   $sql = "SELECT name FROM s4counties "
+      . "   WHERE id     IN (SELECT county_id FROM s4jurisdictions WHERE type='c' AND id=$qsDistrict) "
       . "     AND id NOT IN (SELECT id        FROM v4completed     WHERE type='county') "
       . "   ORDER BY name";
 }
 else if ($org === 'vil') {
-   $sql = "SELECT name FROM v4counties "
-      . "   WHERE id     IN (SELECT county_id FROM v4villages  WHERE id=$qsDistrict) "
+   $sql = "SELECT name FROM s4counties "
+      . "   WHERE id     IN (SELECT county_id FROM s4villages  WHERE id=$qsDistrict) "
       . "     AND id NOT IN (SELECT id        FROM v4completed WHERE type='county') "
       . "   ORDER BY name";
 }
 
 else if ($org === 'comcol-cou') {
-   $sql = "SELECT name FROM v4counties "
+   $sql = "SELECT name FROM s4counties "
       . "   WHERE id     IN (SELECT y.county_id FROM      v4commcolleges_county AS y "
-      . "                                       LEFT JOIN v4commcolleges        AS c ON (c.id = y.id) "
+      . "                                       LEFT JOIN s4commcolleges        AS c ON (c.id = y.id) "
       . "                                      WHERE c.id =  $qsDistrict "
       . "     AND id NOT IN (SELECT id          FROM v4completed WHERE type='county') "
       . "   ORDER BY name";

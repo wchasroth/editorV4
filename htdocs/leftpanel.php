@@ -62,34 +62,34 @@ foreach ($countyNums as $countyNum) {
 
    $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, " . calculateReviewed('cnty,cnty-com', 'c.id') . ","
         .            calculateSeats("'cnty', 'cnty-com'", "c.id")
-        . "     FROM v4counties AS c  WHERE id = $countyNum "
+        . "     FROM s4counties AS c  WHERE id = $countyNum "
         . "UNION "
         . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateReviewed('city,city-cou', 'j.id') . ","
         .            calculateSeats("'city', 'city-cou'", "j.id")
-        . "     FROM      v4jurisdictions AS j "
+        . "     FROM      s4jurisdictions AS j "
         . "     LEFT JOIN v4completed     AS c  ON (c.id = j.id  AND c.type='city') "
         . "    WHERE j.type='c'  AND  j.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'town' AS org, j.id, j.name, 1 AS link , "  . calculateReviewed('town,town-cou', 'id') . ","
         .            calculateSeats("'town', 'town-cou'", "j.id")
-        . "     FROM      v4jurisdictions AS j "
+        . "     FROM      s4jurisdictions AS j "
         . "    WHERE j.type='t'  AND  j.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'vil' AS org, v.id, v.name, IF(c.id IS NULL, 0, 1) AS link,"  . calculateReviewed('vil,vil-cou', 'v.id') . ","
         .            calculateSeats("'vil-cou'", "v.id")
-        . "     FROM      v4villages  AS v "
+        . "     FROM      s4villages  AS v "
         . "     LEFT JOIN v4completed AS c  ON (c.id = v.id  AND c.type='village') "
         . "    WHERE v.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'schl-cou' AS org, s.id, s.name, IF(c.id IS NULL, 0, 1) AS link , "  . calculateReviewed('schl-cou', 's.id') . ","
         .             calculateSeats("'schl-cou'", "s.id")
-        . "     FROM      v4schools   AS s "
+        . "     FROM      s4schools   AS s "
         . "     LEFT JOIN v4completed AS c  ON (c.id = s.id  AND c.type='school') "
         . "    WHERE s.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'comcol-cou' AS org, m.id, m.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateReviewed('comcol-cou', 'm.id') . ","
         .             calculateSeats("'comcol-cou'", "m.id")
-        . "     FROM      v4commcolleges        AS m "
+        . "     FROM      s4commcolleges        AS m "
         . "     LEFT JOIN v4commcolleges_county AS y  ON (m.id = y.id) "
         . "     LEFT JOIN v4completed           AS c  ON (c.id = m.id  AND c.type='college') "
         . "    WHERE y.county_id = $countyNum "

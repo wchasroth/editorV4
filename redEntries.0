@@ -1,0 +1,157 @@
+| ctyid | ctyname        | type    | id    | name                                          |
++-------+----------------+---------+-------+-----------------------------------------------+
+|     5 | ANTRIM         | School  |  6500 | BOYNE CITY PUBLIC SCHOOLS                     |
+|     5 | ANTRIM         | School  |  6510 | BOYNE FALLS PUBLIC SCHOOLS                    |
+|     5 | ANTRIM         | School  |  8730 | CHARLEVOIX PUBLIC SCHOOLS                     |
+|     5 | ANTRIM         | School  | 12560 | EAST JORDAN PUBLIC SCHOOLS                    |
+|     5 | ANTRIM         | School  | 13050 | ELK RAPIDS PUBLIC SCHOOLS                     |
+|     5 | ANTRIM         | School  | 13110 | ELLSWORTH COMMUNITY SCHOOLS                   |
+|     5 | ANTRIM         | School  | 15730 | GAYLORD COMMUNITY SCHOOLS                     |
+|     5 | ANTRIM         | School  | 22350 | MANCELONA PUBLIC SCHOOLS                      |
+|     6 | ARENAC         | School  | 32940 | STANDISH-STERLING COMMUNITY SCHOOLS           |
+|     6 | ARENAC         | School  | 33510 | TAWAS AREA SCHOOLS                            |
+|     6 | ARENAC         | School  | 36390 | WHITTEMORE-PRESCOTT AREA SCHOOLS              |
+|     7 | BARAGA         | School  |    18 | LANSE AREA SCHOOLS                            |
+|     7 | BARAGA         | School  | 25400 | N.I.C.E. COMMUNITY SCHOOL DISTRICT            |
+|     8 | BARRY          | School  |  7620 | CALEDONIA COMMUNITY SCHOOLS                   |
+|     8 | BARRY          | School  | 11910 | DELTON-KELLOGG SCHOOLS                        |
+|     8 | BARRY          | School  | 20980 | LAKEWOOD PUBLIC SCHOOLS                       |
+|     8 | BARRY          | School  | 22980 | MARTIN PUBLIC SCHOOLS                         |
+|     8 | BARRY          | School  | 28530 | PLAINWELL COMMUNITY SCHOOLS                   |
+|     8 | BARRY          | School  | 33810 | THORNAPPLE-KELLOGG SCHOOLS                    |
+|     8 | BARRY          | School  | 35550 | WAYLAND UNION SCHOOLS                         |
+|    13 | CALHOUN        | School  |  3510 | ATHENS AREA SCHOOLS                           |
+|    13 | CALHOUN        | School  | 18540 | HOMER COMMUNITY SCHOOL DISTRICT               |
+|    13 | CALHOUN        | School  | 21750 | LITCHFIELD COMMUNITY SCHOOLS                  |
+|    13 | CALHOUN        | School  | 33750 | TEKONSHA COMMUNITY SCHOOLS                    |
+|    13 | CALHOUN        | School  | 34410 | UNION CITY COMMUNITY SCHOOLS                  |
+|    13 | CALHOUN        | Village | 81360 | UNION CITY                                    |
+|    17 | CHIPPEWA       | School  | 21420 | LES CHENEAUX COMMUNITY SCHOOLS                |
+|    17 | CHIPPEWA       | School  | 28020 | PICKFORD PUBLIC SCHOOLS                       |
+|    17 | CHIPPEWA       | School  | 30360 | RUDYARD AREA SCHOOLS                          |
+|    17 | CHIPPEWA       | School  | 25350 | TAHQUAMENON AREA SCHOOLS                      |
+|    23 | EATON          | School  | 16410 | GRAND LEDGE PUBLIC SCHOOLS                    |
+|    23 | EATON          | School  | 20980 | LAKEWOOD PUBLIC SCHOOLS                       |
+|    23 | EATON          | School  | 21150 | LANSING PUBLIC SCHOOLS                        |
+|    23 | EATON          | School  | 29120 | PORTLAND PUBLIC SCHOOLS                       |
+|    23 | EATON          | School  | 35520 | WAVERLY COMMUNITY SCHOOLS                     |
+|    25 | GENESEE        | School  | 11430 | DAVISON COMMUNITY SCHOOLS                     |
+|    25 | GENESEE        | School  | 16320 | GOODRICH AREA SCHOOLS                         |
+|    25 | GENESEE        | School  | 20940 | LAKEVILLE COMMUNITY SCHOOLS                   |
+|    25 | GENESEE        | School  | 23910 | MILLINGTON COMMUNITY SCHOOLS                  |
+|    25 | GENESEE        | Village | 61760 | OTTER LAKE                                    |
+|    28 | GRAND TRAVERSE | City    | 80340 | Traverse City                                 |
+|    28 | GRAND TRAVERSE | School  |  4950 | BENZIE COUNTY CENTRAL SCHOOLS                 |
+|    28 | GRAND TRAVERSE | School  |  7170 | BUCKLEY COMMUNITY SCHOOLS                     |
+|    28 | GRAND TRAVERSE | School  | 13050 | ELK RAPIDS PUBLIC SCHOOLS                     |
+|    28 | GRAND TRAVERSE | School  | 14570 | FOREST AREA COMMUNITY SCHOOLS                 |
+|    28 | GRAND TRAVERSE | School  | 20380 | KINGSLEY AREA SCHOOLS                         |
+|    28 | GRAND TRAVERSE | School  | 22500 | MANTON CONSOLIDATED SCHOOLS                   |
+|    28 | GRAND TRAVERSE | School  | 33870 | TRAVERSE CITY AREA PUBLIC SCHOOLS             |
+|    29 | GRATIOT        | School  |  2640 | ALMA PUBLIC SCHOOLS                           |
+|    29 | GRATIOT        | School  |  8130 | CARSON CITY-CRYSTAL AREA SCHOOLS              |
+|    29 | GRATIOT        | School  | 15420 | FULTON SCHOOLS                                |
+|    29 | GRATIOT        | School  | 19580 | ITHACA PUBLIC SCHOOLS                         |
+|    29 | GRATIOT        | School  | 27150 | OVID-ELSIE AREA SCHOOLS                       |
+|    29 | GRATIOT        | School  | 32820 | ST. JOHNS PUBLIC SCHOOLS                      |
+|    29 | GRATIOT        | School  | 34920 | VESTABURG COMMUNITY SCHOOL                    |
+|    31 | HOUGHTON       | School  |  1890 | ADAMS TOWNSHIP SCHOOL DISTRICT                |
+|    31 | HOUGHTON       | School  |  7690 | CALUMET PUBLIC SCHOOLS                        |
+|    31 | HOUGHTON       | School  |    14 | EWEN-TROUT CREEK CONSOLIDATED SCHOOL DISTRICT |
+|    31 | HOUGHTON       | School  | 20700 | LAKE LINDEN-HUBBELL SCHOOLS                   |
+|    31 | HOUGHTON       | School  |    18 | LANSE AREA SCHOOLS                            |
+|    33 | INGHAM         | City    | 24120 | East Lansing City                             |
+|    33 | INGHAM         | School  | 12600 | EAST LANSING PUBLIC SCHOOLS                   |
+|    33 | INGHAM         | School  | 17940 | HASLETT PUBLIC SCHOOLS                        |
+|    33 | INGHAM         | School  | 21150 | LANSING PUBLIC SCHOOLS                        |
+|    33 | INGHAM         | School  | 35520 | WAVERLY COMMUNITY SCHOOLS                     |
+|    37 | ISABELLA       | City    | 15920 | Clare City                                    |
+|    37 | ISABELLA       | School  |  2640 | ALMA PUBLIC SCHOOLS                           |
+|    37 | ISABELLA       | School  |  9560 | CHIPPEWA HILLS SCHOOL DISTRICT                |
+|    37 | ISABELLA       | School  |  9750 | CLARE PUBLIC SCHOOLS                          |
+|    37 | ISABELLA       | School  | 14100 | FARWELL AREA SCHOOLS                          |
+|    37 | ISABELLA       | School  | 12960 | MONTABELLA COMMUNITY SCHOOLS                  |
+|    37 | ISABELLA       | School  | 34920 | VESTABURG COMMUNITY SCHOOL                    |
+|    38 | JACKSON        | School  |  1920 | ADDISON COMMUNITY SCHOOLS                     |
+|    38 | JACKSON        | School  |  6990 | COLUMBIA SCHOOL DISTRICT                      |
+|    38 | JACKSON        | School  | 17640 | HANOVER-HORTON SCHOOL DISTRICT                |
+|    38 | JACKSON        | School  | 18540 | HOMER COMMUNITY SCHOOL DISTRICT               |
+|    38 | JACKSON        | School  | 19920 | JONESVILLE COMMUNITY SCHOOLS                  |
+|    38 | JACKSON        | School  | 21750 | LITCHFIELD COMMUNITY SCHOOLS                  |
+|    38 | JACKSON        | School  | 25650 | NORTH ADAMS-JEROME SCHOOLS                    |
+|    39 | KALAMAZOO      | School  |  3510 | ATHENS AREA SCHOOLS                           |
+|    39 | KALAMAZOO      | School  | 10410 | COLON COMMUNITY SCHOOLS                       |
+|    39 | KALAMAZOO      | School  | 27060 | OTSEGO PUBLIC SCHOOLS                         |
+|    39 | KALAMAZOO      | School  | 28530 | PLAINWELL COMMUNITY SCHOOLS                   |
+|    41 | KENT           | School  |  4530 | BELDING AREA SCHOOLS                          |
+|    41 | KENT           | School  |  7620 | CALEDONIA COMMUNITY SCHOOLS                   |
+|    41 | KENT           | School  | 17160 | GREENVILLE PUBLIC SCHOOLS                     |
+|    41 | KENT           | School  | 20910 | LAKEVIEW COMMUNITY SCHOOLS                    |
+|    41 | KENT           | School  | 20980 | LAKEWOOD PUBLIC SCHOOLS                       |
+|    41 | KENT           | School  | 22050 | LOWELL AREA SCHOOLS                           |
+|    41 | KENT           | School  | 33810 | THORNAPPLE-KELLOGG SCHOOLS                    |
+|    41 | KENT           | School  | 33930 | TRI COUNTY AREA SCHOOLS                       |
+|    41 | KENT           | School  | 35550 | WAYLAND UNION SCHOOLS                         |
+|    43 | LAKE           | School  |  7590 | CADILLAC AREA PUBLIC SCHOOLS                  |
+|    43 | LAKE           | School  | 23130 | MASON COUNTY CENTRAL SCHOOLS                  |
+|    43 | LAKE           | School  | 28200 | PINE RIVER AREA SCHOOLS                       |
+|    43 | LAKE           | School  | 29490 | REED CITY AREA PUBLIC SCHOOLS                 |
+|    46 | LENAWEE        | School  |  1920 | ADDISON COMMUNITY SCHOOLS                     |
+|    46 | LENAWEE        | School  |  6990 | COLUMBIA SCHOOL DISTRICT                      |
+|    46 | LENAWEE        | School  | 18810 | HUDSON AREA SCHOOLS                           |
+|    46 | LENAWEE        | School  | 35040 | WALDRON AREA SCHOOLS                          |
+|    50 | MACOMB         | School  |  2670 | ALMONT COMMUNITY SCHOOLS                      |
+|    51 | MANISTEE       | School  |  4950 | BENZIE COUNTY CENTRAL SCHOOLS                 |
+|    51 | MANISTEE       | School  | 23670 | MESICK CONSOLIDATED SCHOOLS                   |
+|    53 | MASON          | School  | 23130 | MASON COUNTY CENTRAL SCHOOLS                  |
+|    53 | MASON          | School  | 27840 | PENTWATER PUBLIC SCHOOLS                      |
+|    53 | MASON          | School  | 35130 | WALKERVILLE PUBLIC SCHOOLS                    |
+|    56 | MIDLAND        | City    | 53780 | Midland City                                  |
+|    56 | MIDLAND        | School  |  4260 | BAY CITY PUBLIC SCHOOLS                       |
+|    56 | MIDLAND        | School  | 15060 | FREELAND COMMUNITY DISTRICT                   |
+|    61 | MUSKEGON       | School  | 15150 | FREMONT PUBLIC SCHOOLS                        |
+|    61 | MUSKEGON       | School  | 18510 | HOLTON PUBLIC SCHOOLS                         |
+|    61 | MUSKEGON       | School  | 24180 | MONTAGUE AREA PUBLIC SCHOOLS                  |
+|    62 | NEWAYGO        | School  |  5780 | BIG RAPIDS PUBLIC SCHOOLS                     |
+|    62 | NEWAYGO        | School  | 15150 | FREMONT PUBLIC SCHOOLS                        |
+|    62 | NEWAYGO        | School  | 18270 | HESPERIA COMMUNITY SCHOOLS                    |
+|    62 | NEWAYGO        | School  | 18510 | HOLTON PUBLIC SCHOOLS                         |
+|    62 | NEWAYGO        | School  | 24600 | MORLEY-STANWOOD COMMUNITY SCHOOL              |
+|    62 | NEWAYGO        | School  | 29490 | REED CITY AREA PUBLIC SCHOOLS                 |
+|    62 | NEWAYGO        | School  | 33930 | TRI COUNTY AREA SCHOOLS                       |
+|    62 | NEWAYGO        | School  | 35130 | WALKERVILLE PUBLIC SCHOOLS                    |
+|    62 | NEWAYGO        | Village | 37860 | HESPERIA                                      |
+|    63 | OAKLAND        | School  |  2670 | ALMONT COMMUNITY SCHOOLS                      |
+|    63 | OAKLAND        | School  |  6570 | BRANDON SCHOOL DISTRICT                       |
+|    63 | OAKLAND        | School  | 16320 | GOODRICH AREA SCHOOLS                         |
+|    63 | OAKLAND        | School  | 27240 | OXFORD COMMUNITY SCHOOLS                      |
+|    70 | OTTAWA         | City    | 38640 | Holland City                                  |
+|    70 | OTTAWA         | School  | 18420 | HOLLAND PUBLIC SCHOOLS                        |
+|    70 | OTTAWA         | School  | 18840 | HUDSONVILLE PUBLIC SCHOOLS                    |
+|    70 | OTTAWA         | School  | 36660 | ZEELAND PUBLIC SCHOOLS                        |
+|    72 | ROSCOMMON      | School  | 18600 | HOUGHTON LAKE COMMUNITY SCHOOLS               |
+|    72 | ROSCOMMON      | School  | 15830 | ROSCOMMON AREA PUBLIC SCHOOLS                 |
+|    73 | SAGINAW        | School  |  4260 | BAY CITY PUBLIC SCHOOLS                       |
+|    73 | SAGINAW        | School  | 14760 | FRANKENMUTH SCHOOL DISTRICT                   |
+|    73 | SAGINAW        | School  | 15060 | FREELAND COMMUNITY DISTRICT                   |
+|    73 | SAGINAW        | School  | 27150 | OVID-ELSIE AREA SCHOOLS                       |
+|    73 | SAGINAW        | School  | 29520 | REESE PUBLIC SCHOOLS                          |
+|    73 | SAGINAW        | Village | 67900 | REESE                                         |
+|    78 | SHIAWASSEE     | City    | 61860 | Ovid City                                     |
+|    78 | SHIAWASSEE     | School  |  4170 | BATH COMMUNITY SCHOOLS                        |
+|    78 | SHIAWASSEE     | School  | 17940 | HASLETT PUBLIC SCHOOLS                        |
+|    78 | SHIAWASSEE     | School  | 20550 | LAINGSBURG COMMUNITY SCHOOLS                  |
+|    78 | SHIAWASSEE     | School  | 27150 | OVID-ELSIE AREA SCHOOLS                       |
+|    74 | ST CLAIR       | School  |  2670 | ALMONT COMMUNITY SCHOOLS                      |
+|    74 | ST CLAIR       | School  |  7040 | BROWN CITY COMMUNITY SCHOOLS                  |
+|    74 | ST CLAIR       | School  |  7800 | CAPAC COMMUNITY SCHOOLS                       |
+|    74 | ST CLAIR       | School  | 11140 | CROSWELL-LEXINGTON SCHOOL DISTRICT            |
+|    74 | ST CLAIR       | School  | 36600 | YALE PUBLIC SCHOOLS                           |
+|    75 | ST JOSEPH      | School  |  3510 | ATHENS AREA SCHOOLS                           |
+|    75 | ST JOSEPH      | School  |  6960 | BRONSON COMMUNITY SCHOOLS                     |
+|    75 | ST JOSEPH      | School  | 10410 | COLON COMMUNITY SCHOOLS                       |
+|    80 | VAN BUREN      | City    | 74980 | South Haven City                              |
+|    80 | VAN BUREN      | School  |  6270 | BLOOMINGDALE PUBLIC SCHOOLS                   |
+|    80 | VAN BUREN      | School  | 27060 | OTSEGO PUBLIC SCHOOLS                         |
+|    80 | VAN BUREN      | School  | 32300 | SOUTH HAVEN PUBLIC SCHOOLS                    |
+|    81 | WASHTENAW      | School  |  6990 | COLUMBIA SCHOOL DISTRICT                      |

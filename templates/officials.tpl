@@ -353,7 +353,7 @@
       (If we don't know the term length, we don't know when they were replaced.)&nbsp;
       Resignations can also cause problems.
       <p/>
-      You can delete a set with the trash-can icon at the left of each row.&nbsp;
+      You can delete a seat with the trash-can icon at the left of each row.&nbsp;
       But be <b>very careful</b> about deleting seats.&nbsp;
       In particular, don't delete a seat if you're simply replacing one person with another -- just edit their
       name, contact information, and so on.

@@ -61,33 +61,39 @@ $time0 = (int) (microtime(true) * 1000);
 foreach ($countyNums as $countyNum) {
 
    $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, " . calculateReviewed('cnty,cnty-com', 'c.id') . ","
+        .            calculatePassed('cnty,cnty-com', 'c.id') . ","
         .            calculateSeats("'cnty', 'cnty-com'", "c.id")
         . "     FROM s4counties AS c  WHERE id = $countyNum "
         . "UNION "
         . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateReviewed('city,city-cou', 'j.id') . ","
+        .            calculatePassed('city,city-cou', 'j.id') . ","
         .            calculateSeats("'city', 'city-cou'", "j.id")
         . "     FROM      s4jurisdictions AS j "
         . "     LEFT JOIN v4completed     AS c  ON (c.id = j.id  AND c.type='city') "
         . "    WHERE j.type='c'  AND  j.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'town' AS org, j.id, j.name, 1 AS link , "  . calculateReviewed('town,town-cou', 'id') . ","
+        .            calculatePassed('town,town-cou', 'id') . ","
         .            calculateSeats("'town', 'town-cou'", "j.id")
         . "     FROM      s4jurisdictions AS j "
         . "    WHERE j.type='t'  AND  j.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'vil' AS org, v.id, v.name, IF(c.id IS NULL, 0, 1) AS link,"  . calculateReviewed('vil,vil-cou', 'v.id') . ","
+        .            calculatePassed('vil,vil-cou', 'v.id') . ","
         .            calculateSeats("'vil-cou'", "v.id")
         . "     FROM      s4villages  AS v "
         . "     LEFT JOIN v4completed AS c  ON (c.id = v.id  AND c.type='village') "
         . "    WHERE v.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'schl-cou' AS org, s.id, s.name, IF(c.id IS NULL, 0, 1) AS link , "  . calculateReviewed('schl-cou', 's.id') . ","
+        .             calculatePassed('schl-cou', 's.id') . ","
         .             calculateSeats("'schl-cou'", "s.id")
         . "     FROM      s4schools   AS s "
         . "     LEFT JOIN v4completed AS c  ON (c.id = s.id  AND c.type='school') "
         . "    WHERE s.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'comcol-cou' AS org, m.id, m.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateReviewed('comcol-cou', 'm.id') . ","
+        .             calculatePassed('comcol-cou', 'm.id') . ","
         .             calculateSeats("'comcol-cou'", "m.id")
         . "     FROM      s4commcolleges        AS m "
         . "     LEFT JOIN v4commcolleges_county AS y  ON (m.id = y.id) "
@@ -96,6 +102,7 @@ foreach ($countyNums as $countyNum) {
         . "UNION "
         . "   SELECT type AS org, shortname AS id, name, 1 AS link, "
         . "      (SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page=CONCAT(type, ':', shortname)) AS reviewed, "
+        . "      (SELECT 1 AS reviewed FROM v4pagesPassed   WHERE page=CONCAT(type, ':', shortname)) AS passed, "
         . "      (SELECT COUNT(*) FROM v4seats WHERE org=type AND district=shortname) AS seats "
         . "    FROM  v4courts "
         . "    WHERE county_id = $countyNum "
@@ -111,11 +118,12 @@ foreach ($countyNums as $countyNum) {
       $district = $row['id'];
       $link     = intval($row['link']);
       $reviewed = intval($row['reviewed']);
+      $passed   = intval($row['passed']);
       $seats    = intval($row['seats']);
       switch ($org) {
          case 'cnty':
             $name = Str::replaceAll($name, " County", "");
-            $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $reviewed, $seats],
+            $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $reviewed, $seats, $passed],
                'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => [],
                'city_num' => 0, 'city_den' => 0,
                'town_num' => 0, 'town_den' => 0,
@@ -129,27 +137,27 @@ foreach ($countyNums as $countyNum) {
             break;
 
          case 'city':
-            $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'city', $seats, $reviewed);
             break;
 
          case 'town':
-            $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'town', $seats, $reviewed);
             break;
 
          case 'vil':
-            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'vil', $seats, $reviewed);
             break;
 
          case 'schl-cou':
-            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'schl', $seats, $reviewed);
             break;
 
          case 'comcol-cou':
-            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $reviewed, $seats];
+            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'col', $seats, $reviewed);
             break;
 
@@ -164,7 +172,7 @@ foreach ($countyNums as $countyNum) {
          case 'crt-pd':
          case 'crt-p':
          case 'crt-m':
-            $counties[$countyNum]['crt'] [] = [$org, $district, $name, $org, $reviewed, $seats];
+            $counties[$countyNum]['crt'] [] = [$org, $district, $name, $org, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'crt', $seats, $reviewed);
             break;
       }
@@ -192,6 +200,9 @@ function calculateSeats (string $orgs, string $districtField): string {
 
 function calculateReviewed(string $orgs, string $districtField): string {
    return "(SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page=CONCAT('$orgs:', $districtField)) AS reviewed ";
+}
+function calculatePassed(string $orgs, string $districtField): string {
+   return "(SELECT 1 AS reviewed FROM v4pagesPassed   WHERE page=CONCAT('$orgs:', $districtField)) AS passed ";
 }
 
 function simplifyName(string $text): string {

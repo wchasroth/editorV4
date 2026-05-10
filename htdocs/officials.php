@@ -164,7 +164,9 @@ for ($i=0;   $i<$count;   $i++) {
    }
 }
 
-$expandableOrgs = array_intersect(getUniqueOrgsFoundIn($rows),
+$expandableOrgs = getUniqueOrgsFoundIn($rows);
+if (! in_array ($org1, $expandableOrgs))  $expandableOrgs[] = $org1;
+$expandableOrgs = array_intersect($expandableOrgs,
    ['city', 'city-cou', 'cnty', 'cnty-com', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou', 'comcol-cou']);
 //$offices = [];
 //foreach ($expandableOrgs as $org) {

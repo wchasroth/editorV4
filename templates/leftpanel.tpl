@@ -27,6 +27,9 @@
          display: inline-block;
          width: 0.9em;
       }
+      .green {
+          color: darkgreen;
+      }
    </style>
    <script>
       function flipArrow(idBase) {
@@ -96,7 +99,8 @@
           {if $county.grd_num == $county.grd_den  &&  $county.grd_den > 0} <img src="green-check.png" width="12"/> {/if}
          <ul id="C{$county.cnty[1]}" style="display: none;">
             <li><span class="arrow">&nbsp;</span>
-                <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a>
+                <a {if $county.cnty[6] == 1} class="green" {/if}
+                   href="#" onClick="return loadOfficials({$county.cnty[1]}, 'cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</aclass>
                 ({$county.cnty[5]})
                 {if $county.cnty[4] == 1} <img src="green-check.png" width="12"/>{/if}
             </li>
@@ -109,7 +113,8 @@
                   {foreach from=$county.city item=city}
                      <li>
                         {if $city[3] == 1}
-                           <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'city,city-cou', '{$city[1]}', 'ws', 1);" class="child"     >{$city[2]}</a>
+                           <a {if $city[6] == 1} class="green" {/if}
+                              href="#" onClick="return loadOfficials({$county.cnty[1]}, 'city,city-cou', '{$city[1]}', 'ws', 1);" class="child"     >{$city[2]}</a>
                         {else}
                            <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'city,city-cou', '{$city[1]}', 'ws', 0);" class="incomplete">{$city[2]}</a>
                         {/if}
@@ -128,7 +133,8 @@
                     {foreach from=$county.town item=town}
                         <li>
                            {if $town[3] == 1}
-                               <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'town,town-cou', '{$town[1]}', 'ws', 1);" class="child"     >{$town[2]}</a>
+                               <a {if $town[6] == 1} class="green" {/if}
+                                  href="#" onClick="return loadOfficials({$county.cnty[1]}, 'town,town-cou', '{$town[1]}', 'ws', 1);" class="child"     >{$town[2]}</a>
                            {else}
                                <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'town,town-cou', '{$town[1]}', 'ws', 0);" class="incomplete">{$town[2]}</a>
                            {/if}
@@ -148,7 +154,8 @@
                      {foreach from=$county.vil item=vil}
                          <li>
                             {if $vil[3] == 1}
-                               <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'vil,vil-cou', '{$vil[1]}', 's', 1);" class="child"     >{$vil[2]}</a>
+                               <a {if $vil[6] == 1} class="green" {/if}
+                                  href="#" onClick="return loadOfficials({$county.cnty[1]}, 'vil,vil-cou', '{$vil[1]}', 's', 1);" class="child"     >{$vil[2]}</a>
                             {else}
                                <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'vil,vil-cou', '{$vil[1]}', 's', 0);" class="incomplete">{$vil[2]}</a>
                             {/if}
@@ -168,7 +175,8 @@
                   {foreach from=$county.schl item=schl}
                       <li>
                          {if $schl[3] == 1}
-                            <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'schl-cou', '{$schl[1]}', 's', 1);" class="child"     >{$schl[2]}</a>
+                            <a {if $schl[6] == 1} class="green" {/if}
+                               href="#" onClick="return loadOfficials({$county.cnty[1]}, 'schl-cou', '{$schl[1]}', 's', 1);" class="child"     >{$schl[2]}</a>
                          {else}
                             <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'schl-cou', '{$schl[1]}', 's', 0);" class="incomplete">{$schl[2]}</a>
                          {/if}
@@ -207,7 +215,8 @@
                <ul id="C{$county.cnty[1]}T" style="display: none";>
                   {foreach from=$county.crt item=crt}
                      <li>
-                        <a href="#" onClick="return loadOfficials({$county.cnty[1]}, '{$crt[3]}', '{$crt[1]}', 's');" class="child">{$crt[2]}</a>
+                        <a {if $crt[6] == 1} class="green" {/if}
+                           href="#" onClick="return loadOfficials({$county.cnty[1]}, '{$crt[3]}', '{$crt[1]}', 's');" class="child">{$crt[2]}</a>
                          ({$crt[5]})
                          {if $crt[4] == 1}  <img src="green-check.png" width="12"/> {/if}
                      </li>

@@ -245,6 +245,7 @@
       <tr>
          <td><a href="#" onClick="return deleteThisSeat({$row['id']}, `{$row['shortname']}: {$row['name']}`);"><img src="trash.png" width="14"/></a></td>
          <td style="white-space: nowrap;"     class="smaller">{$row['shortname']}</td>
+         {$hidden = ($row['appointed'] == '1' ? "hidden" : "") }
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}
              <!-- <td align='right' class="smaller"> -->
@@ -253,7 +254,6 @@
          {if $showSeat}
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
-         {$hidden = ($row['appointed'] == '1' ? "hidden" : "") }
          <td><input {$hidden} name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td><input {$hidden} name="s:{$row['id']}:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
          <td><input           name="i:{$row['inc_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>

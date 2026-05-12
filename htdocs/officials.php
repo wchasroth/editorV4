@@ -239,14 +239,15 @@ function computeExistingSingleSeatOffices(array $rows): array {
    return array_keys($results);
 }
 
+// 2026-05-12: seems to be a data issue with city-cou wards/districts, force this to TRUE until resolved.
 function showSubDistricts(array $rows): bool {
    $result = true;
-   foreach ($rows as $row) {
-      if ($row['org'] === 'city-cou') {
-         $result = false;
-         if (intval($row['subdist']) > 0)  return true;
-      }
-   }
+//   foreach ($rows as $row) {
+//      if ($row['org'] === 'city-cou') {
+//         $result = false;
+//         if (intval($row['subdist']) > 0)  return true;
+//      }
+//   }
    return $result;
 }
 

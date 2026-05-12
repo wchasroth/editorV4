@@ -247,9 +247,8 @@
          <td style="white-space: nowrap;"     class="smaller">{$row['shortname']}</td>
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}
-             <td align='right' class="smaller">
-                {if $row['subdist'] > 0} {$row['subdist']} {/if}
-             </td>
+             <!-- <td align='right' class="smaller"> -->
+             <td><input {$hidden} name="s:{$row['id']}:subdist"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['subdist']}"/></td>
          {/if}
          {if $showSeat}
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}

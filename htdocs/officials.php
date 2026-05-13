@@ -41,7 +41,7 @@ $canEdit = ($row['admin'] == '1') || foundCountyIn($county, $row['editCounties']
 //---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");
 $office     = HttpPost::value('office');
-$subdist    = HttpPost::value('subdist');
+$subdist    = strval(intval(HttpPost::value('subdist')));
 $org        = HttpPost::value('org');
 $deleteSeat = HttpPost::value('deleteSeat');
 
@@ -184,6 +184,7 @@ for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['web'] = stripHttps ($rows[$i]['web']);
    $rows[$i]['url'] = addProtocol($rows[$i]['web']);
    if (Str::contains($rows[$i]['office'], '-appt') ) $rows[$i]['appointed'] = 1;
+   if ($rows[$i]['subdist'] === '0')  $rows[$i]['subdist'] = '';
 }
 
 $regionColumnName = "Reg";

@@ -249,7 +249,8 @@
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}
              <!-- <td align='right' class="smaller"> -->
-             <td><input {$hidden} name="s:{$row['id']}:subdist"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['subdist']}"/></td>
+             <td><input {$hidden} name="s:{$row['id']}:subdist"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"
+                                 value="{$row['subdist']}"/></td>
          {/if}
          {if $showSeat}
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}

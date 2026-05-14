@@ -82,7 +82,8 @@ if ($canEdit) {
    }
    
    //---Handle new seats on commission/council (form submission)
-   else if (! Str::isReallyEmpty($subdist)) {
+// else if (! Str::isReallyEmpty($subdist)) {
+   else if (intval($subdist) > 0) {
       $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdist";
       $result = runQueryReportErrors($pdo, $logger, $sql);
       $highseat = intval($result->getSingleValue('highseat')) + 1;

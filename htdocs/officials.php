@@ -44,6 +44,7 @@ $office     = HttpPost::value('office');
 $subdist    = strval(intval(HttpPost::value('subdist')));
 $org        = HttpPost::value('org');
 $deleteSeat = HttpPost::value('deleteSeat');
+$logger->log("deleteSeat: " . $deleteSeat);
 
 //---Handle data changes (form submission).
 if ($canEdit) {

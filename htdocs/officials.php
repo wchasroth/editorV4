@@ -85,11 +85,11 @@ if ($canEdit) {
    //---Handle new seats on commission/council (form submission)
    else if (! Str::isReallyEmpty($subdistText)) {
 // else if (intval($subdist) > 0) {
-      $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdist";
+      $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdistNum";
       $result = runQueryReportErrors($pdo, $logger, $sql);
       $highseat = intval($result->getSingleValue('highseat')) + 1;
       $newOffice = (Str::contains($org, "town-cou", "vil-cou") ? "council" : "");
-      $sql = "INSERT INTO v4seats (org, office, district, subdist, seatnum) VALUES ('$org', '$newOffice', '$qsDistrict', $subdist, $highseat)";
+      $sql = "INSERT INTO v4seats (org, office, district, subdist, seatnum) VALUES ('$org', '$newOffice', '$qsDistrict', $subdistNum, $highseat)";
       runQueryReportErrors($pdo, $logger, $sql);
    }
    

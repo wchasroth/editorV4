@@ -96,13 +96,16 @@ if ($canEdit) {
    else if (! Str::isReallyEmpty($deleteSeat)) {
       //---Handle renumbering seats (if necessary).  (Extract into function?)
       $sql = "SELECT org, office, district, subdist, seatnum FROM v4seats WHERE id=$deleteSeat";
-      $result = runQueryReportErrors($pdo, $logger, $sql);
+      $result = runQueryReportErrors($pdo, $logger, $sql, true);
+      $logger->log("Seats matching $deleteSeat: " . $result->getRowCount());
       if ($result->getRowCount() > 0) {
          $row     = $result->getRows()[0];
          $seatnum = $row['seatnum'];
          $sqlFields = new SqlFields(['org' => $row['org'], 'office' => $row['office'], 'district' => $row['district'], 'subdist' => $row['subdist']]);
          $sql = "SELECT id FROM v4seats WHERE seatnum > $seatnum AND " . $sqlFields->getSelectFragment();
+         $logger->log($sql);
          $result = $pdo->run($sql);
+         if ($result->failed())  $logger->log("Error: " . $result->getError());
          foreach ($result->getRows() as $row) {
             $sql = "UPDATE v4seats SET seatnum=$seatnum WHERE id=" . $row['id'];
             $pdo->run($sql);

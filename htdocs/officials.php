@@ -40,10 +40,11 @@ $canEdit = ($row['admin'] == '1') || foundCountyIn($county, $row['editCounties']
 
 //---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");
-$office     = HttpPost::value('office');
-$subdist    = strval(intval(HttpPost::value('subdist')));
-$org        = HttpPost::value('org');
-$deleteSeat = HttpPost::value('deleteSeat');
+$office      = HttpPost::value('office');
+$subdistText = HttpPost::value('subdist');
+$subdistNum  = intval(HttpPost::value('subdist'));
+$org         = HttpPost::value('org');
+$deleteSeat  = HttpPost::value('deleteSeat');
 
 //---Handle data changes (form submission).
 if ($canEdit) {
@@ -82,8 +83,8 @@ if ($canEdit) {
    }
    
    //---Handle new seats on commission/council (form submission)
-// else if (! Str::isReallyEmpty($subdist)) {
-   else if (intval($subdist) > 0) {
+   else if (! Str::isReallyEmpty($subdistText)) {
+// else if (intval($subdist) > 0) {
       $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdist";
       $result = runQueryReportErrors($pdo, $logger, $sql);
       $highseat = intval($result->getSingleValue('highseat')) + 1;

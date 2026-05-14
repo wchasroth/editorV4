@@ -109,12 +109,12 @@ if ($canEdit) {
       }
    
       runQueryReportErrors($pdo, $logger, "INSERT INTO v4deletedIncumbents SELECT * FROM v4incumbents WHERE seat_id = $deleteSeat");
-      runQueryReportErrors($pdo, $logger, "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat");
+      runQueryReportErrors($pdo, $logger, "DELETE FROM v4incumbents WHERE seat_id = $deleteSeat", true);
       $sql = "INSERT INTO v4deletedSeats (id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, whodid) "
            . "                     SELECT id, org, office, district, subdist, seatnum, seatmax, termlen, termcycle, '$email' "
            . "   FROM v4seats WHERE id = $deleteSeat";
       runQueryReportErrors($pdo, $logger, $sql);
-      runQueryReportErrors($pdo, $logger, "DELETE FROM v4seats WHERE id = $deleteSeat");
+      runQueryReportErrors($pdo, $logger, "DELETE FROM v4seats WHERE id = $deleteSeat", true);
       // renumber seats?
    }
 }

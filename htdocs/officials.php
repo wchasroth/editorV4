@@ -50,6 +50,7 @@ $logger->log("canEdit:    " . $canEdit);
 //---Handle data changes (form submission).
 if ($canEdit) {
    if (! Str::isReallyEmpty($fieldsChanged)) {
+      $logger->log("FieldsChanged: " . $fieldsChanged);
       foreach (Str::split($fieldsChanged, ",") as $field) {
          if ($field == "reviewed") {
             $reviewed = intval(HttpPost::value('reviewed'));
@@ -75,6 +76,7 @@ if ($canEdit) {
    
    //---Handle new offices (form submission)
    else if (! Str::isReallyEmpty($office)) {
+      $logger->log("Office: " . $office);
       $sql = "SELECT seats FROM s4titles WHERE org='$org' AND office='$office'";
       $result = $pdo->run($sql);
       $logger->log("seatmax: $sql   " . $result->getError());
@@ -85,6 +87,7 @@ if ($canEdit) {
    
    //---Handle new seats on commission/council (form submission)
    else if (! Str::isReallyEmpty($subdist)) {
+      $logger->log("Subdist: " . $subdist);
       $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdist";
       $result = runQueryReportErrors($pdo, $logger, $sql);
       $highseat = intval($result->getSingleValue('highseat')) + 1;

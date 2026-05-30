@@ -161,7 +161,7 @@ function rollUp(array &$county, string $org, int $seats): void {
 }
 
 function calculateSeats (string $orgs, string $districtField): string {
-   return "(SELECT COUNT(*) FROM v4seats WHERE org IN ($orgs) AND district=$districtField) AS seats ";
+   return "(SELECT COUNT(*) FROM v4seats WHERE org IN ($orgs) AND district=$districtField AND termlen>0 AND termcycle>0 AND ((termcycle + 6*termlen) - 2026) % termlen = 0) AS seats ";
 }
 
 function simplifyName(string $text): string {
@@ -186,5 +186,5 @@ function getUnion (string $counties1, string $counties2): string {
 }
 
 function calculateTopSeats (string $orgs): string {
-   return " (SELECT COUNT(*) FROM v4seats WHERE org IN ($orgs)) AS seats ";
+   return " (SELECT COUNT(*) FROM v4seats WHERE org IN ($orgs) AND termlen>0 AND termcycle>0 AND ((termcycle + 6*termlen) - 2026) % termlen = 0) AS seats ";
 }

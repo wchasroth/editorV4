@@ -1,0 +1,147 @@
+.table-editable {
+  position: relative;
+}
+
+.table-remove {
+  color: #f00;
+  cursor: pointer;
+}
+
+.table-edit {
+    color: #00f;
+    cursor: pointer;
+}
+
+.table-retry {
+    color: #0f0;
+    cursor: pointer;
+}
+
+.table-up, .table-down {
+  color: #0b0;
+  cursor: pointer;
+}
+
+.table-add {
+  color: #00f;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.adjustableBorders {
+   border-collapse: collapse;
+}
+
+.adjustableBorders td,th {
+   border: 1px solid #dee2e6;
+}
+
+.noRightBorder {
+   border-right: 0 !important;
+}
+
+.noLeftBorder {
+   border-left: 0 !important;
+}
+
+.photoDivCss {
+   position: fixed; 
+   width:  600px; 
+   height: 300px; 
+   top:    200px;  
+   left:   450px; 
+   z-index: 10;
+   border-style: solid;
+   border-width: 1px;
+   border-radius: 5px;
+   background-color: white;
+}
+
+.photoFrameCss {
+   width:  590px;
+   height: 390px;
+}
+
+.descDivCss {
+   position: fixed; 
+   width:  650px; 
+   height: 500px; 
+   top:     50px;  
+   left:   300px; 
+   z-index: 10;
+   border-style: solid;
+   border-width: 1px;
+   border-radius: 5px;
+   background-color: white;
+}
+
+.descFrameCss {
+   width:  640px;
+   height: 490px;
+   padding-top:  10px;
+   padding-left: 10px;
+}
+
+.radioAll, .radioYT, radioYB, .radioQ, .radioN {
+   padding: 0 1px 0 1px;
+   border-style: none !important;
+   margin: auto;
+   font-weight: bold;
+}
+
+.radioYT {
+   accent-color: green;
+}
+
+.radioYB {
+/* background-color: green; */
+   background-color: #cce8b5;
+/* color: white; */
+   padding-left: 2px;
+}
+
+.radioQT {
+   accent-color: #FFBF00;
+}
+
+.radioQB {
+/* background-color:        #FFBF00; */
+   background-color:        #FFFBb9;
+/* color: white; */
+}
+
+.radioNT {
+   accent-color: red;
+}
+
+.radioNB {
+/* background-color: red; */
+   background-color: #FFB5AF;
+/* color: white; */
+   padding-left: 1px;
+}
+
+.radioTable {
+   display: table;
+}
+
+.radioRow {
+   display: table-row;
+}
+
+.radioCell {
+   display: table-cell;
+   width:   1.3em;
+   margin:  auto;
+}
+
+.numberInput {
+   /* width: 2em; */
+   text-align: right;
+}
+
+input[type="radio"] {
+  -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+  transform: scale(1.5);
+}

@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto">
+   <link rel="stylesheet" href="editable_table.css">
    <style>
       td, input { font-size: 90%;  margin: 0; padding: 0;}
       input { border: 0;  background-color: inherit; }
@@ -97,6 +98,8 @@
           z-index: 1000;
           box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       }
+
+
    </style>
    <script>
       function shrinkExpandLeftPanel() {
@@ -193,6 +196,33 @@
          changed(name);
       }
 
+      function photoOpen(rownum, recId) {
+/*
+         var candidateName = getCandidateName(rownum);
+         if (candidateName == '') {
+            alert('Please enter the candidate name, and THEN add the photo.'); 
+            return;
+         }
+*/
+
+         var photoDiv = document.getElementById('photoDiv');
+         photoDiv.style.display = 'block';
+            
+/*
+         candidateName = encodeURIComponent(candidateName);
+
+         var imageName = document.getElementById("imageName." + rownum);
+         var imageNameValue = imageName.value;
+         if (imageNameValue == '') imageNameValue = 'unknown_person.jpg';
+         imageNameValue = encodeURIComponent(imageNameValue);
+
+         var photoFrame = document.getElementById('photoFrame');
+         photoFrame.src = `|photoFrameBase|/photos.php`
+            + `?rownum=|rownum|&imageShown=|imageNameValue|&recId=|recId|&candidateName=|candidateName|`;
+*/
+         return false;
+      }
+
    </script>
 </head>
 
@@ -225,6 +255,7 @@
       {if $showSeat     } <td class="th2">S#</td>      {/if}
       <td class="th2">TL</td>
       <td class="th2a">&nbsp;Name</td>
+      <td class="th2a">&nbsp;Photo</td>
       <td class="th2a">Pty</td>
       <td class="th2a"></td>
       <td class="th2a" colspan='2'>Web</td>
@@ -232,7 +263,7 @@
       <td class="th2a" colspan='2'>Phone</td>
    </tr>
    {foreach from=$rows item=row}
-      <tr>
+      <tr valign="top">
          <td style="white-space: nowrap;"     class="smaller">&nbsp;{$row['shortname']}</td>
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}
@@ -245,6 +276,13 @@
          {/if}
          <td><input name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td><input name="i:{$row['can_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
+         <td>
+            {if $row['headshot'] != ''}
+               <a href="#" onClick="return photoOpen(1,2);"><img src="PHOTOS/{$row['headshot']}" width="40"/></a>
+            {else}
+               <a href="#" onClick="return photoOpen(1,2);"><img src="IMG/noPerson2.png"         width="40"/></a>
+            {/if}
+         </td>
 
          <td style="position: relative;">
             {$id = $row['can_id']}
@@ -302,6 +340,18 @@ fieldsChanged={$fieldsChanged}
 {$error}
 {$rowText}
 </pre>
+
+<!--- divs for pop-open boxes: description, photos -->
+<div id="descDiv" class="descDivCss" style="display: none;">
+   <iframe id='descFrame' class="descFrameCss" src="/summer"></iframe>
+   <input type='hidden' id='descDivRownum' />
+</div>
+
+<div id="photoDiv" class="photoDivCss" style="display: none;">
+   <center>
+      <iframe id="photoFrame" class="photoFrameCss" src="https://thedance.net"></iframe>
+   </center>
+</div>
 
 </body>
 </html>

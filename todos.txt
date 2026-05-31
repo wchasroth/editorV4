@@ -24,3 +24,9 @@ Separate seats by partisan vs non-partisan
         (are there any other such cases?)
 
 Look into "expandable" fields: overlaying Z-indexes, good enough?
+
+-------------------------------------------------------------
+CANDIDATE EDITOR
+
+Termlen should probably NOT be editable!
+

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto">
-   <link rel="stylesheet" href="editable_table.css">
+   <link rel="stylesheet" href="photo.css">
    <style>
       td, input { font-size: 90%;  margin: 0; padding: 0;}
       input { border: 0;  background-color: inherit; }
@@ -196,30 +196,15 @@
          changed(name);
       }
 
-      function photoOpen(rownum, recId) {
-/*
-         var candidateName = getCandidateName(rownum);
-         if (candidateName == '') {
-            alert('Please enter the candidate name, and THEN add the photo.'); 
-            return;
-         }
-*/
+      function photoOpen(canId, name, headshot) {
+         name = name.replaceAll("'", "\\\'");   /* E.g. Diane O'Connell */
+         name = encodeURIComponent(name);
 
          var photoDiv = document.getElementById('photoDiv');
          photoDiv.style.display = 'block';
             
-/*
-         candidateName = encodeURIComponent(candidateName);
-
-         var imageName = document.getElementById("imageName." + rownum);
-         var imageNameValue = imageName.value;
-         if (imageNameValue == '') imageNameValue = 'unknown_person.jpg';
-         imageNameValue = encodeURIComponent(imageNameValue);
-
          var photoFrame = document.getElementById('photoFrame');
-         photoFrame.src = `|photoFrameBase|/photos.php`
-            + `?rownum=|rownum|&imageShown=|imageNameValue|&recId=|recId|&candidateName=|candidateName|`;
-*/
+         photoFrame.src = "photo.php?canId=" + canId + "&name=" + name + "&headshot=" + headshot;
          return false;
       }
 
@@ -278,9 +263,9 @@
          <td><input name="i:{$row['can_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
          <td>
             {if $row['headshot'] != ''}
-               <a href="#" onClick="return photoOpen(1,2);"><img src="PHOTOS/{$row['headshot']}" width="40"/></a>
+               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['name']}', '{$row['headshot']}');"><img src="PHOTOS/{$row['headshot']}" width="40"/></a>
             {else}
-               <a href="#" onClick="return photoOpen(1,2);"><img src="IMG/noPerson2.png"         width="40"/></a>
+               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['name']}', '');"                  ><img src="IMG/noPerson2.png"         width="40"/></a>
             {/if}
          </td>
 
@@ -349,7 +334,7 @@ fieldsChanged={$fieldsChanged}
 
 <div id="photoDiv" class="photoDivCss" style="display: none;">
    <center>
-      <iframe id="photoFrame" class="photoFrameCss" src="https://thedance.net"></iframe>
+      <iframe id="photoFrame" class="photoFrameCss"></iframe>
    </center>
 </div>
 

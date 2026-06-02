@@ -19,16 +19,29 @@ require_once('../vendor/autoload.php');
 
 date_default_timezone_set("America/New_York");
 
-$env     = new EnvFile("_env");
-$email   = EnvHelper::getEmail($env);
-$pdo     = PdoHelper::makePdo($env);
-$logger  = new DumbFileLogger($env->get('logFile'));
-$parent  = $env->get('parent');
+$env       = new EnvFile("_env");
+$email     = EnvHelper::getEmail($env);
+$pdo       = PdoHelper::makePdo($env);
+$logger    = new DumbFileLogger($env->get('logFile'));
+$parent    = $env->get('parent');
+$photosDir = $env->get('photosDir');
 
 $canId    = $_GET['canId']    ?? '';
 $name     = $_GET['name']     ?? '';
 $headshot = $_GET['headshot'] ?? '';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
+   $uploadedFile = $_FILES['uploadphoto'];
+   $logger->log("Uploaded tmp file: " . $uploadedFile['tmp_name']);
+   if ($uploadedFile['error'] === UPLOAD_ERR_OK) {
+      $filename = $uploadedFile['name'];
+      $badChars = str_split("` ~!@#$%^&*()_+=-[]{}\\\"|;:'?,<>");
+      $filename = str_replace($badChars, '_', $filename);
+      $got = move_uploaded_file($uploadedFile["tmp_name"], "$photosDir/$filename");
+      $logger->log("Move status: " . ($got ? 'T' : 'F') . "  " . $uploadedFile['tmp_name'] . " to $photosDir/$filename");
+      if ($got) $headshot = $filename;
+   }
+}
 
 $smarty = new SmartyPage();
 $smarty->assign('canId',    $canId);

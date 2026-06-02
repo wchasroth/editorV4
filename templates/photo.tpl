@@ -15,6 +15,14 @@
        function closeMe(canId, headshot) {
            parent.postMessage("closePhotoDiv:" + canId + ":" + headshot, '{$parent}');
        }
+       function confirmFileSelected() {
+           var photo = document.getElementById('uploadphoto');
+           if (photo.files.length != 1) {
+               alert("Please choose a file first.");
+               return false;
+           }
+           return true;
+       }
    </script>
 </head>
 

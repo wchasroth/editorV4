@@ -23,6 +23,7 @@ $env     = new EnvFile("_env");
 $email   = EnvHelper::getEmail($env);
 $pdo     = PdoHelper::makePdo($env);
 $logger  = new DumbFileLogger($env->get('logFile'));
+$parent  = $env->get('parent');
 
 $canId    = $_GET['canId']    ?? '';
 $name     = $_GET['name']     ?? '';
@@ -31,6 +32,7 @@ $headshot = $_GET['headshot'] ?? '';
 
 $smarty = new SmartyPage();
 $smarty->assign('canId',    $canId);
-$smarty->assign('name',     $name);
+$smarty->assign('name',     rawurlencode($name));
 $smarty->assign('headshot', $headshot);
+$smarty->assign('parent',   $parent);
 $smarty->display('photo.tpl');

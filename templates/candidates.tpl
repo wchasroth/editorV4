@@ -197,6 +197,10 @@
       }
 
       function photoOpen(canId, name, headshot) {
+         if (name == '') {
+             confirm("Please enter a name first.");
+             return false;
+         }
          name = name.replaceAll("'", "\\\'");   /* E.g. Diane O'Connell */
          name = encodeURIComponent(name);
 
@@ -207,6 +211,27 @@
          photoFrame.src = "photo.php?canId=" + canId + "&name=" + name + "&headshot=" + headshot;
          return false;
       }
+
+      /* Photo upload div close button */
+      window.addEventListener("message",
+          function (e) {
+              if (e.data.startsWith("closePhotoDiv:")) {
+                  var photoDiv = document.getElementById('photoDiv');
+                  photoDiv.style.display = 'none';
+
+                  /*
+                  var parts = e.data.split(":");
+                  var img = document.getElementById("imageTag." + parts[1]);
+                  img.src = "|photoUrlBase|/" + parts[2];
+
+                  var imageName = document.getElementById("imageName." + parts[1]);
+                  imageName.value = parts[2];
+                  setChanged();
+                  */
+              }
+          }
+      );
+
 
    </script>
 </head>
@@ -327,10 +352,12 @@ fieldsChanged={$fieldsChanged}
 </pre>
 
 <!--- divs for pop-open boxes: description, photos -->
+<!--
 <div id="descDiv" class="descDivCss" style="display: none;">
    <iframe id='descFrame' class="descFrameCss" src="/summer"></iframe>
    <input type='hidden' id='descDivRownum' />
 </div>
+-->
 
 <div id="photoDiv" class="photoDivCss" style="display: none;">
    <center>

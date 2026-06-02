@@ -13,8 +13,11 @@
 
    <script>
        function closeMe(canId, headshot) {
-           parent.postMessage("closePhotoDiv:" + canId + ":" + headshot, '{$parent}');
+           {if $photoChanged == 1} parent.postMessage("closePhotoDiv:" + canId + ":" + headshot, '{$parent}');
+           {else}                  parent.postMessage("close",                                   '{$parent}');
+           {/if}
        }
+
        function confirmFileSelected() {
            var photo = document.getElementById('uploadphoto');
            if (photo.files.length != 1) {
@@ -27,7 +30,7 @@
 </head>
 
 <body>
-<form action='photo.php?canId={$canId}&name={$name}&headshot={$headshot}'
+<form action='photo.php?canId={$canId}&name={$encodedName}&headshot={$headshot}'
       method='POST'  enctype='multipart/form-data'>
 
 <table>
@@ -53,7 +56,7 @@
 
          <p/>
          When you are done, click on
-         <button onClick="closeMe();">Close window</button>
+         <button onClick="closeMe({$canId}, '{$headshot}');">Close window</button>
 
          <p/>
          (Remember to click on <b>Submit</b> at the very top of the page, to save
@@ -62,12 +65,6 @@
    </tr>
 </table>
 </form>
-
-<pre>
-canId={$canId}
-name ={$name}
-head ={$headshot}
-</pre>
 </body>
 </html>
 {/nocache}

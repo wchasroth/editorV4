@@ -50,16 +50,17 @@ $deleteSeat  = HttpPost::value('deleteSeat');
 if ($canEdit) {
    if (! Str::isReallyEmpty($fieldsChanged)) {
       foreach (Str::split($fieldsChanged, ",") as $field) {
-            $value = HttpPost::value($field);
-            $parts = Str::split($field, ':');
-            $sql = "UPDATE " . ($parts[0] == 'i' ? "v4candidates" : "v4seats") . " SET ";
-            if (Str::startsWith($parts[2], "term")) $value = intval($value);
-            if      ($parts[2] == "web")     $value = addProtocol(stripHttps($value));
-            else if ($parts[2] == "phone")   $value = FieldFormatFixer::fixPhone($value);
-            $sqlFields = new SqlFields([$parts[2] => $value]);
-            $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
-            $logger->log("Save Changes: " . $query);
-            $result = $pdo->run($query);
+         $value = HttpPost::value($field);
+         $logger->log("Candidate field changed: $field: '$value'");
+         $parts = Str::split($field, ':');
+         $sql = "UPDATE " . ($parts[0] == 'i' ? "v4candidates" : "v4seats") . " SET ";
+         if (Str::startsWith($parts[2], "term")) $value = intval($value);
+         if      ($parts[2] == "web")     $value = addProtocol(stripHttps($value));
+         else if ($parts[2] == "phone")   $value = FieldFormatFixer::fixPhone($value);
+         $sqlFields = new SqlFields([$parts[2] => $value]);
+         $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
+         $logger->log("Save Changes: " . $query);
+         $result = $pdo->run($query);
       }
    
       $showSaved = 1;

@@ -215,19 +215,18 @@
       /* Photo upload div close button */
       window.addEventListener("message",
           function (e) {
+              var photoDiv = document.getElementById('photoDiv');
+              photoDiv.style.display = 'none';
+
               if (e.data.startsWith("closePhotoDiv:")) {
-                  var photoDiv = document.getElementById('photoDiv');
-                  photoDiv.style.display = 'none';
+                  var parts = e.data.split(":"); /* 1 is canId;  2 is filename */
+                  var img = document.getElementById("photo-" + parts[1]);
+                  img.src = "PHOTOS/" + parts[2];
 
-                  /*
-                  var parts = e.data.split(":");
-                  var img = document.getElementById("imageTag." + parts[1]);
-                  img.src = "|photoUrlBase|/" + parts[2];
-
-                  var imageName = document.getElementById("imageName." + parts[1]);
-                  imageName.value = parts[2];
-                  setChanged();
-                  */
+                  var fieldChanged = "i:" + parts[1] + ":headshot";
+                  var uploadedPhotoInput = document.getElementsByName(fieldChanged)[0];
+                  uploadedPhotoInput.value = parts[2];
+                  changed(fieldChanged);
               }
           }
       );
@@ -288,10 +287,13 @@
          <td><input name="i:{$row['can_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
          <td>
             {if $row['headshot'] != ''}
-               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['name']}', '{$row['headshot']}');"><img src="PHOTOS/{$row['headshot']}" width="40"/></a>
+               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['name']}', '{$row['headshot']}');"
+                  ><img id='photo-{$row['can_id']}' src="PHOTOS/{$row['headshot']}" width="40"/></a>
             {else}
-               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['name']}', '');"                  ><img src="IMG/noPerson2.png"         width="40"/></a>
+               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['name']}', '');"
+                  ><img id='photo-{$row['can_id']}' src="IMG/noPerson2.png"         width="40"/></a>
             {/if}
+            <input type="hidden" name="i:{$row['can_id']}:headshot" value="{$row['headshot']}"/>
          </td>
 
          <td style="position: relative;">

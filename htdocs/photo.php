@@ -29,6 +29,7 @@ $photosDir = $env->get('photosDir');
 $canId    = $_GET['canId']    ?? '';
 $name     = $_GET['name']     ?? '';
 $headshot = $_GET['headshot'] ?? '';
+$photoChanged = 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
    $uploadedFile = $_FILES['uploadphoto'];
@@ -37,15 +38,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
       $filename = $uploadedFile['name'];
       $badChars = str_split("` ~!@#$%^&*()_+=-[]{}\\\"|;:'?,<>");
       $filename = str_replace($badChars, '_', $filename);
-      $got = move_uploaded_file($uploadedFile["tmp_name"], "$photosDir/$filename");
-      $logger->log("Move status: " . ($got ? 'T' : 'F') . "  " . $uploadedFile['tmp_name'] . " to $photosDir/$filename");
-      if ($got) $headshot = $filename;
+      $target   = $canId . "-" . $filename;
+      $got = move_uploaded_file($uploadedFile["tmp_name"], "$photosDir/$target");
+      $logger->log("Move status: " . ($got ? 'T' : 'F') . "  " . $uploadedFile['tmp_name'] . " to $photosDir/$target");
+      if ($got) {
+         $headshot = $target;
+         $photoChanged = 1;
+      }
    }
 }
 
 $smarty = new SmartyPage();
 $smarty->assign('canId',    $canId);
-$smarty->assign('name',     rawurlencode($name));
+$smarty->assign('name',     $name);
+$smarty->assign('encodedName', rawurlencode($name));
 $smarty->assign('headshot', $headshot);
 $smarty->assign('parent',   $parent);
+$smarty->assign('photoChanged',   $photoChanged);
 $smarty->display('photo.tpl');

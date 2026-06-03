@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto">
+   <style>
+      * { font-family: 'Roboto'; }
+      .bigger { font-size: 120%; }
+   </style>
+
+   <!-- include libraries(jQuery, bootstrap) -->
+   <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+   <!-- include summernote css/js -->
+   <link  href="SUMMER/summernote.min.css" rel="stylesheet">
+   <script src="SUMMER/summernote.min.js"></script>
+
+   <script>
+      const pasteWarning 
+         = "Pasting-in text from an external source usually adds "
+         + "extra (hidden) formatting. This can mess up the display.  In particular, "
+         + "it may use a non-standard font.\n\n"
+         + "Click OK -- then PLEASE click on the 'Clean' button to see the result.\n\n"
+         + "(If you really hate it, delete it all and paste again.)";
+
+      var showedPasteWarning = false;
+
+      function closeMe() {
+         $("#summernote").summernote('code', "");
+         var descDiv = parent.document.getElementById('descDiv');
+         descDiv.style.display = 'none';
+      }
+
+      function setText(text) {
+         $("#summernote").summernote('code', text);
+         showedPasteWarning = false;
+      }
+
+      function saveText() {
+         var rownum = document.getElementById('rownum');
+         var num = rownum.value;
+         var shortDesc = parent.document.getElementById(`shortDesc.${num}`);
+         var longDesc  = parent.document.getElementById(`longDesc.${num}`);
+
+         var text = $("#summernote").summernote('code');
+         shortDesc.innerHTML = trimAndRemoveHtml(text) + "...";
+         longDesc.innerHTML  = text;
+
+         if (text.length > 13000) {
+            alert("The candidate's description appears to be longer than 14,000 "
+                + "characters.  Sometimes copy-pasting can add excessive "
+                + "HTML formatting. Click on 'clean cut-and-paste' "
+                + "and see if the result is reasonable.");
+            return;
+         }
+         parent.setChanged();
+         closeMe();
+      }
+
+      function simplifyFormatting() {
+         var text = $("#summernote").summernote('code');
+         var clean = makeClean(text);
+         simplifyFormattingIn(clean);
+         $("#summernote").summernote('code', clean.output);
+      }
+
+      function simplifyFormattingIn(clean) {
+
+         while (hasMoreToProcess(clean)) {
+
+            if (currentChar(clean) != '<') {
+               add(clean, currentChar(clean));
+               continue;
+            }
+
+            var result = beginsWithTag(clean, "p", "br", "b", "i", "blockquote", "strong", "ul", "ol", "li");
+            if (result != "") { 
+               if (! result.endsWith(" ")) add(clean, result);
+               else {
+                  skipToTagClose(clean);
+                  clean.output += result + ">";
+               }
+               continue;
+            }
+
+            result = beginsWithTag(clean, "div");
+            if (result != "") {
+               skipToTagClose(clean);
+               clean.output += " ";   /* cut-paste of divs is very weird, want whitespace between them! */
+               continue;
+            }
+
+            result = beginsWithTag(clean, "a");
+            if (result != "") {
+               copyToTagClose(clean);
+               continue;
+            }
+
+            skipToTagClose(clean);
+         }
+      }
+
+      function beginsWithTag(clean, ...tags) {
+         for (let tag of tags) {
+            let simpleForms = [`<${tag}>`, `<${tag}/>`, `</${tag}>` ];
+            for (let simpleForm of simpleForms) {
+               if (beginsWith(clean, simpleForm)) return simpleForm;
+            }
+
+            var qualified = `<${tag} `;
+            if (beginsWith(clean, qualified))     return qualified;
+         }
+         return "";
+      }
+
+      function hasMoreToProcess(clean) {
+         return clean.pos < clean.length;
+      }
+
+      function skipToTagClose(clean) {
+         var tagClosePos = clean.input.indexOf(">", clean.pos);
+         clean.pos = (tagClosePos > 0 ? tagClosePos + 1 : clean.length);
+      }
+
+      function copyToTagClose(clean) {
+         var tagClosePos = clean.input.indexOf(">", clean.pos);
+         if (tagClosePos < 0) {
+            clean.pos = clean.length;
+            return;
+         }
+         clean.output += clean.input.substring(clean.pos, tagClosePos+1);
+         clean.pos = tagClosePos + 1;
+      }
+
+      function currentChar(clean) {
+         return clean.input.charAt(clean.pos);
+      }
+
+      function add(clean, text) {
+         clean.output += text;
+         clean.pos    += text.length;
+      }
+
+      function beginsWith(clean, sub) {
+         var result = clean.input.substring(clean.pos, clean.pos + sub.length) == sub;
+/*       confirm ("'" + clean.input.substring(clean.pos, clean.pos + sub.length) + "' : '" + sub + "' : " + result); */
+         return result;
+      }
+
+   function makeClean(text) {
+      return { 
+         pos: 0, input: text, output: "", length: text.length
+      };
+   }
+
+   </script>
+
+</head>
+
+<body>
+<form>
+   <textarea id="summernote" name="editordata"></textarea>
+
+   Candidate statement for <b><span id='candidateName'></span></b>
+   <br/>&nbsp;<br/>
+
+   <input type="button" onClick="saveText();" value="Save Changes" />
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+   <input type="button" onClick="simplifyFormatting();" value="Clean cut-and-paste" />&nbsp;
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+   <input type="button" onClick="closeMe();" value="Close" />&nbsp; (without saving)
+
+   <input type='hidden' id='canId' />
+
+</form>
+
+<script>
+
+   $(document).ready(function() {
+     $('#summernote').summernote({
+        height: 300,
+        width:  630,
+        focus:  true,
+        fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica', 'Impact',
+                    'Roboto', 'Tahoma', 'Times New Roman', 'Verdana'],
+        toolbar: [
+           ['style', ['bold', 'italic', 'underline']],
+/*         ['fontsize',  ['fontsize']], */
+/*         ['color',     ['color']],    */
+/*         ['para',      ['ul', 'ol', 'paragraph']], */
+           ['para',      ['ul', 'ol']],
+/*         ['fontname',  ['fontname']], */
+/*         ['table',     ['table']],    */
+           ['insert',    ['link']]
+        ]
+     });
+     $('#summernote').on('summernote.paste', function (e, ne) {
+        if (! showedPasteWarning)  setTimeout(function() { alert(pasteWarning); }, 20);
+        showedPasteWarning = true;
+     });
+   });
+</script>
+
+
+</body>
+</html>

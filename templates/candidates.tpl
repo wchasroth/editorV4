@@ -212,6 +212,22 @@
          return false;
       }
 
+      function descOpen(canId, name) {
+          var descDiv = document.getElementById('descDiv');
+          descDiv.style.display = 'block';
+
+          var descFrame = document.getElementById('descFrame');
+          var candidateNameSpan = descFrame.contentWindow.document.getElementById('candidateName');
+          candidateNameSpan.innerHTML = name;
+
+          var canIdField = descFrame.contentWindow.document.getElementById('canId');
+          canIdField.value = canId;
+
+          var longDesc = document.getElementById(canId + "-description");
+          descFrame.contentWindow.setText(longDesc.innerHTML);
+      }
+
+
       /* Photo upload div close button */
       window.addEventListener("message",
           function (e) {
@@ -253,7 +269,7 @@
       <td class="th1" colspan="5"><b>{$name}</b></td>
       <td class="th1" colspan="18">
          {if $canEdit }
-            <input type="button" onClick="submitMainForm();"; return false;" value=" Save Changes " class="button"/>
+            <input type="button" onClick="submitMainForm();"; return false;" value=" Save Changes " class="button" />
          {/if}
       </td>
    </tr>
@@ -265,8 +281,7 @@
       <td class="th2">TL</td>
       <td class="th2a">&nbsp;Name</td>
       <td class="th2a">&nbsp;Photo</td>
-      <td class="th2a">Pty</td>
-      <td class="th2a"></td>
+      <td class="th2a">&nbsp;Statement</td>
       <td class="th2a" colspan='2'>Web</td>
       <td class="th2a" colspan='2'>Email</td>
       <td class="th2a" colspan='2'>Phone</td>
@@ -296,19 +311,9 @@
             <input type="hidden" name="i:{$row['can_id']}:headshot" value="{$row['headshot']}"/>
          </td>
 
-         <td style="position: relative;">
-            {$id = $row['can_id']}
-            <input  id="party{$id}inp" name="i:{$id}:party" type="text"  size="1"  class="char1" value="{$row['party']}" onClick="partyMenuShow('party{$id}');" />
-            <select id="party{$id}sel" style="position: absolute; z-index: 100; left: 0; top: 0; visibility: hidden;"
-                    onChange="partyMenuSet('party{$id}', 'i:{$id}:party');"  onBlur=" partyMenuHide('party{$id}');">
-               <option value='' >(unknown)</option>
-               <option value='D'>Democrat</option>
-               <option value='L'>Libertarian</option>
-               <option value='N'>Non-partisan</option>
-               <option value='R'>Republican</option>
-               <option value='W'>Write-in</option>
-            </select>
-            &nbsp;
+         <td>
+            <div id='{$row['can_id']}-shortdesc' onClick="descOpen({$row['can_id']}, '{$row['name']}');">{$row['shortdesc']}</div>
+            <div id='{$row['can_id']}-description' style="display: none;">{$row['description']}</div>
          </td>
 
          <td style="vertical-align: bottom;">
@@ -321,7 +326,7 @@
              style="position: relative; z-index: 3;"
              onFocus="expand(this);" onBlur="shrink(this);" onChange="changed(this.name);" /></td>
 
-         <td class="spacer" style="position: relative; z-index: 4;">&nbsp;&nbsp;</td>
+         <!-- <td class="spacer" style="position: relative; z-index: 4;">&nbsp;&nbsp;</td> -->
 
          <td class="col_email"><input type="text" name="i:{$row['can_id']}:email" size="45"  value="{$row['email']}"
              style="position: relative; z-index: 5;"
@@ -354,16 +359,14 @@ fieldsChanged={$fieldsChanged}
 </pre>
 
 <!--- divs for pop-open boxes: description, photos -->
-<!--
 <div id="descDiv" class="descDivCss" style="display: none;">
-   <iframe id='descFrame' class="descFrameCss" src="/summer"></iframe>
+   <iframe id='descFrame' class="descFrameCss" src="summer.html"></iframe>
    <input type='hidden' id='descDivRownum' />
 </div>
--->
 
 <div id="photoDiv" class="photoDivCss" style="display: none;">
    <center>
-      <iframe id="photoFrame" class="photoFrameCss"></iframe>
+      <iframe id="photoFrame" class="photoFrameCss" src="photo.php"></iframe>
    </center>
 </div>
 

@@ -80,7 +80,7 @@ $quotedOrgs = Str::join($orgs, ",");
 
 $counties = [];
 $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.headshot, "
-     . "            c.id AS can_id, t.seats "
+     . "            c.id AS can_id, t.seats, c.description "
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4candidates AS c   ON (s.id = c.seat_id) \n"
      . "  LEFT JOIN s4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
@@ -118,6 +118,7 @@ $thisYear = intval(date('Y'));
 for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['name']      = correctCase($rows[$i]['name']);  // Fix all-upper-case names
    $rows[$i]['termcycle'] = nextElectionYearForSeat($rows[$i], $thisYear);
+   $rows[$i]['shortdesc'] = trimAndRemoveHtml($rows[$i]['description']);
 // if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
    $rows[$i]['web'] = stripHttps ($rows[$i]['web']);
    $rows[$i]['url'] = addProtocol($rows[$i]['web']);
@@ -301,4 +302,9 @@ function translateOrgs(string $orgs):  string {  // Handle weird court orgs from
 
 function foundCountyIn(string $county, string $counties): bool {
    return Str::contains(",$counties,", ",$county,");
+}
+
+function trimAndRemoveHtml(string $text): string {
+   $result = preg_replace('/<[^>]+>/', ' ', $text);
+   return substr($result, 0, 40) . "...";
 }

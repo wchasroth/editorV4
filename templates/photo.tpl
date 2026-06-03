@@ -59,7 +59,7 @@
          <button onClick="closeMe({$canId}, '{$headshot}');">Close window</button>
 
          <p/>
-         (Remember to click on <b>Submit</b> at the very top of the page, to save
+         (Remember to click on <b>Save Changes</b> at the very top of the page, to save
          all of your changes!)
       </td>
    </tr>

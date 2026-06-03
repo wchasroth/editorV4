@@ -303,7 +303,7 @@ function foundCountyIn(string $county, string $counties): bool {
    return Str::contains(",$counties,", ",$county,");
 }
 
-function trimAndRemoveHtml(string $text): string {
+function trimAndRemoveHtml(?string $text): string {
    if ($text === null)  return '';
    $result = preg_replace('/<[^>]+>/', ' ', $text);
    return substr($result, 0, 40) . "...";

@@ -313,7 +313,8 @@
 
          <td>
             <div id='{$row['can_id']}-shortdesc' onClick="descOpen({$row['can_id']}, '{$row['name']}');">{$row['shortdesc']}</div>
-            <div id='{$row['can_id']}-description' style="display: none;">{$row['description']}</div>
+            <div id='{$row['can_id']}-description' style="display: none;" name="i:{$row['can_id']}:description"
+                >{$row['description']}</div>
          </td>
 
          <td style="vertical-align: bottom;">

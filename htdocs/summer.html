@@ -38,10 +38,10 @@
       }
 
       function saveText() {
-         var rownum = document.getElementById('rownum');
-         var num = rownum.value;
-         var shortDesc = parent.document.getElementById(`shortDesc.${num}`);
-         var longDesc  = parent.document.getElementById(`longDesc.${num}`);
+         var canId = document.getElementById('canId');
+         var num = canId.value;
+         var shortDesc = parent.document.getElementById(num + "-shortDesc");
+         var longDesc  = parent.document.getElementById(num + "-description");
 
          var text = $("#summernote").summernote('code');
          shortDesc.innerHTML = trimAndRemoveHtml(text) + "...";
@@ -54,8 +54,13 @@
                 + "and see if the result is reasonable.");
             return;
          }
-         parent.setChanged();
+         parent.changed("i:" + num + ":description");
          closeMe();
+      }
+
+      function trimAndRemoveHtml(text) {
+          var trimmedText = text.replace(/<[^>]+>/g, " ");
+          return trimmedText.substring(0, 40);
       }
 
       function simplifyFormatting() {
@@ -173,7 +178,7 @@
 
    <input type="button" onClick="closeMe();" value="Close" />&nbsp; (without saving)
 
-   <input type='hidden' id='canId' />
+   <input type='hidden' id='canId' value=""/>
 
 </form>
 

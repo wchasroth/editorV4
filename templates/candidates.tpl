@@ -320,7 +320,7 @@
             <input id='{$row['can_id']}-rawdesc'     type="hidden" name="i:{$row['can_id']}:description" />
          </td>
 
-         <td style="vertical-align: bottom;">
+         <td style="vertical-align: top;">
              {if $row['url'] != ''}
                 <a href="{$row['url']}" target="_blank"><img src="external3.png" width="15"></a>
              {/if}

@@ -196,9 +196,11 @@
          changed(name);
       }
 
-      function photoOpen(canId, name, headshot) {
+      function photoOpen(canId, headshot) {
+         var nameField = document.getElementsByName("i:" + canId + ":name")[0];
+         var name = nameField.value;
          if (name == '') {
-             confirm("Please enter a name first.");
+             alert("Please enter a name first.");
              return false;
          }
          name = name.replaceAll("'", "\\\'");   /* E.g. Diane O'Connell */
@@ -298,23 +300,24 @@
          {if $showSeat}
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
-         <td><input name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
+         <!-- <td><input name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td> -->
+         <td align='right' class="smaller">{$row['termlen']}</td>
          <td><input name="i:{$row['can_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
          <td>
             {if $row['headshot'] != ''}
-               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['name']}', '{$row['headshot']}');"
+               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['headshot']}');"
                   ><img id='photo-{$row['can_id']}' src="PHOTOS/{$row['headshot']}" width="40"/></a>
             {else}
-               <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['name']}', '');"
+               <a href="#" onClick="return photoOpen({$row['can_id']}, '');"
                   ><img id='photo-{$row['can_id']}' src="IMG/noPerson2.png"         width="40"/></a>
             {/if}
             <input type="hidden" name="i:{$row['can_id']}:headshot" value="{$row['headshot']}"/>
          </td>
 
          <td>
-            <div id='{$row['can_id']}-shortdesc' onClick="descOpen({$row['can_id']}, '{$row['name']}');">{$row['shortdesc']}</div>
-            <div id='{$row['can_id']}-description' style="display: none;" name="i:{$row['can_id']}:description"
-                >{$row['description']}</div>
+            <div   id='{$row['can_id']}-shortdesc'   onClick="descOpen({$row['can_id']}, '{$row['name']}');">{$row['shortdesc']}</div>
+            <div   id='{$row['can_id']}-description' style="display: none;">{$row['description']}</div>
+            <input id='{$row['can_id']}-rawdesc'     type="hidden" name="i:{$row['can_id']}:description" />
          </td>
 
          <td style="vertical-align: bottom;">
@@ -338,7 +341,7 @@
          <td class="col_phone"><input name="i:{$row['can_id']}:phone"     type="text"  size="18" class="char12"  onChange="changed(this.name);"
                value="{$row['phone']}" style="position: relative; z-index: 7;" /></td>
 
-         <!-- <td class="spacer" style="position: relative; z-index: 8;">&nbsp;&nbsp;</td> -->
+         <td style="position: relative; z-index: 5; width: 5em;">XYZ &nbsp;&nbsp;</td>
       </tr>
    {/foreach}
 </table>
@@ -361,7 +364,7 @@ fieldsChanged={$fieldsChanged}
 
 <!--- divs for pop-open boxes: description, photos -->
 <div id="descDiv" class="descDivCss" style="display: none;">
-   <iframe id='descFrame' class="descFrameCss" src="summer.html"></iframe>
+   <iframe id='descFrame' class="descFrameCss" src="summer2.html"></iframe>
    <input type='hidden' id='descDivRownum' />
 </div>
 

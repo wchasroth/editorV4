@@ -55,8 +55,9 @@ if ($canEdit) {
          $parts = Str::split($field, ':');
          $sql = "UPDATE " . ($parts[0] == 'i' ? "v4candidates" : "v4seats") . " SET ";
          if (Str::startsWith($parts[2], "term")) $value = intval($value);
-         if      ($parts[2] == "web")     $value = addProtocol(stripHttps($value));
-         else if ($parts[2] == "phone")   $value = FieldFormatFixer::fixPhone($value);
+         if      ($parts[2] == "web")           $value = addProtocol(stripHttps($value));
+         else if ($parts[2] == "phone")         $value = FieldFormatFixer::fixPhone($value);
+         else if ($parts[2] == "description")   $value = urldecode($value);
          $sqlFields = new SqlFields([$parts[2] => $value]);
          $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
          $logger->log("Save Changes: " . $query);
@@ -67,7 +68,6 @@ if ($canEdit) {
    }
 }
 
-//$orgs         = Str::split($qsOrgs, ",");
 $orgs         = Str::split(translateOrgs($qsOrgs), ",");
 $org1         = $orgs[0];
 $district     = $qsDistrict;
@@ -119,7 +119,6 @@ for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['name']      = correctCase($rows[$i]['name']);  // Fix all-upper-case names
    $rows[$i]['termcycle'] = nextElectionYearForSeat($rows[$i], $thisYear);
    $rows[$i]['shortdesc'] = trimAndRemoveHtml($rows[$i]['description']);
-// if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
    $rows[$i]['web'] = stripHttps ($rows[$i]['web']);
    $rows[$i]['url'] = addProtocol($rows[$i]['web']);
    if (intval($rows[$i]['subdist']) == 0)  $rows[$i]['subdist'] = '';
@@ -305,6 +304,7 @@ function foundCountyIn(string $county, string $counties): bool {
 }
 
 function trimAndRemoveHtml(string $text): string {
+   if ($text === null)  return '';
    $result = preg_replace('/<[^>]+>/', ' ', $text);
    return substr($result, 0, 40) . "...";
 }

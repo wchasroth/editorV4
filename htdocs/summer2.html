@@ -40,12 +40,14 @@
       function saveText() {
          var canId = document.getElementById('canId');
          var num = canId.value;
-         var shortDesc = parent.document.getElementById(num + "-shortDesc");
+         var shortDesc = parent.document.getElementById(num + "-shortdesc");
          var longDesc  = parent.document.getElementById(num + "-description");
+         var rawDesc   = parent.document.getElementById(num + "-rawdesc");
 
          var text = $("#summernote").summernote('code');
          shortDesc.innerHTML = trimAndRemoveHtml(text) + "...";
          longDesc.innerHTML  = text;
+         rawDesc.value = encodeURIComponent(text);
 
          if (text.length > 13000) {
             alert("The candidate's description appears to be longer than 14,000 "

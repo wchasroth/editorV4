@@ -63,9 +63,11 @@ if ($canEdit) {
             if      ($parts[2] == "web")     $value = addProtocol(stripHttps($value));
             else if ($parts[2] == "phone")   $value = FieldFormatFixer::fixPhone($value);
             else if ($parts[2] == "address") $value = FieldFormatFixer::fixMI($value);
+            else if ($parts[2] == "is_open") $value = intval($value);
             $sqlFields = new SqlFields([$parts[2] => $value]);
             $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
             $result = $pdo->run($query);
+//          $logger->log("sql=$query");
          }
       }
    

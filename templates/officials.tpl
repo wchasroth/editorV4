@@ -193,6 +193,16 @@
          changed(name);
       }
 
+      function flipSeatOpen(id) {
+         var isOpenInput = document.getElementsByName("s:" + id + ":is_open")[0];
+         var isOpen = Number(isOpenInput.value);
+         confirm("old: " + isOpen);
+         var seatOpenImg = document.getElementById(id + "-is_open");
+         seatOpenImg.src = (isOpen == 0 ? "IMG/chair2-red.png" : "IMG/chair2-green.png");
+         isOpenInput.value = (1 - isOpen);
+         confirm("new: " + isOpenInput.value);
+         changed("s:" + id + ":is_open");
+      }
    </script>
 </head>
 
@@ -232,6 +242,7 @@
       {if $showSubDist  } <td class="th2">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2">S#</td>      {/if}
       <td class="th2">TL</td>
+      <td class="th2">St</td>
       <td class="th2">&nbsp;Next</td>
       <td class="th2a">&nbsp;Name</td>
       <td class="th2a">Pty</td>
@@ -243,7 +254,7 @@
    </tr>
    {foreach from=$rows item=row}
       <tr>
-         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, `{$row['shortname']}: {$row['name']}`);"><img src="trash.png" width="14"/></a></td>
+         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, `{$row['shortname']}: {$row['name']}`);"><img src="trash.png" width="14" title="Delete seat"/></a></td>
          <td style="white-space: nowrap;"     class="smaller">{$row['shortname']}</td>
          {$hidden = ($row['appointed'] == '1' ? "hidden" : "") }
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
@@ -256,6 +267,14 @@
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
          <td><input {$hidden} name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
+         <td>
+            {if $row['is_open'] == 0}
+               <img src="IMG/chair2-green.png" id='{$row['id']}-is_open' width="11" onClick="flipSeatOpen({$row['id']});" title="Seat is filled"/>
+            {else}
+               <img src="IMG/chair2-red.png"   id='{$row['id']}-is_open' width="11" onClick="flipSeatOpen({$row['id']});" title="Seat is open for 2026">
+            {/if}
+            <input type="hidden" name="s:{$row['id']}:is_open" value="{$row['is_open']}" />
+         </td>
          <td><input {$hidden} name="s:{$row['id']}:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
          <td><input           name="i:{$row['inc_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
 

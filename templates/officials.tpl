@@ -196,11 +196,9 @@
       function flipSeatOpen(id) {
          var isOpenInput = document.getElementsByName("s:" + id + ":is_open")[0];
          var isOpen = Number(isOpenInput.value);
-         confirm("old: " + isOpen);
          var seatOpenImg = document.getElementById(id + "-is_open");
          seatOpenImg.src = (isOpen == 0 ? "IMG/chair2-red.png" : "IMG/chair2-green.png");
          isOpenInput.value = (1 - isOpen);
-         confirm("new: " + isOpenInput.value);
          changed("s:" + id + ":is_open");
       }
    </script>

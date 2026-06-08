@@ -1,0 +1,1 @@
+ALTER TABLE v4seats ADD COLUMN is_open tinyint NOT NULL DEFAULT 0;

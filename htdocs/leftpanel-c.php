@@ -46,7 +46,6 @@ $topOffices = [];
 foreach ($result->getRows() as $row)   $topOffices[$row['org']] = [$row['seats']];
 
 $counties = [];
-$allowedCountyNums = [81, 82];
 foreach ($allowedCountyNums as $countyNum) {
 
    $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, " .  calculateSeats("'cnty', 'cnty-com'", "c.id")

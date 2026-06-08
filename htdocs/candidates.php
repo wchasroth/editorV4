@@ -88,7 +88,10 @@ $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.hea
      . makeDistrictClause($district) . "\n"
      . "    AND s.termlen   > 0 "
      . "    AND s.termcycle > 0 "
-     . "    AND ( (s.termcycle + 6 * s.termlen) - 2026) % s.termlen = 0 "
+     . "    AND ("
+     . "       ( ( (s.termcycle + 6 * s.termlen) - 2026) % s.termlen = 0) "
+     . "       OR s.is_open = 1 "
+     . "    )"
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 
 $result = $pdo->run($sql);
@@ -119,8 +122,8 @@ for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['name']      = correctCase($rows[$i]['name']);  // Fix all-upper-case names
    $rows[$i]['termcycle'] = nextElectionYearForSeat($rows[$i], $thisYear);
    $rows[$i]['shortdesc'] = trimAndRemoveHtml($rows[$i]['description']);
-   $rows[$i]['web'] = stripHttps ($rows[$i]['web']);
-   $rows[$i]['url'] = addProtocol($rows[$i]['web']);
+   $rows[$i]['web']       = stripHttps ($rows[$i]['web']);
+   $rows[$i]['url']       = addProtocol($rows[$i]['web']);
    if (intval($rows[$i]['subdist']) == 0)  $rows[$i]['subdist'] = '';
 }
 

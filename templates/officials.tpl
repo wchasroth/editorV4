@@ -228,8 +228,8 @@
    <tr>
       <td class="th2"></td>
       <td class="th2 title-target" title-css="Abbreviated name of office.">Office</td>
-      {if $showDistrict } <td class="th2">Dist</td>    {/if}
-      {if $showSubDist  } <td class="th2">{$regionColumnName}</td> {/if}
+      {if $showDistrict } <td class="th2 title-target" title-css="District #">Dist</td>    {/if}
+      {if $showSubDist  } <td class="th2 title-target" title-css="District or Ward">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
       <td class="th2 title-target" title-css="Term Length in years">TL</td>
       <td class="th2 title-target" title-css="Vacant, AND will appear as partial-term election in Nov 2026">Vac</td>

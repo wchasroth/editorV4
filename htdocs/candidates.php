@@ -58,6 +58,7 @@ if ($canEdit) {
          if      ($parts[2] == "web")           $value = addProtocol(stripHttps($value));
          else if ($parts[2] == "phone")         $value = FieldFormatFixer::fixPhone($value);
          else if ($parts[2] == "description")   $value = urldecode($value);
+         else if ($parts[2] == "endorsed")      $value = intval($value);
          $sqlFields = new SqlFields([$parts[2] => $value]);
          $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
          $logger->log("Save Changes: " . $query);
@@ -79,7 +80,7 @@ for ($i=0;   $i<count($orgs);   $i++) $orgs[$i] = "'$orgs[$i]'";
 $quotedOrgs = Str::join($orgs, ",");
 
 $counties = [];
-$sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.headshot, "
+$sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.headshot, c.endorsed, "
      . "            c.id AS can_id, t.seats, c.description "
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4candidates AS c   ON (s.id = c.seat_id) \n"

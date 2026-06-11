@@ -1,0 +1,28 @@
+/* CSS hack to show hover-over ("tool-tip") hints, since title= attribute does not work right on MacOS */
+.title-target {
+   position: relative;
+   cursor:   pointer;
+}
+
+.title-target::after {
+  content: attr(title-css);
+  position: absolute;
+  top: 1.5em;
+  left: 3em;
+  background-color: lightgreen;
+  color: black;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-weight: normal;
+  width: 20em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 9999;
+}
+
+/* Show the tooltip on hover OR keyboard focus */
+.title-target:hover::after,
+.title-target:focus::after {
+  opacity: 1;
+}

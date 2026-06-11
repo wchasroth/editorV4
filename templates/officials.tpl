@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto">
+   <link rel="stylesheet" href="editor.css">
    <style>
       td, input { font-size: 90%;  margin: 0; padding: 0;}
       input { border: 0;  background-color: inherit; }
@@ -226,14 +227,14 @@
    </tr>
    <tr>
       <td class="th2"></td>
-      <td class="th2" title="Abbreviated name of office.">Office</td>
+      <td class="th2 title-target" title-css="Abbreviated name of office.">Office</td>
       {if $showDistrict } <td class="th2">Dist</td>    {/if}
       {if $showSubDist  } <td class="th2">{$regionColumnName}</td> {/if}
-      {if $showSeat     } <td class="th2" title="Seat number, assigned arbitrarily">S#</td>      {/if}
-      <td class="th2" title="Term Length in years">TL</td>
-      <td class="th2" title="Vacant, AND will appear as partial-term election in Nov 2026">Vac</td>
-      <td class="th2"
-          title="Next year this seat is NORMALLY up for election.  DO NOT CHANGE for partial-term elections.
+      {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
+      <td class="th2 title-target" title-css="Term Length in years">TL</td>
+      <td class="th2 title-target" title-css="Vacant, AND will appear as partial-term election in Nov 2026">Vac</td>
+      <td class="th2 title-target"
+          title-css="Next year this seat is NORMALLY up for election.  DO NOT CHANGE for partial-term elections.
 Only change if the value is wrong."
           >&nbsp;Next</td>
       <td class="th2a">&nbsp;Name</td>
@@ -247,8 +248,10 @@ Only change if the value is wrong."
    {foreach from=$rows item=row}
       <tr>
          <td><a href="#" onClick="return deleteThisSeat({$row['id']}, `{$row['shortname']}: {$row['name']}`);"
-            ><img src="trash.png" width="14" title="Delete seat. Only use this if there are literally TOO MANY seats.
-To remove an incumbent, just blank out their fields."/></a></td>
+            class="title-target" title-css="Delete seat. Only use this if there are literally TOO MANY seats.
+ To remove an incumbent, just blank out their fields."
+            ><img src="trash.png" width="14" />
+         </td>
          <td style="white-space: nowrap;"     class="smaller">{$row['shortname']}</td>
          {$hidden = ($row['appointed'] == '1' ? "hidden" : "") }
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}

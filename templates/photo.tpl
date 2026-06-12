@@ -10,27 +10,26 @@
          -webkit-font-smoothing: antialiased;
       }
       #paste-zone {
-         /* width: 8em; */
          max-width: 5em;
          height: 2em;
          border: 2px dashed #ccc;
-         /* display: flex; */
-         /*
-         align-items: center;
-         justify-content: center;
-         margin: 20px 0;
-         */
          color: #666;
          padding: 0.5em;
       }
-
    </style>
 
    <script>
+       let photoPastedSuccess = false;
+       let photoPastedName    = "";
+
+       /* This is pretty schizoid.  It acts one way for copy-paste, and another for form-post-upload.  Sigh. */
        function closeMe(canId, headshot) {
-           {if $photoChanged == 1} parent.postMessage("closePhotoDiv:" + canId + ":" + headshot, '{$parent}');
-           {else}                  parent.postMessage("close",                                   '{$parent}');
-           {/if}
+           if (photoPastedSuccess) parent.postMessage("closePhotoDiv:" + canId + ":" + photoPastedName, '{$parent}');
+           else {
+              {if $photoChanged == 1} parent.postMessage("closePhotoDiv:" + canId + ":" + headshot, '{$parent}');
+              {else}                  parent.postMessage("close", '{$parent}');
+              {/if}
+           }
        }
 
        function confirmFileSelected() {
@@ -68,7 +67,7 @@
          {/if}
 
          <b>Option 1:</b> upload a photo:
-         <ul>
+         <ul style="padding-left: 1.4em;">
             <li>Click on&nbsp;<input type='file' name='uploadphoto' id='uploadphoto' /></li>
             <li style="margin-top: 0.4em;">Click on&nbsp;<input type='submit' onClick="return confirmFileSelected();" value='Upload photo' /></li>
          </ul>
@@ -82,8 +81,7 @@
          <button onClick="closeMe({$canId}, '{$headshot}');">Close window</button>
 
          <p/>
-         (Remember to click on <b>Save Changes</b> at the very top of the page, to save
-         all of your changes!)
+         (Remember to click on <b>Save Changes</b> at the very top of the page!)
       </td>
    </tr>
 </table>
@@ -105,7 +103,7 @@
                const base64Image = event.target.result;
 
                {literal}
-                  previewDiv.innerHTML = `<img src="${base64Image}" style="max-width:200px;"/>`;
+                  previewDiv.innerHTML = `<img src="${base64Image}" width=200 style="max-width:200px;"/>`;
                {/literal}
 
                sendToPHP(base64Image);
@@ -129,7 +127,9 @@
       .then(data => {
          {literal}
             if (data.success) {
-               statusDiv.innerHTML = `<span style="color:green;">Success! Saved as <strong>${data.file}</strong></span>`;
+               photoPastedSuccess = true;
+               photoPastedName    = data.file;
+               /* statusDiv.innerHTML = `<span style="color:green;">Success! Saved as <strong>${data.file}</strong></span>`; */
             } else {
                statusDiv.innerHTML = `<span style="color:red;">Error: ${data.error}</span>`;
             }

@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
         $decodedData = base64_decode($filteredData);
         
         // Save the file with a unique name in your directory
-        $fileName = "PHOTOS_CAN/" . $canId . "-" . $name . "." . $extension;
+        $fileName = $canId . "-" . $name . "." . $extension;
         
-        if (file_put_contents($fileName, $decodedData)) {
+        if (file_put_contents("PHOTOS_CAN/$fileName", $decodedData)) {
             echo json_encode(['success' => true, 'file' => $fileName]);
         } else {
             echo json_encode(['success' => false, 'error' => 'Could not save file.']);

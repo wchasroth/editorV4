@@ -24,7 +24,7 @@ $email     = EnvHelper::getEmail($env);
 $pdo       = PdoHelper::makePdo($env);
 $logger    = new DumbFileLogger($env->get('logFile'));
 $parent    = $env->get('parent');
-$photosDir = $env->get('photosDir');
+$photosDir = $env->get('photosCanDir');
 
 $canId    = $_GET['canId']    ?? '';
 $name     = $_GET['name']     ?? '';

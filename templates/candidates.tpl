@@ -240,7 +240,7 @@
               if (e.data.startsWith("closePhotoDiv:")) {
                   var parts = e.data.split(":"); /* 1 is canId;  2 is filename */
                   var img = document.getElementById("photo-" + parts[1]);
-                  img.src = "PHOTOS/" + parts[2];
+                  img.src = "PHOTOS_CAN/" + parts[2];
 
                   var fieldChanged = "i:" + parts[1] + ":headshot";
                   var uploadedPhotoInput = document.getElementsByName(fieldChanged)[0];
@@ -312,7 +312,7 @@
          <td>
             {if $row['headshot'] != ''}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['headshot']}');"
-                  ><img id='photo-{$row['can_id']}' src="PHOTOS/{$row['headshot']}" width="40"/></a>
+                  ><img id='photo-{$row['can_id']}' src="PHOTOS_CAN/{$row['headshot']}" width="40"/></a>
             {else}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '');"
                   ><img id='photo-{$row['can_id']}' src="IMG/noPerson2.png"         width="40"/></a>

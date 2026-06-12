@@ -9,6 +9,21 @@
          font-family: 'Roboto', sans-serif;
          -webkit-font-smoothing: antialiased;
       }
+      #paste-zone {
+         /* width: 8em; */
+         max-width: 5em;
+         height: 2em;
+         border: 2px dashed #ccc;
+         /* display: flex; */
+         /*
+         align-items: center;
+         justify-content: center;
+         margin: 20px 0;
+         */
+         color: #666;
+         padding: 0.5em;
+      }
+
    </style>
 
    <script>
@@ -36,25 +51,33 @@
 <table>
    <tr valign='top'>
       <td>
-         {if $headshot == ''} <img src="IMG/noPerson2.png" width='200'/>
-         {else}               <img src="PHOTOS_CAN/{$headshot}" width='200'/>
-         {/if}
+         <div id="canPhoto">
+            {if $headshot == ''} <img id='canPhoto' src="IMG/noPerson2.png"      width='200'/>
+            {else}               <img id='canPhoto' src="PHOTOS_CAN/{$headshot}" width='200'/>
+            {/if}
+         </div>
       </td>
       <td>&nbsp; </td>
       <td>
          {if $headshot == ''}
             There is no photo for {$name}.&nbsp;
-            To upload a photo from your computer:<p/>
+            You can add a photo in one of two ways:<p/>
          {else}
             This is the current photo for {$name}.&nbsp;
-            To replace it with a different photo from your computer:</p>
+            You can replace it with a different photo in one of two ways:<p/>
          {/if}
 
-         1. Click on&nbsp; <input type='file' name='uploadphoto' id='uploadphoto' />
-         <p/>
-         2. Click on&nbsp; <input type='submit' onClick="return confirmFileSelected();" value='Upload photo' />
+         <b>Option 1:</b> upload a photo:
+         <ul>
+            <li>Click on&nbsp;<input type='file' name='uploadphoto' id='uploadphoto' /></li>
+            <li style="margin-top: 0.4em;">Click on&nbsp;<input type='submit' onClick="return confirmFileSelected();" value='Upload photo' /></li>
+         </ul>
 
-         <p/>
+         <b>Option 2:</b> copy-paste a photo
+         <span id="paste-zone" tabindex="0">here</span>
+         <div id="status"></div>
+
+         <p>&nbsp;</p>
          When you are done, click on
          <button onClick="closeMe({$canId}, '{$headshot}');">Close window</button>
 
@@ -65,6 +88,59 @@
    </tr>
 </table>
 </form>
+<script>
+   const pasteZone  = document.getElementById('paste-zone');
+   const statusDiv  = document.getElementById('status');
+   const previewDiv = document.getElementById('canPhoto');
+
+   pasteZone.addEventListener('paste', function(e) {  // Listen for paste event on the zone
+      // Access clipboard items
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+
+      for (let i=0;  i < items.length;  i++) {
+         if (items[i].type.indexOf('image') !== -1) {   // Look specifically for images
+            const blob    = items[i].getAsFile();
+            const reader  = new FileReader();
+            reader.onload = function(event) {
+               const base64Image = event.target.result;
+
+               {literal}
+                  previewDiv.innerHTML = `<img src="${base64Image}" style="max-width:200px;"/>`;
+               {/literal}
+
+               sendToPHP(base64Image);
+            };
+
+            reader.readAsDataURL(blob);
+            break; // Stop looking after finding the first image
+         }
+      }
+   });
+
+   function sendToPHP(base64Data) {
+      const formData = new FormData();
+      formData.append('pasted_image', base64Data);
+
+      fetch('pasteImage.php?can_id={$canId}&name={$encodedName}', {
+         method: 'POST',
+         body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+         {literal}
+            if (data.success) {
+               statusDiv.innerHTML = `<span style="color:green;">Success! Saved as <strong>${data.file}</strong></span>`;
+            } else {
+               statusDiv.innerHTML = `<span style="color:red;">Error: ${data.error}</span>`;
+            }
+         {/literal}
+      })
+      .catch(err => {
+         statusDiv.innerHTML = `<span style="color:red;">Server communication error.</span>`;
+      });
+   }
+</script>
+
 </body>
 </html>
 {/nocache}

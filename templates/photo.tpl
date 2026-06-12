@@ -37,7 +37,7 @@
    <tr valign='top'>
       <td>
          {if $headshot == ''} <img src="IMG/noPerson2.png" width='200'/>
-         {else}               <img src="PHOTOS/{$headshot}" width='200'/>
+         {else}               <img src="PHOTOS_CAN/{$headshot}" width='200'/>
          {/if}
       </td>
       <td>&nbsp; </td>

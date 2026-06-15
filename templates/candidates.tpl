@@ -286,7 +286,7 @@
       <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed?</td>
       <td class="th2a">&nbsp;Name</td>
       <td class="th2a">&nbsp;Photo</td>
-      <td class="th2a">&nbsp;Statement</td>
+      <td class="th2a" style="min-width: 10em;">&nbsp;Statement</td>
       <td class="th2a" colspan='2'>Web</td>
       <td class="th2a" colspan='2'>Email</td>
       <td class="th2a" colspan='2'>Phone</td>

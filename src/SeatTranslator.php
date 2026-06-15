@@ -30,6 +30,10 @@ class SeatTranslator {
       'assessor' => 'assess', 'constable' => 'cons'
    ];
 
+   private static $villageOfficeMap = [
+      'president' => 'pres'
+   ];
+
    private static $romanNumerals = [
       'i' => 1, 'ii' => 2, 'iii' => 3, 'iv' => 4, 'v' => 5, 'vi' => 6,
       'vii' => 7, 'viii' => 8, 'ix' => 9, 'x' => 10
@@ -42,13 +46,20 @@ class SeatTranslator {
 
    public function translate(string $jsonSeatId): array {
       $result = ['org' => '', 'office' => '', 'district' => '', 'subdist' => 0, 'seatnum' => 0];
-      if (Str::contains($jsonSeatId, 'delegate')) return $result;
-      if (Str::contains($jsonSeatId, 'library'))  return $result;
+
+      //---Ignore these for now (village doesn't have a FIPS code yet)
+      if (Str::contains($jsonSeatId, 'delegate', 'library', 'lakeside-park-village'))  return $result;
 
       $parts = Str::splitIntoTokens($jsonSeatId, ':');
+      $parts[2] = $parts[2] ?? '';
       $parts[3] = $parts[3] ?? '';
       $parts[4] = $parts[4] ?? '';
       $parts[5] = $parts[5] ?? '';
+
+      $countyCode   = $this->getCountyCode($parts[2]);   // for all that have, else 0.
+
+      // Known corrections to data errors.
+      if ($parts[3] === 'village'  &&  $parts[4] === 'sylvan-lake') $parts[3] = 'city';
 
       // Circuit courts
       if ($parts[1] === 'circuit-court') {
@@ -67,7 +78,6 @@ class SeatTranslator {
             $result['office'] = self::$townOfficeMap[$office] ?? 'UNKNOWN';
             if ($result['office'] === 'UNKNOWN')  fwrite(STDERR, "Office: $office\n");
          }
-         $countyCode   = $this->getCountyCode($parts[2]);
          $townshipName = Str::replaceAll($parts[4], '-', ' ');
          $townshipName = self::$townSpellingFixes[$townshipName] ?? $townshipName;
          if (!Str::contains($townshipName, 'township')) $townshipName .= " township";
@@ -90,9 +100,51 @@ class SeatTranslator {
          $cityName = Str::replaceFirst($cityName, "mt ", "mount ");
          if (! Str::contains($cityName, ' city'))  $cityName .= " city";
 
-         $countyCode = $this->getCountyCode($parts[2]);
          $sql = "SELECT id FROM s4jurisdictions WHERE county_id=$countyCode AND name = '$cityName' AND type='c'";
          $result['district'] = $this->getJurisdictionId($sql, $jsonSeatId);
+      }
+
+      // Villages
+      else if ($parts[3] === 'village') {
+         if (Str::contains($parts[5], 'trustee', 'council')) {
+            $result['org']    = 'vil-cou';
+            $result['office'] = 'council';
+         }
+         else {
+            $result['org']    = 'vil';
+            $office = Str::replaceFirst($parts[5], $parts[4] . '-', '');
+            $result['office'] = self::$villageOfficeMap[$parts[5]] ?? '';
+         }
+         $villageName = Str::replaceFirst($parts[4], 'village-of-', '');
+         $villageName = Str::replaceAll  ($villageName, '-', ' ');
+         $villageName = Str::replaceFirst($villageName, " village", "");
+         $villageName = trim($villageName);
+
+         $sql = "SELECT id FROM s4villages WHERE county_id=$countyCode "
+              . "   AND (name = '$villageName' OR name = '$villageName village') ";
+         $result['district'] = $this->getJurisdictionId($sql, $jsonSeatId);
+         if ($result['district'] === '0') fwrite(STDERR, "$sql\n");
+      }
+
+      // state senate
+      else if (Str::contains($parts[1], 'state-senat')) {
+         $result['org'] = 'mi-sen';
+         $result['district'] = strval($this->extractNumberFrom($parts[2]));
+      }
+
+      // state house
+      else if (Str::contains($parts[1], 'state-represent')) {
+         $result['org'] = 'mi-hou';
+         $result['district'] = strval($this->extractNumberFrom($parts[2]));
+      }
+
+      // us senate
+      else if ($parts[1] === 'u-s-senator') $result['org'] = 'us-sen';
+
+      // us house
+      else if ($parts[1] === 'u-s-representative') {
+         $result['org'] = 'us-hou';
+         $result['district'] = strval($this->extractNumberFrom($parts[2]));
       }
       return $result;
    }

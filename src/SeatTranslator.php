@@ -34,6 +34,10 @@ class SeatTranslator {
       'president' => 'pres'
    ];
 
+   private static $schoolSpellingFixes = [ 'bridgeport' => 'bridgeport-spaulding' ];
+
+   private static $collegeSpellingFixes = ['delta bay' => 'delta', 'delta saginaw' => 'delta'];
+
    private static $romanNumerals = [
       'i' => 1, 'ii' => 2, 'iii' => 3, 'iv' => 4, 'v' => 5, 'vi' => 6,
       'vii' => 7, 'viii' => 8, 'ix' => 9, 'x' => 10
@@ -66,6 +70,26 @@ class SeatTranslator {
          $result['org'] = 'crt-c';
          $result['district'] = Str::substringAfterLast($parts[2], '-');
       }
+
+      // Circuit courts
+      else if ($parts[1] === 'district-court') {
+         $result['org'] = 'crt-d';
+         $result['district'] = Str::substringAfterLast($parts[2], '-');
+      }
+
+      // Appeals courts
+      else if (Str::contains($parts[1], 'court-of-appeals')) {
+         $result['org'] = 'crt-a';
+         $result['district'] = Str::substringAfterLast($parts[2], '-');
+      }
+
+      // Probate courts (map directly to counties, although there are a few that double-up)
+      else if ($parts[3] === 'probate-judge') {
+         $result['org'] = 'crt-p';
+         $result['district'] = $countyCode;
+      }
+
+      else if ($parts[1] === 'governor')  $result['org'] = 'mi';
 
       // All township offices, including councils
       else if ($parts[3] === 'twp' || Str::contains($parts[5], 'township')) {
@@ -130,6 +154,31 @@ class SeatTranslator {
       else if (Str::contains($parts[1], 'state-senat')) {
          $result['org'] = 'mi-sen';
          $result['district'] = strval($this->extractNumberFrom($parts[2]));
+      }
+
+      // schools
+      else if ($parts[3] === 'school') {
+         $result['org'] = 'schl-cou';
+         $name = Str::replaceAll($parts[4], '-', ' ');
+         $removeWords = ['public', 'schools', 'school', 'community', 'district', 'area', 'board', 'consolidated', 'of', 'the', 'city'];
+         $name = Str::removeWords($name, $removeWords);
+//         $name = trim($name);
+         $name = self::$schoolSpellingFixes[$name] ?? $name;
+         $sql = "SELECT id FROM s4schools WHERE county_id=$countyCode AND simplename='$name'";
+         $result['district'] = $this->getJurisdictionId($sql, $jsonSeatId);
+         if ($result['district'] === '0') fwrite(STDERR, "$sql\n");
+      }
+
+      // community colleges
+      else if ($parts[3] === 'cc') {
+         $result['org'] = 'com-col';
+         $name = Str::replaceAll($parts[4], '-', ' ');
+         $removeWords = ['community', 'college', 'county', 'grcc', 'district', '2', '8', '9'];
+         $name = Str::removeWords($name, $removeWords);
+         $name = self::$collegeSpellingFixes[$name] ?? $name;
+         $sql = "SELECT id FROM s4commcolleges WHERE simplename='$name'";
+         $result['district'] = $this->getJurisdictionId($sql, $jsonSeatId);
+         if ($result['district'] === '0') fwrite(STDERR, "$sql\n");
       }
 
       // state house

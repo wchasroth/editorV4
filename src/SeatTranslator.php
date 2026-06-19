@@ -30,6 +30,16 @@ class SeatTranslator {
       'assessor' => 'assess', 'constable' => 'cons'
    ];
 
+   private static $countyOfficeMap = [
+      'prosecuting-attorney' => 'atty',  'county-prosecutor' => 'atty', 'prosecutor' => 'atty',
+      'county-executive' => 'executive',
+      'county-sheriff' => 'sheriff', 'sheriff' => 'sheriff',
+      'county-clerk' => 'clerk', 'county-treasurer' => 'treas',
+      'county-road-commissioner' => 'road', 'road-commissioner' => 'road', 'road-commission' => 'road',
+      'drain-commissioner' => 'drain',
+      'register-of-deeds' => 'reg',
+   ];
+
    private static $villageOfficeMap = [
       'president' => 'pres'
    ];
@@ -155,6 +165,10 @@ class SeatTranslator {
          $result['org'] = 'mi-sen';
          $result['district'] = strval($this->extractNumberFrom($parts[2]));
       }
+      else if (Str::contains($parts[3], "state-senatorial")) {
+         $result['org'] = 'mi-sen';
+         $result['district'] = $this->extractNumberFrom($parts[3]);
+      }
 
       // schools
       else if ($parts[3] === 'school') {
@@ -180,6 +194,13 @@ class SeatTranslator {
          $result['district'] = $this->getJurisdictionId($sql, $jsonSeatId);
          if ($result['district'] === '0') fwrite(STDERR, "$sql\n");
       }
+      else if (Str::contains($parts[3], "community-college")) {
+         $result['org'] = 'com-col';
+         $name = Str::substringBefore($parts[3], "-community-college");
+         $sql = "SELECT id FROM s4commcolleges WHERE simplename='$name'";
+         $result['district'] = $this->getJurisdictionId($sql, $jsonSeatId);
+         if ($result['district'] === '0') fwrite(STDERR, "$sql\n");
+      }
 
       // state house
       else if (Str::contains($parts[1], 'state-represent')) {
@@ -195,6 +216,24 @@ class SeatTranslator {
          $result['org'] = 'us-hou';
          $result['district'] = strval($this->extractNumberFrom($parts[2]));
       }
+
+      else if (Str::contains($parts[3], 'county-commission')) {
+         $result['org'] = 'cnty-com';
+         $result['district'] = $countyCode;
+      }
+
+      else {
+         $office = self::$countyOfficeMap[$parts[3]] ?? '';
+         if (empty($office)) fwrite (STDERR, "Office not found: $jsonSeatId\n");
+         else {
+            $result['org']      = 'cnty';
+            $result['office']   = $office;
+            $result['district'] = $countyCode;
+            $result['subdist']  = $this->extractNumberFrom($parts[4]);
+         }
+      }
+
+      // Everything remaining SHOULD (?) be county offices.
       return $result;
    }
 

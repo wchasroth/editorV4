@@ -17,6 +17,7 @@ CREATE TABLE           v4filings (
 
    termyears   tinyint       NOT NULL DEFAULT  0,
    partialterm tinyint       NOT NULL DEFAULT  0,
+   partialend  smallint      NOT NULL DEFAULT  0,
    incumbent   tinyint       NOT NULL DEFAULT  0,
    termend     mediumint     NOT NULL DEFAULT  0
 )

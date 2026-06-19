@@ -59,7 +59,8 @@ class SeatTranslator {
    }
 
    public function translate(string $jsonSeatId): array {
-      $result = ['org' => '', 'office' => '', 'district' => '', 'subdist' => 0, 'seatnum' => 0];
+      $result = ['org' => '', 'office' => '', 'district' => '', 'subdist' => 0, 'seatnum' => 0,
+         'partialterm' => 0, 'partialend' => 0];
 
       //---Ignore these for now (village doesn't have a FIPS code yet)
       if (Str::contains($jsonSeatId, 'delegate', 'library', 'lakeside-park-village'))  return $result;
@@ -69,6 +70,13 @@ class SeatTranslator {
       $parts[3] = $parts[3] ?? '';
       $parts[4] = $parts[4] ?? '';
       $parts[5] = $parts[5] ?? '';
+
+      if (Str::contains($jsonSeatId, 'partial-term')) {
+         $result['partialterm'] = 1;
+         $partialText = Str::substringAfter($jsonSeatId, 'partial-term');
+         $lastWord    = Str::substringAfterLast($partialText, '-');
+         $result['partialend']  = $this->extractNumberFrom($lastWord);
+      }
 
       $countyCode   = $this->getCountyCode($parts[2]);   // for all that have, else 0.
 

@@ -29,16 +29,19 @@ foreach ($candidates as $candidate) {
       $party = trim((($candidate['party'] ?? '') . " ")[0]);
       $id = calculateId($candidate);
       if ($candidate['partial_term']) $seatArray['partialterm'] = 1;
-//    echo $candidate['name'] . "  $party  " . Str::join($seatArray, ':') . "\n";
 
       if (Str::contains($candidate['status'], 'withdrawn', 'disqualified')) {
          $pdo->run("DELETE FROM v4filings WHERE id = '$id'");
       } else {
+         $meta = $candidate['metadata'];
          $sqlFields = new SqlFields([
             'id' => $candidate['id'], 'org' => $seatArray['org'], 'office' => $seatArray['office'],
             'district' => $seatArray['district'], 'subdist' => $seatArray['subdist'],
             'name' => $candidate['name'], 'party' => $party,
             'partialterm' => $seatArray['partialterm'], 'partialend' => $seatArray['partialend'],
+            'web' => $meta['campaign_website'] ?? '', 'email' => $meta['email'] ?? '',
+            'headshot' => $meta['headshot_url'] ?? '', 'description' => $meta['statement'] ?? '',
+            'phone' => $meta['phone'] ?? ''
          ]);
          $result = $pdo->runSF("INSERT INTO v4filings", "", $sqlFields, true);
          if ($result->failed()) fwrite(STDERR, "INSERT failed: " . $result->getError() . "  " . $result->getRawSql() . "\n");
@@ -48,5 +51,5 @@ foreach ($candidates as $candidate) {
 
 function calculateId(array $candidate): string {
    $name = NameSimplifier::simplify($candidate['name']);
-   return hash("sha256", $candidate['election_id'] . $candidate['seat_id'] . $name);
+   return substr(hash("sha256", $candidate['election_id'] . $candidate['seat_id'] . $name), 0, 32);
 }

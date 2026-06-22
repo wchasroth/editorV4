@@ -11,7 +11,8 @@ use CharlesRothDotNet\Alfred\SqlFields;
 require_once('vendor/autoload.php');
 
 // importJsonFilings.php
-//    using JSON produced by Jon O for candidates
+//    Imports 'enriched' JSON produced by Jon O, to build a table of known-filed candidates for the election.
+//    Populates the v4filings table, which is then used by other tools to add candidates to v4candidates.
 
 $jsonFile   = $argv[1];
 $env        = new EnvFile("_env");

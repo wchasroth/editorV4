@@ -41,7 +41,7 @@ foreach ($candidates as $candidate) {
             'name' => $candidate['name'], 'party' => $party,
             'partialterm' => $seatArray['partialterm'], 'partialend' => $seatArray['partialend'],
             'web' => $meta['campaign_website'] ?? '', 'email' => $meta['email'] ?? '',
-            'headshot' => $meta['headshot_url'] ?? '', 'description' => $meta['statement'] ?? '',
+            'headshot_url' => $meta['headshot_url'] ?? '', 'description' => $meta['statement'] ?? '',
             'phone' => $meta['phone'] ?? ''
          ]);
          $result = $pdo->runSF("INSERT INTO v4filings", "", $sqlFields, true);

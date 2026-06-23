@@ -37,9 +37,10 @@ foreach ($uncontestedKeyRows as $keyRow) {
 
    //---If we found a match, update each info field (where the original was empty)
    if ($candidateId > 0) {
-      foreach (['web', 'email', 'phone', 'headshot', 'description', 'party'] as $fieldKey) {
-         if ($filing[$fieldKey] !== '') {
-            $sql = "UPDATE v4candidates SET $fieldKey = '{$filing[$fieldKey]}' WHERE id = $candidateId AND $fieldKey = ''";
+      foreach (['web', 'email', 'phone', 'headshot_url', 'description', 'party'] as $fieldKey) {
+         $fieldValue = $filing[$fieldKey] ?? '';
+         if (! empty($fieldValue)) {
+            $sql = "UPDATE v4candidates SET $fieldKey = '$fieldValue' WHERE id = $candidateId AND $fieldKey = ''";
             $result = $pdo->run($sql);
             if ($result->failed())  fwrite(STDERR, "Field update failed: $sql\n");
          }
@@ -48,29 +49,44 @@ foreach ($uncontestedKeyRows as $keyRow) {
 
    // No matches found.  First, look for EMPTY candidate rows that otherwise match.
    else {
-
-   }
-
-   //---No matches to existing candidates were found.  Add this candidate, pointing to the 1st seatId.
-   if ($candidateId < 0) {
+      $emptyCandidateId = findMatchingEmptyCandidateId($pdo, $seatIds);
       $name = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $filing['name']);
-      $insertFields = [
-         'seat_id' => $seatIds[0], 'name' => $name, 'party' => $filing['party'],
-         'web' => $filing['web'], 'email' => $filing['email'], 'phone' => $filing['phone'],
-         'headshot' => $filing['headshot'], 'description' => $filing['description'],
-         'source' => 'jon-uncon'
-      ];
-      $insertResult = $pdo->runSF ("INSERT INTO v4candidates", "", new SqlFields($insertFields), true);
-      if ($insertResult->failed())  fwrite (STDERR, "Insert candidate failed: " . $insertResult->getError() . "  " . $insertResult->getRawSql() . "\n");
-   }
 
-//   $sql = "SELECT * FROM v4candidates WHERE seat_id IN (" . Str::join($candidateSeatIds, ',') . ")";
-//   $candidates = $pdo->run($sql)->getRows();
-//   $filings = $pdo->runSF("SELECT * FROM v4filings WHERE", "$termClause", new SqlFields($sqlFields), true);
+      //---Found existing empty candidate row; fill it in ENTIRELY from v4filings row.
+      if ($emptyCandidateId > 0) {
+         $updateFields = [
+            'name' => $name, 'party' => $filing['party'],
+            'web' => $filing['web'], 'email' => $filing['email'], 'phone' => $filing['phone'],
+            'headshot_url' => $filing['headshot_url'] ?? '', 'description' => $filing['description'],
+            'source' => 'jon-uncon'
+         ];
+         $sqlFields = new SqlFields($updateFields);
+         $sql = "UPDATE V4candidates SET " . $sqlFields->getSetFragment() . " WHERE id=$emptyCandidateId ";
+         $updateResult = $pdo->run($sql);
+         if ($updateResult->failed()) {
+            fwrite(STDERR, "Candidate update failed: " . $updateResult->getError() . "  $sql\n");
+         }
+      }
+
+      //---No rows at all in v4candidates; add this candidate, pointing to the 1st seatId.
+      else {
+         $insertFields = [
+            'seat_id' => $seatIds[0], 'name' => $name, 'party' => $filing['party'],
+            'web' => $filing['web'], 'email' => $filing['email'], 'phone' => $filing['phone'],
+            'headshot_url' => $filing['headshot_url'] ?? '', 'description' => $filing['description'],
+            'source' => 'jon-uncon'
+         ];
+         $insertResult = $pdo->runSF("INSERT INTO v4candidates", "", new SqlFields($insertFields), true);
+         if ($insertResult->failed()) fwrite(STDERR, "Insert candidate failed: " . $insertResult->getError() . "  " . $insertResult->getRawSql() . "\n");
+      }
+   }
 }
 
-function findMatchingEmptyCandidateRow (AlfredPDO $pdo, array $seatIds): int {
-   return 0;
+function findMatchingEmptyCandidateId (AlfredPDO $pdo, array $seatIds): int {
+   $sql = "SELECT id FROM v4candidates WHERE seat_id IN (" . Str::join($seatIds, ',') . ") AND name='' ";
+   $queryResult = $pdo->run($sql);
+   if ($queryResult->getRowCount() === 0)  return -1;
+   return intval($queryResult->getSingleValue('id'));
 }
 
 function findCandidateIdMatchingFiling (AlfredPDO $pdo, array $filing, array $seatIds): int {

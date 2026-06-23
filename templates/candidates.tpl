@@ -314,6 +314,8 @@
             {if $row['headshot'] != ''}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['headshot']}');"
                   ><img id='photo-{$row['can_id']}' src="PHOTOS_CAN/{$row['headshot']}" width="40"/></a>
+            {elseif $row['headshot_url'] != ''}
+               <a href="{$row['headshot_url']}" target="_blank"><img src="{$row['headshot_url']}" width="40"/></a>
             {else}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '');"
                   ><img id='photo-{$row['can_id']}' src="IMG/noPerson2.png"         width="40"/></a>

@@ -42,7 +42,7 @@ foreach ($candidates as $candidate) {
             'partialterm' => $seatArray['partialterm'], 'partialend' => $seatArray['partialend'],
             'web' => $meta['campaign_website'] ?? '', 'email' => $meta['email'] ?? '',
             'headshot_url' => $meta['headshot_url'] ?? '', 'description' => $meta['statement'] ?? '',
-            'phone' => $meta['phone'] ?? ''
+            'phone' => $meta['phone'] ?? '', 'confidence' => $meta['confidence'] ?? ''
          ]);
          $result = $pdo->runSF("INSERT INTO v4filings", "", $sqlFields, true);
          if ($result->failed()) fwrite(STDERR, "INSERT failed: " . $result->getError() . "  " . $result->getRawSql() . "\n");

@@ -24,7 +24,12 @@ $uncontestedKeyRows = getKeysForUncontestedFilings($pdo);
 foreach ($uncontestedKeyRows as $keyRow) {
    $seatIds = getSeatsMatchingKeyRow($pdo, $keyRow);
 
-   if (count($seatIds) === 0) {
+   if ($seatIds[0] === -1) {  // Can't match -- log and skip!
+      fwrite(STDERR, "Probable error: " . ArrayHelper::showKeyValuePairs($keyRow, ", ") . "\n");
+      continue;
+   }
+
+   if ($seatIds[0] === 0) {
       $keyFields = makeKeyFieldsFromKeyRow($keyRow);
       $keyFields['source'] = 'jon-uncon';
       $result = $pdo->runSF ("INSERT INTO v4seats", "", new SqlFields($keyFields), true);
@@ -111,11 +116,45 @@ function getUncontestedFiling(AlfredPDO $pdo, array $keyRow): array {
    return $rows[0] ?? [];
 }
 
+//function getSeatsMatchingKeyRow (AlfredPDO $pdo, array $keyRow) {
+//   $sqlFields  = new SqlFields(makeKeyFieldsFromKeyRow($keyRow));
+//   $termClause = " AND ( termlen =0  OR ((termcycle + 6*termlen) - 2026) % termlen = 0) ";
+//   $result = $pdo->runSF("SELECT id FROM v4seats WHERE", "$termClause", $sqlFields, true);
+//   return $result->getArrayOf('id');
+//}
+
 function getSeatsMatchingKeyRow (AlfredPDO $pdo, array $keyRow) {
    $sqlFields  = new SqlFields(makeKeyFieldsFromKeyRow($keyRow));
-   $termClause = " AND ( termlen =0  OR ((termcycle + 6*termlen) - 2026) % termlen = 0) ";
-   $result = $pdo->runSF("SELECT id FROM v4seats WHERE", "$termClause", $sqlFields, true);
-   return $result->getArrayOf('id');
+   $queryResult = $pdo->runSF("SELECT id, termlen, termcycle FROM v4seats WHERE", "", $sqlFields, true);
+   $rows = $queryResult->getRows();
+
+   $result = [];
+   //---phase 1: this election, or partial term
+   foreach ($rows AS $row) {
+      $id          = intval($row['id']);
+      $termlen     = intval($row['termlen']);
+      $termcycle   = intval($row['termcycle']);
+      $partialterm = intval($keyRow['partialterm']);
+      $partialend  = intval($keyRow['partialend']);
+      if ($termlen === 0                       ||                           /* unknown term length */
+          cycle($termcycle,  $termlen)  === 0  ||                           /* up for election in 2026 */
+          cycle($partialend, $termlen)  === cycle($termcycle, $termlen) ||  /* partial term ends in matching year */
+          $partialterm === 1)                                               /* partialterm, but we don't know ending year */
+        $result[] = $id;
+   }
+   if (count($result) > 0)  return $result;
+
+   //---phase 2: no matches, but an unknown number of seats -- tell caller to insert a new row in v4seats.
+   $sql = "SELECT seats FROM s4titles WHERE org='{$keyRow['org']}' AND office='{$keyRow['office']}'";
+   $seats = $pdo->run($sql)->getSingleValue('seats');
+   if ($seats === 0)  return [0];
+
+   //---phase 3: no matches, hard-coded # of seats (usually 1): tell caller to skip inserting this row
+   return [-1];
+}
+
+function cycle (int $termcycle, int $termlen): int {
+   return ($termcycle + 6 * $termlen - 2026) % $termlen;
 }
 
 function makeKeyFieldsFromKeyRow(array $keyRow): array {
@@ -124,17 +163,11 @@ function makeKeyFieldsFromKeyRow(array $keyRow): array {
 
 function getKeysForUncontestedFilings(AlfredPDO $pdo): array {
    $result = [];
-   $sql = "SELECT count(*) AS ct, org, office, district, subdist FROM v4filings GROUP BY org, office, district, subdist";
+   $sql = "SELECT count(*) AS ct,    org, office, district, subdist, partialterm, partialend, confidence "
+        . "  FROM v4filings GROUP BY org, office, district, subdist, partialterm, partialend, confidence ";
    $queryResult = $pdo->run($sql);
    foreach ($queryResult->getRows() as $row) {
       if (intval($row['ct']) == 1)  $result[] = $row;
    }
    return $result;
 }
-
-
-
-function findMatchingCandidates(AlfredPDO $pdo, array $seatIds): array {
-   return [];
-}
-

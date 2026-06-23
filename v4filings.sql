@@ -15,6 +15,7 @@ CREATE TABLE           v4filings (
    phone        varchar(  36) NOT NULL DEFAULT '',
    headshot_url varchar( 240) NOT NULL DEFAULT '',
    description  varchar(8000) NOT NULL DEFAULT '',
+   confidence   varchar(  12) NOT NULL DEFAULT  '',
 
    termyears   tinyint       NOT NULL DEFAULT  0,
    partialterm tinyint       NOT NULL DEFAULT  0,

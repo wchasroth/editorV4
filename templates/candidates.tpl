@@ -16,13 +16,17 @@
         /* font-size: 0.8rem; */
       }
       .smaller { font-size: 85%; }
+      .zebra0 { background-color: #FFFFFF; }
+      .zebra1 { background-color: #d2d2d2; }
       .zebra {
+         /*
          tr:nth-child(even) {
             background-color: #d2d2d2;
          }
          tr:nth-child(odd) {
             background-color: #FFFFFF;
          }
+         */
          tr:hover { background-color: aquamarine; }
          td,th { padding-right: 0.5em;  padding-top: 0.1em;  padding-bottom: 0.1em;}
       }
@@ -278,7 +282,8 @@
       </td>
    </tr>
    <tr>
-      <td class="th2 title-target" title-css="Abbreviated name of office.">Office</td>
+      <td class="th2"></td>
+      <td class="th2 title-target" title-css="Abbreviated name of office.">&nbsp;Office</td>
       {if $showDistrict } <td class="th2 title-target" title-css="District">Dist</td>    {/if}
       {if $showSubDist  } <td class="th2 title-target" title-css="District or ward">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
@@ -292,9 +297,20 @@
       <td class="th2a" colspan='2'>Email</td>
       <td class="th2a" colspan='2'>Phone</td>
    </tr>
+   {$seatid = 0}
+   {$shadow = 1}
    {foreach from=$rows item=row}
-      <tr valign="top">
-         <td style="white-space: nowrap;"     class="smaller">&nbsp;{$row['shortname']}</td>
+      {if $seatid != $row['id']} {$shadow = 1 - $shadow} {/if}
+      <tr valign="top" class="zebra{$shadow}">
+         <td><img src="IMG/trash.png" width="14" style="margin: 1px;"/></td>
+         <td style="white-space: nowrap;"     class="smaller">
+            {if $seatid != $row['id']}
+               &nbsp;{$row['shortname']}<br/>
+               &nbsp;&nbsp;<img src="IMG/plus.png" width="20"/>
+               <!-- <span style="font-size: 150%; color:  #53d5fd;">&nbsp;+</span> -->
+            {/if}
+         </td>
+         {$seatid = $row['id']}
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}
              <!-- <td align='right' class="smaller"> -->
@@ -312,7 +328,7 @@
              onChange="changed(this.name);"
              {if $row['endorsed'] == 1} checked {/if}
          /></td>
-         <td><input name="i:{$row['can_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
+         <td><input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/></td>
          <td>
             {if $row['headshot'] != ''}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['headshot']}');"

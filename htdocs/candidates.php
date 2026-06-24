@@ -81,17 +81,18 @@ $quotedOrgs = Str::join($orgs, ",");
 
 $counties = [];
 $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.headshot, c.headshot_url, c.endorsed, "
-     . "            c.id AS can_id, t.seats, c.description "
+     . "            c.id AS can_id, t.seats, c.description, c.source "
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4candidates AS c   ON (s.id = c.seat_id) \n"
      . "  LEFT JOIN s4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
      . "  WHERE s.org in ($quotedOrgs) \n"
      . makeDistrictClause($district) . "\n"
-     . "    AND s.termlen   > 0 "
-     . "    AND s.termcycle > 0 "
+//   . "    AND s.termlen   > 0 "
+//   . "    AND s.termcycle > 0 "
      . "    AND ("
      . "       ( ( (s.termcycle + 6 * s.termlen) - 2026) % s.termlen = 0) "
      . "       OR s.is_open = 1 "
+     . "       OR s.termcycle = 2026 "
      . "    )"
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 

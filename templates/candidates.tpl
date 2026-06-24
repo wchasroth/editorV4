@@ -283,6 +283,7 @@
       {if $showSubDist  } <td class="th2 title-target" title-css="District or ward">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
       <td class="th2 title-target" title-css="Term length, in years">TL</td>
+      <td class="th2 title-target" title-css="Source of candidate info">Src</td>
       <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed?</td>
       <td class="th2a">&nbsp;Name</td>
       <td class="th2a">&nbsp;Photo</td>
@@ -303,8 +304,10 @@
          {if $showSeat}
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
-         <!-- <td><input name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td> -->
          <td align='right' class="smaller">{$row['termlen']}</td>
+         <td>
+            {if $row['source'] != ''}AI{/if}
+         </td>
          <td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="i:{$row['can_id']}:endorsed" value="1"
              onChange="changed(this.name);"
              {if $row['endorsed'] == 1} checked {/if}

@@ -25,15 +25,24 @@ foreach ($uncontestedKeyRows as $keyRow) {
    $seatIds = getSeatsMatchingKeyRow($pdo, $keyRow);
 
    if ($seatIds[0] === -1) {  // Can't match -- log and skip!
-      fwrite(STDERR, "Probable error: " . ArrayHelper::showKeyValuePairs($keyRow, ", ") . "\n");
+      fwrite(STDERR, "Probable error or missing partial-term: " . ArrayHelper::showKeyValuePairs($keyRow, ", ") . "\n");
       continue;
    }
 
+// $addedSeat = false;
    if ($seatIds[0] === 0) {
+//    $addedSeat = true;
       $keyFields = makeKeyFieldsFromKeyRow($keyRow);
       $keyFields['source'] = 'jon-uncon';
+      if ($keyRow['partialterm'] > 0  ||  $keyRow['partialend'] > 0) {
+         $keyFields['is_open'] = 1;
+         $keyFields['termcycle'] = $keyRow['partialend'];
+      }
+      else $keyFields['termcycle'] = 2026;
+
       $result = $pdo->runSF ("INSERT INTO v4seats", "", new SqlFields($keyFields), true);
-      $seatIds[] = $result->getInsertId();
+      if ($result->failed()) echo "INSERT v4seats error: " . $result->getError() . "\n";
+      $seatIds[0] = $result->getInsertId();
    }
 
    $filing = getUncontestedFiling($pdo, $keyRow);
@@ -45,7 +54,7 @@ foreach ($uncontestedKeyRows as $keyRow) {
       foreach (['web', 'email', 'phone', 'headshot_url', 'description', 'party'] as $fieldKey) {
          $fieldValue = $filing[$fieldKey] ?? '';
          if (! empty($fieldValue)) {
-            $sql = "UPDATE v4candidates SET $fieldKey = '$fieldValue' WHERE id = $candidateId AND $fieldKey = ''";
+            $sql = "UPDATE v4candidates SET $fieldKey = " . Str::singleQuoted($fieldValue) . " WHERE id = $candidateId AND $fieldKey = ''";
             $result = $pdo->run($sql);
             if ($result->failed())  fwrite(STDERR, "Field update failed: $sql\n");
          }
@@ -62,7 +71,8 @@ foreach ($uncontestedKeyRows as $keyRow) {
          $updateFields = [
             'name' => $name, 'party' => $filing['party'],
             'web' => $filing['web'], 'email' => $filing['email'], 'phone' => $filing['phone'],
-            'headshot_url' => $filing['headshot_url'] ?? '', 'description' => $filing['description'],
+            'headshot_url' => $filing['headshot_url'] ?? '',
+            'description' => Str::singleQuoted($filing['description']),
             'source' => 'jon-uncon'
          ];
          $sqlFields = new SqlFields($updateFields);
@@ -81,6 +91,7 @@ foreach ($uncontestedKeyRows as $keyRow) {
             'headshot_url' => $filing['headshot_url'] ?? '', 'description' => $filing['description'],
             'source' => 'jon-uncon'
          ];
+//       if ($addedSeat) echo "In insertFields: " . ArrayHelper::showKeyValuePairs($insertFields) . "\n";
          $insertResult = $pdo->runSF("INSERT INTO v4candidates", "", new SqlFields($insertFields), true);
          if ($insertResult->failed()) fwrite(STDERR, "Insert candidate failed: " . $insertResult->getError() . "  " . $insertResult->getRawSql() . "\n");
       }
@@ -110,9 +121,15 @@ function findCandidateIdMatchingFiling (AlfredPDO $pdo, array $filing, array $se
 
 function getUncontestedFiling(AlfredPDO $pdo, array $keyRow): array {
    $keyFields = makeKeyFieldsFromKeyRow($keyRow);
-   $result = $pdo->runSF("SELECT * FROM v4filings WHERE", "", new SqlFields($keyFields), true);
+   $keyFields['partialterm'] = $keyRow['partialterm'];
+   $keyFields['partialend']  = $keyRow['partialend'];
+
+   $sqlFields = new SqlFields($keyFields);
+   $whereClause = $sqlFields->getSelectFragment();
+   $sql = "SELECT * FROM v4filings WHERE $whereClause";
+   $result = $pdo->run($sql);
    $rows = $result->getRows();
-   if (count($rows) != 1) fwrite(STDERR, "getUncontestedFiling: Expected one row, got " . count($rows) . "\n");
+   if (count($rows) != 1) fwrite(STDERR, "getUncontestedFiling: Expected one row, got " . count($rows) . " $sql\n");
    return $rows[0] ?? [];
 }
 
@@ -163,8 +180,8 @@ function makeKeyFieldsFromKeyRow(array $keyRow): array {
 
 function getKeysForUncontestedFilings(AlfredPDO $pdo): array {
    $result = [];
-   $sql = "SELECT count(*) AS ct,    org, office, district, subdist, partialterm, partialend, confidence "
-        . "  FROM v4filings GROUP BY org, office, district, subdist, partialterm, partialend, confidence ";
+   $sql = "SELECT count(*) AS ct,    org, office, district, subdist, partialterm, partialend "
+        . "  FROM v4filings GROUP BY org, office, district, subdist, partialterm, partialend ";
    $queryResult = $pdo->run($sql);
    foreach ($queryResult->getRows() as $row) {
       if (intval($row['ct']) == 1)  $result[] = $row;

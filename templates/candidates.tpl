@@ -7,7 +7,7 @@
    <link rel="stylesheet" href="editor.css">
    <style>
       td, input { font-size: 90%;  margin: 0; padding: 0;}
-      input[type="checkbox"] { accent-color: lightgreen; }
+      /* input[type="checkbox"] { accent-color: lightgreen; } */
       input { border: 0;  background-color: inherit; }
       td    { background-color: inherit; }
 
@@ -105,6 +105,55 @@
           box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       }
 
+      input[type="checkbox"].look-like-radio {
+         /* Remove the default browser checkbox styling */
+         -webkit-appearance: none;
+         appearance: none;
+         margin: 0;
+
+         /* Create the custom circular radio container */
+         width: 1.25em;
+         height: 1.25em;
+         border: 2px solid #5c5c5c;
+         border-radius: 50%;
+
+         /* Align it inline with your text label */
+         display: inline-grid;
+         place-content: center;
+         vertical-align: middle;
+         cursor: pointer;
+      }
+
+      /* Style the inner dot for the checked state */
+      input[type="checkbox"].look-like-radio::before {
+         content: "";
+         width: 0.65em;
+         height: 0.65em;
+         border-radius: 50%;
+         transform: scale(0);
+         transition: 120ms transform ease-in-out;
+         /* background-color: #2196F3;*/ /* Color of the center dot */
+         background-color: green; /* Color of the center dot */
+      }
+
+      /* Show the inner dot when the checkbox is checked */
+      input[type="checkbox"].look-like-radio:checked::before {
+         transform: scale(1);
+      }
+
+      /* Optional: Match the outer border color when checked */
+      input[type="checkbox"].look-like-radio:checked {
+         /* border-color: #2196F3; */
+         border-color: green;
+      }
+
+      /* Optional: Add a focus state for keyboard accessibility */
+      /*
+      input[type="checkbox"].look-like-radio:focus {
+         outline: 2px solid #000;
+         outline-offset: 2px;
+      }
+      */
 
    </style>
    <script>
@@ -347,7 +396,7 @@
          </script>
 
          <td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="i:{$row['can_id']}:endorsed" value="1"
-             class="radio{$seatid}"
+             class="radio{$seatid} look-like-radio"
              onChange="flip('radio{$seatid}', 'i:{$row['can_id']}:endorsed');"
              {if $row['endorsed'] == 1} checked {/if}
          /></td>

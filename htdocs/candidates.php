@@ -59,6 +59,7 @@ if ($canEdit) {
          else if ($parts[2] == "phone")         $value = FieldFormatFixer::fixPhone($value);
          else if ($parts[2] == "description")   $value = urldecode($value);
          else if ($parts[2] == "endorsed")      $value = intval($value);
+         else if ($parts[2] == "reviewed")      $value = intval($value);
          $sqlFields = new SqlFields([$parts[2] => $value]);
          $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
          $logger->log("Save Changes: " . $query);
@@ -81,7 +82,7 @@ $quotedOrgs = Str::join($orgs, ",");
 
 $counties = [];
 $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.headshot, c.headshot_url, c.endorsed, "
-     . "            c.id AS can_id, t.seats, c.description, c.source "
+     . "            c.id AS can_id, t.seats, c.description, c.source, c.reviewed "
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4candidates AS c   ON (s.id = c.seat_id) \n"
      . "  LEFT JOIN s4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"
@@ -97,7 +98,7 @@ $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.hea
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 
 $result = $pdo->run($sql);
-$logger->log("BIG SQL: $sql");
+//$logger->log("BIG SQL: $sql");
 if ($result->failed()) $logger->log("Failed main select: " . $result->getError() . "  $sql");
 
 //---Where the LEFT JOIN v4candidates found no candidate rows, create empty ones, with the seat_id set.

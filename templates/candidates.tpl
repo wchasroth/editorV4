@@ -289,7 +289,8 @@
       {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
       <td class="th2 title-target" title-css="Term length, in years">TL</td>
       <td class="th2 title-target" title-css="Source of candidate info">Src</td>
-      <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed?</td>
+      <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed</td>
+      <td class="th2a title-target" title-css="Reviewed for correctness?">Rev</td>
       <td class="th2a">&nbsp;Name</td>
       <td class="th2a">&nbsp;Photo</td>
       <td class="th2a" style="min-width: 10em;">&nbsp;Statement</td>
@@ -302,12 +303,15 @@
    {foreach from=$rows item=row}
       {if $seatid != $row['id']} {$shadow = 1 - $shadow} {/if}
       <tr valign="top" class="zebra{$shadow}">
-         <td><img src="IMG/trash.png" width="14" style="margin: 1px;"/></td>
+         <td>
+            <img src="IMG/trash.png" width="14" style="margin: 1px;"/ onClick="confirm('trash');">
+            {if $seatid != $row['id']}
+               <br/><img src="IMG/plus.png"  width="15" style="margin-left: 1px;" onClick="confirm('plus');"/>
+            {/if}
+         </td>
          <td style="white-space: nowrap;"     class="smaller">
             {if $seatid != $row['id']}
                &nbsp;{$row['shortname']}<br/>
-               &nbsp;&nbsp;<img src="IMG/plus.png" width="20"/>
-               <!-- <span style="font-size: 150%; color:  #53d5fd;">&nbsp;+</span> -->
             {/if}
          </td>
          {$seatid = $row['id']}
@@ -328,6 +332,11 @@
              onChange="changed(this.name);"
              {if $row['endorsed'] == 1} checked {/if}
          /></td>
+         <td>
+            &nbsp;<input type="checkbox" name="i:{$row['can_id']}:reviewed" value="1"
+               onChange="changed(this.name);"
+               {if $row['reviewed'] == 1} checked {/if} />
+         </td>
          <td><input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/></td>
          <td>
             {if $row['headshot'] != ''}

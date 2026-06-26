@@ -128,6 +128,7 @@ for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['web']       = stripHttps ($rows[$i]['web']);
    $rows[$i]['url']       = addProtocol($rows[$i]['web']);
    if (intval($rows[$i]['subdist']) == 0)  $rows[$i]['subdist'] = '';
+   $rows[$i]['plus'] = ($i < $count-1  &&  $rows[$i]['id'] != $rows[$i+1]['id'] ? 1 : 0);
 }
 
 $regionColumnName = "Reg";

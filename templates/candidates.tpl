@@ -353,9 +353,9 @@
       {if $seatid != $row['id']} {$shadow = 1 - $shadow} {/if}
       <tr valign="top" class="zebra{$shadow}">
          <td>
-            <img src="IMG/trash.png" width="14" style="margin: 1px;"/ onClick="confirm('trash');">
-            {if $seatid != $row['id']}
-               <br/><img src="IMG/plus.png"  width="15" style="margin-left: 1px;" onClick="confirm('plus');"/>
+            <img src="IMG/trash.png" width="14" style="margin: 1px;"/ onClick="confirm('will delete this candidate');">
+            {if $row['plus'] == 1}
+               <br/><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" onClick="confirm('will add a new candidate row');"/>
             {/if}
          </td>
          <td style="white-space: nowrap;"     class="smaller">

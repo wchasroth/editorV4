@@ -328,8 +328,27 @@
          <td>
             {if $row['source'] != ''}AI{/if}
          </td>
+
+         <script>
+            function flip(radioGroupName, endorsedRowName) {
+               let endorsed   = document.getElementsByName(endorsedRowName)[0];
+               let radioGroup = document.getElementsByClassName(radioGroupName);
+               for (let i=0;   i<radioGroup.length;   ++i) {
+                  if (radioGroup[i].name !== endorsed.name) {
+                     /* confirm(radioGroup[i].name + " is checked: " + radioGroup[i].checked); */
+                     if (radioGroup[i].checked) {
+                        radioGroup[i].checked = false;
+                        changed(radioGroup[i].name);
+                     }
+                  }
+               }
+               changed(endorsedRowName);
+            }
+         </script>
+
          <td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="i:{$row['can_id']}:endorsed" value="1"
-             onChange="changed(this.name);"
+             class="radio{$seatid}"
+             onChange="flip('radio{$seatid}', 'i:{$row['can_id']}:endorsed');"
              {if $row['endorsed'] == 1} checked {/if}
          /></td>
          <td>

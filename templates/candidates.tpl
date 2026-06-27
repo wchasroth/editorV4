@@ -357,7 +357,10 @@
                  onClick="return continueIfDataUnChanged()  &&  confirm('OK to delete {$row['name']}?');"
                ><img src="IMG/trash.png" width="14" style="margin: 1px;"/></a>
             {if $row['plus'] == 1}
-               <br/><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" onClick="confirm('will add a new candidate row');"/>
+               <br/>
+               <a href="addCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
+                  onClick="return continueIfDataUnChanged();"
+               ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;"/></a>
             {/if}
          </td>
          <td style="white-space: nowrap;"     class="smaller">

@@ -457,6 +457,47 @@
 </table>
 </form>
 <p/>
+{if $expandableOrgs|count > 0  and  $canEdit}
+   <div id="pop-up-changed" class="pop-up" style="width: 300px;">
+      Save changes first!
+   </div>
+   <form id="addSeats1" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
+   <form id="addSeats2" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
+   <div style="max-width: 40em;">
+      <b>New Seats:</b> If this page is missing some offices or seats, you can add new "empty" seats, below.
+      Then proceed to fill in the data for each new seat.
+   </div>
+   <p/>
+   <table style="margin-left: 2em;" border="0">
+      {foreach from=$expandableOrgs item=org}
+         <tr>
+            {if     $org == 'cnty'}       {include file="inc_office.tpl"  org=$org title="county office"}
+
+            {elseif $org == 'cnty-com'}   {include file="inc_council.tpl" org=$org title="county commissioner"  dt="District"}
+
+            {elseif $org == 'city'}       {include file="inc_office.tpl"  org=$org title="city office:"}
+            {elseif $org == 'city-cou'}
+               {$ward = ($showSubDist ? 'Ward' : '') }
+               {include file="inc_council.tpl" org=$org title="city council"         dt=$ward}
+
+            {elseif $org == 'town'}       {include file="inc_office.tpl"  org=$org title="township office:"}
+            {elseif $org == 'town-cou'}   {include file="inc_council.tpl" org=$org title="township trustee/council"}
+
+            {elseif $org == 'vil'}        {include file="inc_office.tpl"  org=$org title="village office:"}
+            {elseif $org == 'vil-cou'}    {include file="inc_council.tpl" org=$org title="village trustee/council"}
+
+            {elseif $org == 'schl-cou'}   {include file="inc_council.tpl" org=$org title="school board"}
+
+            {elseif $org == 'comcol-cou'} {include file="inc_council.tpl" org=$org title="board member"}
+
+            {elseif $org|substr:0:3 == 'crt'}  {include file="inc_council.tpl" org=$org title="judge"}
+            {/if}
+         </tr>
+         <tr><td>&nbsp;</td></tr>
+      {/foreach}
+   </table>
+   </form>
+{/if}
 
 
 

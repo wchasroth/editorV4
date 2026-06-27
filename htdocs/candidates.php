@@ -69,6 +69,26 @@ if ($canEdit) {
    }
 }
 
+//---Handle new offices (form submission)
+else if (! Str::isReallyEmpty($office)) {
+   $sql = "SELECT seats FROM s4titles WHERE org='$org' AND office='$office'";
+   $result = $pdo->run($sql);
+   $logger->log("seatmax: $sql   " . $result->getError());
+   $seatmax = intval($result->getSingleValue('seats'));
+   $sql = "INSERT INTO v4seats (org, office, district, seatnum, seatmax, termcycle) VALUES ('$org', '$office', '$qsDistrict', 1, $seatmax, 2026)";
+   $pdo->run($sql);
+}
+
+//---Handle new seats on commission/council (form submission)
+else if (! Str::isReallyEmpty($subdistText)) {
+   $sql = "SELECT MAX(seatnum) as highseat FROM v4seats WHERE org='$org' AND district='$qsDistrict' AND subdist=$subdistNum";
+   $result = runQueryReportErrors($pdo, $logger, $sql);
+   $highseat = intval($result->getSingleValue('highseat')) + 1;
+   $newOffice = (Str::contains($org, "town-cou", "vil-cou") ? "council" : "");
+   $sql = "INSERT INTO v4seats (org, office, district, subdist, seatnum, termcycle) VALUES ('$org', '$newOffice', '$qsDistrict', $subdistNum, $highseat, 2026)";
+   runQueryReportErrors($pdo, $logger, $sql);
+}
+
 $orgs         = Str::split(translateOrgs($qsOrgs), ",");
 $org1         = $orgs[0];
 $district     = $qsDistrict;

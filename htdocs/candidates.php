@@ -28,7 +28,6 @@ $logger  = new DumbFileLogger($env->get('logFile'));
 $county      = HttpGet::value('county');
 $qsOrgs      = HttpGet::value('orgs');
 $qsDistrict  = HttpGet::value('district');
-$reviewedKey = $qsOrgs . ":" . $qsDistrict;
 $qsShow     = HttpGet::value('show');
 $showSaved  = 0;
 

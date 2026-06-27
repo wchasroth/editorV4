@@ -194,8 +194,8 @@
       }
 
       function continueIfDataUnChanged() {
-          if (hasChanged()) { showPopUp('pop-up-changed'); return false; }
-          return true;
+         return ! hasChanged()  ||
+                  confirm("There are un-saved changes!\n\nPress OK if you're sure you want to proceed.\nPress Cancel to stay on the same page.");
       }
 
       function showPopUp(id) {
@@ -353,7 +353,9 @@
       {if $seatid != $row['id']} {$shadow = 1 - $shadow} {/if}
       <tr valign="top" class="zebra{$shadow}">
          <td>
-            <img src="IMG/trash.png" width="14" style="margin: 1px;"/ onClick="confirm('will delete this candidate');">
+            <a href="deleteCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
+                 onClick="return continueIfDataUnChanged()  &&  confirm('OK to delete {$row['name']}?');"
+               ><img src="IMG/trash.png" width="14" style="margin: 1px;"/></a>
             {if $row['plus'] == 1}
                <br/><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" onClick="confirm('will add a new candidate row');"/>
             {/if}

@@ -132,7 +132,7 @@ class PhotoGrabber
             }
         }
 
-        return "OK";
+        return "OK $filename";
     }
 
     /**

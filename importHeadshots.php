@@ -28,6 +28,14 @@ foreach ($queryResult->getRows() as $row) {
    $name = NameSimplifier::simplify($row['name']);
    $name = Str::replaceAll($name, ' ', '_');
    echo "$name  " . $row['headshot_url'] . "\n";
-   $result = PhotoGrabber::downloadPhoto(strval($row['id']), $name, $dir, $row['headshot_url'], true);
-   if ($result != "OK") fwrite(STDERR, "$name $result " . $row['headshot_url'] . "\n");
+   $photoResult = PhotoGrabber::downloadPhoto(strval($row['id']), $name, $dir, $row['headshot_url'], false);
+   if (! Str::startsWith($photoResult, "OK ")) {
+      fwrite(STDERR, "$name $photoResult " . $row['headshot_url'] . "\n");
+      continue;
+   }
+
+   $filename = Str::substringAfter($photoResult, "OK ");
+   $sql = "UPDATE v4candidates SET headshot='$filename' WHERE id={$row['id']}";
+   $result = $pdo->run($sql);
+   if ($result->failed()) fwrite (STDERR, "Error updating headshot: $sql\n");
 }

@@ -407,7 +407,7 @@
          /></td>
          <td>
             &nbsp;<input type="checkbox" name="i:{$row['can_id']}:reviewed" value="1"
-               onChange="changed(this.name);"
+               onChange="changed(this.name);"  style="margin-top: 4px;"
                {if $row['reviewed'] == 1} checked {/if} />
          </td>
          <td><input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/></td>
@@ -463,10 +463,27 @@
    </div>
    <form id="addSeats1" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
    <form id="addSeats2" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
-   <div style="max-width: 40em;">
-      <b>New Seats:</b> If this page is missing some offices or seats, you can add new "empty" seats, below.
-      Then proceed to fill in the data for each new seat.
-   </div>
+   <div style="max-width: 50em;">
+      <b>New Seats:</b>
+      If you have data for a candidate, but their seat <b>does not appear</b> in the list above,
+      there are two possibilities:
+      <ol>
+         <li><b>Partial Term.</b>&nbsp;
+            If the candidate is running in a partial-term election, it means that someone resigned their
+            seat before their term was over.&nbsp;
+            In that case, please check the matching
+            <a href="officials.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}" target="_blank"
+               >incumbent officials page</a>
+            (opens in a new tab).&nbsp;
+            If you can identify who resigned, you can mark that seat there as vacant ("Vac" column), and then "Save Changes".&nbsp;
+            Then close that window, and
+            <a href="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">click here</a>
+            to update this page -- and now you'll see the seat here.
+            <p/>
+         </li>
+         <li><b>Missing Seat.</b>&nbsp;
+            Otherwise, we may simply be missing the data about the seat.&nbsp; Choose one of these options:
+
    <p/>
    <table style="margin-left: 2em;" border="0">
       {foreach from=$expandableOrgs item=org}
@@ -496,6 +513,9 @@
          <tr><td>&nbsp;</td></tr>
       {/foreach}
    </table>
+         </li>
+      </ol>
+   </div>
    </form>
 {/if}
 

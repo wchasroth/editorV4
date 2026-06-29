@@ -51,10 +51,13 @@
    <tr valign='top'>
       <td>
          <div id="canPhoto">
-            {if $headshot == ''} <img id='canPhoto' src="IMG/noPerson2.png"      width='200'/>
-            {else}               <img id='canPhoto' src="PHOTOS_CAN/{$headshot}" width='200'/>
+            {if $headshot == ''}
+               <img id='canPhoto' src="IMG/noPerson2.png"      width='200'/>
+            {else}
+               <a href="PHOTOS_CAN/{$headshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$headshot}" width='200'/></a>
             {/if}
          </div>
+         <i style="font-size: 90%;">(You can click on the photo to see the full-sized version.)</i>
       </td>
       <td>&nbsp; </td>
       <td>

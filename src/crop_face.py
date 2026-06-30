@@ -43,13 +43,13 @@ def main():
             height, width, _ = img.shape
             
             # Expand margins:
-            # Top: 50% of face height
-            # Bottom: 70% of face height
-            # Left & Right: 35% of face width
-            top = int(max(0, y - h * 0.50))
-            bottom = int(min(height, y + h * 1.70))
-            left = int(max(0, x - w * 0.35))
-            right = int(min(width, x + w * 1.35))
+            # Top: 80% of face height (to get more hair/headroom)
+            # Bottom: 110% of face height (to get more of the shoulders/chest)
+            # Left & Right: 60% of face width (to get wider shoulders)
+            top = int(max(0, y - h * 0.80))
+            bottom = int(min(height, y + h * 2.10))
+            left = int(max(0, x - w * 0.60))
+            right = int(min(width, x + w * 1.60))
             
             # Crop and save
             crop = img[top:bottom, left:right]

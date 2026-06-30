@@ -78,7 +78,7 @@ class PhotoGrabber
 
         // 5. Construct destination filepath and save
         $filename = "$nameBase.$ext";
-        $filepath = rtrim($$this->targetFolder, '/\\') . DIRECTORY_SEPARATOR . $filename;
+        $filepath = rtrim($this->targetFolder, '/\\') . DIRECTORY_SEPARATOR . $filename;
 
         if (file_put_contents($filepath, $data) === false)  return new Photo("", "", "Error: Failed to write downloaded data to '$filepath'");
 
@@ -87,7 +87,7 @@ class PhotoGrabber
         $error = "";
         if ($extractHeadshot) {
             $cropname = "$cropBase.$ext";
-            $croppath = rtrim($$this->targetFolder, '/\\') . DIRECTORY_SEPARATOR . $cropname;
+            $croppath = rtrim($this->targetFolder, '/\\') . DIRECTORY_SEPARATOR . $cropname;
 
             $cmd = sprintf( '%s %s %s %s 2>&1', $this->python, escapeshellarg($this->facecropScript), $filepath, $croppath);
             exec($cmd, $output, $returnCode);

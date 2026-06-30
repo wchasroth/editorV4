@@ -31,6 +31,9 @@ $name     = $_GET['name']     ?? '';
 $headshot = $_GET['headshot'] ?? '';
 $photoChanged = 0;
 
+$sql = "SELECT headcropped FROM v4candidates WHERE id=$canId";
+$headcropped = $pdo->run($sql)->getSingleValue('headcropped');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
    $uploadedFile = $_FILES['uploadphoto'];
    $logger->log("Uploaded tmp file: " . $uploadedFile['tmp_name']);
@@ -50,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
 
 $smarty = new SmartyPage();
 $smarty->assign('canId',    $canId);
+$smarty->assign('headcropped',    $headcropped);
 $smarty->assign('name',     $name);
 $smarty->assign('encodedName', rawurlencode($name));
 $smarty->assign('headshot', $headshot);

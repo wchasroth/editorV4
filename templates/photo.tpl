@@ -66,16 +66,24 @@
             You can add a photo in one of two ways:<p/>
          {else}
             This is the current photo for {$name}.&nbsp;
-            You can replace it with a different photo in one of two ways:<p/>
+            You can replace it in several ways:<p/>
          {/if}
 
-         <b>Option 1:</b> upload a photo:
-         <ul style="padding-left: 1.4em;">
-            <li>Click on&nbsp;<input type='file' name='uploadphoto' id='uploadphoto' /></li>
-            <li style="margin-top: 0.4em;">Click on&nbsp;<input type='submit' onClick="return confirmFileSelected();" value='Upload photo' /></li>
-         </ul>
+         {$option = 1}
+         {if $headcropped == 1}
+         <b>Option {$option}:</b> use auto-cropped
+            <br/>
+            {$option = $option + 1}
+         {/if}
 
-         <b>Option 2:</b> copy-paste a photo
+         <b>Option {$option}:</b> upload a photo:
+         <ul style="padding-left: 1.4em;">
+            <li>Click&nbsp;<input type='file' name='uploadphoto' id='uploadphoto' /></li>
+            <li style="margin-top: 0.4em;">Then&nbsp;<input type='submit' onClick="return confirmFileSelected();" value='Upload photo' /></li>
+         </ul>
+         {$option = $option + 1}
+
+         <b>Option {$option}:</b> copy-paste a photo
          <span id="paste-zone" tabindex="0">here</span>
          <div id="status"></div>
 

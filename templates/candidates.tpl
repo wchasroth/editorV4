@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto">
-   <link rel="stylesheet" href="photo2.css">
+   <link rel="stylesheet" href="photo3.css">
    <link rel="stylesheet" href="editor.css">
    <style>
       td, input { font-size: 90%;  margin: 0; padding: 0;}

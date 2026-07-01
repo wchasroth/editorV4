@@ -54,7 +54,7 @@
             {if $headshot == ''}
                <img id='canPhoto' src="IMG/noPerson2.png"      width='200'/>
             {else}
-               <a href="PHOTOS_CAN/{$headshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$headshot}" width='200'/></a>
+               <a href="PHOTOS_CAN/{$headshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$headshot}" style="max-width: 200px; width: auto; max-height: 200px;"/></a>
             {/if}
          </div>
          <i style="font-size: 90%;">(You can click on the photo to see the full-sized version.)</i>
@@ -114,7 +114,7 @@
                const base64Image = event.target.result;
 
                {literal}
-                  previewDiv.innerHTML = `<img src="${base64Image}" width=200 style="max-width:200px;"/>`;
+                  previewDiv.innerHTML = `<img src="${base64Image}" width=200 style="max-width:200px; max-heigh: 200px;"/>`;
                {/literal}
 
                sendToPHP(base64Image);

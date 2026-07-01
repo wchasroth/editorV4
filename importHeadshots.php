@@ -16,9 +16,13 @@ require_once('vendor/autoload.php');
 //    copy the image file from headshot_url to our local directory, and fill in the
 //    headshot value in that row.
 
-$env  = new EnvFile("_env");
-$pdo  = PdoHelper::makePdo($env);
-$dir  = $env->get('photosCanDir');
+$env      = new EnvFile("_env");
+$pdo      = PdoHelper::makePdo($env);
+$dir      = $env->get('photosCanDir');
+$python   = $env->get('python');
+$cropface = $env->get('cropface');
+
+$grabber = new PhotoGrabber($dir, $python, $cropface);
 
 $sql = "SELECT id, name, headshot_url FROM v4candidates WHERE headshot='' AND headshot_url != ''";
 $queryResult = $pdo->run($sql);
@@ -27,15 +31,16 @@ if ($queryResult->failed())  fwrite (STDERR, "Headshot query failed: $sql\n");
 foreach ($queryResult->getRows() as $row) {
    $name = NameSimplifier::simplify($row['name']);
    $name = Str::replaceAll($name, ' ', '_');
-   echo "$name  " . $row['headshot_url'] . "\n";
-   $photoResult = PhotoGrabber::downloadPhoto(strval($row['id']), $name, $dir, $row['headshot_url'], false);
-   if (! Str::startsWith($photoResult, "OK ")) {
-      fwrite(STDERR, "$name $photoResult " . $row['headshot_url'] . "\n");
+   $nameBase = $row['id'] . "-$name";
+   $photo = $grabber->downloadPhoto($row['headshot_url'], $nameBase, "$nameBase-cropped", true);
+   if (empty($photo->getName())) {
+      fwrite(STDERR, "$nameBase {$row['headshot_url']} " . $photo->getError() . "\n");
       continue;
    }
 
-   $filename = Str::substringAfter($photoResult, "OK ");
-   $sql = "UPDATE v4candidates SET headshot='$filename' WHERE id={$row['id']}";
+   $sql = "UPDATE v4candidates SET headshot='{$photo->getName()}' "
+        . (! empty($photo->getCroppedName()) ? ", headcropped=1 " : "")
+        . " WHERE id={$row['id']}";
    $result = $pdo->run($sql);
    if ($result->failed()) fwrite (STDERR, "Error updating headshot: $sql\n");
 }

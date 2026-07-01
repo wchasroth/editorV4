@@ -102,7 +102,7 @@ for ($i=0;   $i<count($orgs);   $i++) $orgs[$i] = "'$orgs[$i]'";
 $quotedOrgs = Str::join($orgs, ",");
 
 $counties = [];
-$sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.headshot, c.headshot_url, c.endorsed, "
+$sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.headshot, c.headshot_url, c.endorsed, c.headcropped, "
      . "            c.id AS can_id, t.seats, c.description, c.source, c.reviewed "
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4candidates AS c   ON (s.id = c.seat_id) \n"

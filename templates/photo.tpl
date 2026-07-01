@@ -23,10 +23,10 @@
        let photoPastedName    = "";
 
        /* This is pretty schizoid.  It acts one way for copy-paste, and another for form-post-upload.  Sigh. */
-       function closeMe(canId, headshot) {
+       function closeMe(canId, headshot, usecropped) {
            if (photoPastedSuccess) parent.postMessage("closePhotoDiv:" + canId + ":" + photoPastedName, '{$parent}');
            else {
-              {if $photoChanged == 1} parent.postMessage("closePhotoDiv:" + canId + ":" + headshot, '{$parent}');
+              {if $photoChanged == 1} parent.postMessage("closePhotoDiv:" + canId + ":" + headshot + ":" + usecropped, '{$parent}');
               {else}                  parent.postMessage("close", '{$parent}');
               {/if}
            }
@@ -50,46 +50,57 @@
 <table>
    <tr valign='top'>
       <td>
+         <center>
          <div id="canPhoto">
             {if $headshot == ''}
                <img id='canPhoto' src="IMG/noPerson2.png"      width='200'/>
             {else}
-               <a href="PHOTOS_CAN/{$headshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$headshot}" style="max-width: 200px; width: auto; max-height: 200px;"/></a>
+               <a    href="PHOTOS_CAN/{$headshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$headshot}" style="max-width: 200px; width: auto; max-height: 190px;"/></a>
+               {if $headcropped == 1}
+                  <a href="PHOTOS_CAN/{$cropshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$cropshot}" style="max-width: 200px; width: auto; max-height: 190px;"/></a>
+               {/if}
             {/if}
          </div>
+         <!--
          <i style="font-size: 90%;">(You can click on the photo to see the full-sized version.)</i>
+         -->
+         </center>
       </td>
       <td>&nbsp; </td>
       <td>
          {if $headshot == ''}
             There is no photo for {$name}.&nbsp;
             You can add a photo in one of two ways:<p/>
+         {elseif $headcropped == 1}
+            The top image is the current photo for {$name}.&nbsp;
+            The bottom is an automated headshot.
          {else}
             This is the current photo for {$name}.&nbsp;
             You can replace it in several ways:<p/>
          {/if}
 
+         <p/>
          {$option = 1}
          {if $headcropped == 1}
-         <b>Option {$option}:</b> use auto-cropped
-            <br/>
+            <b>Option {$option}:</b>
+               <a href="photo.php?canId={$canId}&name={$encodedName}&headshot={$cropshot}&usecropped=1">Use the automated headshot</a> instead.
             {$option = $option + 1}
          {/if}
 
+         <p/>
+         <b>Option {$option}:</b> copy-paste a photo
+         <span id="paste-zone" tabindex="0">here</span>
+         {$option = $option + 1}
+
+         <p/>
          <b>Option {$option}:</b> upload a photo:
          <ul style="padding-left: 1.4em;">
             <li>Click&nbsp;<input type='file' name='uploadphoto' id='uploadphoto' /></li>
             <li style="margin-top: 0.4em;">Then&nbsp;<input type='submit' onClick="return confirmFileSelected();" value='Upload photo' /></li>
          </ul>
-         {$option = $option + 1}
 
-         <b>Option {$option}:</b> copy-paste a photo
-         <span id="paste-zone" tabindex="0">here</span>
-         <div id="status"></div>
-
-         <p>&nbsp;</p>
          When you are done, click on
-         <button onClick="closeMe({$canId}, '{$headshot}');">Close window</button>
+         <button onClick="closeMe({$canId}, '{$headshot}', {$usecropped});">Close window</button>
 
          <p/>
          (Remember to click on <b>Save Changes</b> at the very top of the page!)

@@ -1,12 +1,16 @@
 <?php
+declare(strict_types=1);
+
+namespace CharlesRothDotNet\EditorV4;
+
+use CharlesRothDotNet\Alfred\NameSimplifier;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
     
     $rawData  = $_POST['pasted_image'];
     $canId    = $_GET['can_id'] ?? '';
     $name     = $_GET['name']   ?? '';
-    $badChars = str_split("` ~!@#$%^&*()_+=-[]{}\\\"|;:'?,<>");
-    $name     = str_replace($badChars, '_', $name);
+    $name     = NameSimplifier::makeFilenameFrom($name);
 
     // Validate that it is a proper base64 data URI image
     if (preg_match('/^data:image\/(png|jpeg|jpg);base64,/', $rawData, $matches)) {
@@ -20,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
         $decodedData = base64_decode($filteredData);
         
         // Save the file with a unique name in your directory
-        $fileName = $canId . "-" . $name . "." . $extension;
+        $fileName = $canId . "-" . $name . "-pasted." . $extension;
         
         if (file_put_contents("PHOTOS_CAN/$fileName", $decodedData)) {
             echo json_encode(['success' => true, 'file' => $fileName]);

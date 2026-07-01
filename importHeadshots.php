@@ -6,8 +6,10 @@ namespace CharlesRothDotNet\EditorV4;
 use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
 use CharlesRothDotNet\Alfred\Str;
+use CharlesRothDotNet\Alfred\NameSimplifier;
 
 require_once('vendor/autoload.php');
+$name = Str::replaceAll($name, ' ', '_');
 
 // importHeadshots.php
 //    Get the candidate headshots from the internet, and put them in our local file directory.
@@ -29,8 +31,7 @@ $queryResult = $pdo->run($sql);
 if ($queryResult->failed())  fwrite (STDERR, "Headshot query failed: $sql\n");
 
 foreach ($queryResult->getRows() as $row) {
-   $name = NameSimplifier::simplify($row['name']);
-   $name = Str::replaceAll($name, ' ', '_');
+   $name = NameSimplifier::makeFilenameFrom($row['name']);
    $nameBase = $row['id'] . "-$name";
    $photo = $grabber->downloadPhoto($row['headshot_url'], $nameBase, "$nameBase-cropped", true);
    if (empty($photo->getName())) {

@@ -292,7 +292,7 @@
               photoDiv.style.display = 'none';
 
               if (e.data.startsWith("closePhotoDiv:")) {
-                  var parts = e.data.split(":"); /* 1 is canId;  2 is filename */
+                  var parts = e.data.split(":"); /* 1 is canId;  2 is filename; 3 1=>using autocropped headshot */
                   var img = document.getElementById("photo-" + parts[1]);
                   img.src = "PHOTOS_CAN/" + parts[2];
 
@@ -300,6 +300,11 @@
                   var uploadedPhotoInput = document.getElementsByName(fieldChanged)[0];
                   uploadedPhotoInput.value = parts[2];
                   changed(fieldChanged);
+
+                  if (parts[3] == '1') {
+                     fieldChanged = "i:" + parts[1] + ":headcropped";
+                     changed(fieldChanged);
+                  }
               }
           }
       );
@@ -415,13 +420,12 @@
             {if $row['headshot'] != ''}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['headshot']}');"
                   ><img id='photo-{$row['can_id']}' src="PHOTOS_CAN/{$row['headshot']}" width="40"/></a>
-            {elseif $row['headshot_url'] != ''}
-               <a href="{$row['headshot_url']}" target="_blank"><img src="{$row['headshot_url']}" width="40"/></a>
             {else}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '');"
                   ><img id='photo-{$row['can_id']}' src="IMG/noPerson2.png"         width="40"/></a>
             {/if}
             <input type="hidden" name="i:{$row['can_id']}:headshot" value="{$row['headshot']}"/>
+            <input type="hidden" name="i:{$row['can_id']}:headcropped" value="{$row['headcropped']}"/>
          </td>
 
          <td>

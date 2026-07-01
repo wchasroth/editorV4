@@ -5,6 +5,7 @@ namespace CharlesRothDotNet\EditorV4;
 
 use CharlesRothDotNet\Alfred\AlfredPDO;
 use CharlesRothDotNet\Alfred\FieldFormatFixer;
+use CharlesRothDotNet\Alfred\NameSimplifier;
 use CharlesRothDotNet\Alfred\PdoRunResult;
 use CharlesRothDotNet\Alfred\SqlFields;
 use CharlesRothDotNet\Alfred\Str;
@@ -26,21 +27,33 @@ $logger    = new DumbFileLogger($env->get('logFile'));
 $parent    = $env->get('parent');
 $photosDir = $env->get('photosCanDir');
 
-$canId    = $_GET['canId']    ?? '';
-$name     = $_GET['name']     ?? '';
-$headshot = $_GET['headshot'] ?? '';
+$canId      = $_GET['canId']      ?? '';
+$name       = $_GET['name']       ?? '';
+$headshot   = $_GET['headshot']   ?? '';
+$usecropped = $_GET['usecropped'] ?? '0';
 $photoChanged = 0;
 
-$sql = "SELECT headcropped FROM v4candidates WHERE id=$canId";
-$headcropped = $pdo->run($sql)->getSingleValue('headcropped');
+$headcropped = 0;
+$cropshot = "";
+if (intval($usecropped) === 1) {
+   $photoChanged = 1;
+}
+else {
+   $sql = "SELECT headcropped FROM v4candidates WHERE id=$canId";
+   $headcropped = $pdo->run($sql)->getSingleValue('headcropped');
+}
+if ($headcropped == 1) {
+   $base = Str::substringBeforeLast($headshot, ".");
+   $ext  = Str::substringAfterLast ($headshot, ".");
+   $cropshot = "$base-cropped.$ext";
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
    $uploadedFile = $_FILES['uploadphoto'];
    $logger->log("Uploaded tmp file: " . $uploadedFile['tmp_name']);
    if ($uploadedFile['error'] === UPLOAD_ERR_OK) {
       $filename = $uploadedFile['name'];
-      $badChars = str_split("` ~!@#$%^&*()_+=-[]{}\\\"|;:'?,<>");
-      $filename = str_replace($badChars, '_', $filename);
+      $filename = NameSimplifier::makeFilenameFrom($filename);
       $target   = $canId . "-" . $filename;
       $got = move_uploaded_file($uploadedFile["tmp_name"], "$photosDir/$target");
       $logger->log("Move status: " . ($got ? 'T' : 'F') . "  " . $uploadedFile['tmp_name'] . " to $photosDir/$target");
@@ -53,10 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
 
 $smarty = new SmartyPage();
 $smarty->assign('canId',    $canId);
-$smarty->assign('headcropped',    $headcropped);
+$smarty->assign('headcropped', $headcropped);
+$smarty->assign('usecropped',  $usecropped);
 $smarty->assign('name',     $name);
 $smarty->assign('encodedName', rawurlencode($name));
 $smarty->assign('headshot', $headshot);
+$smarty->assign('cropshot', $cropshot);
 $smarty->assign('parent',   $parent);
 $smarty->assign('photoChanged',   $photoChanged);
 $smarty->display('photo.tpl');

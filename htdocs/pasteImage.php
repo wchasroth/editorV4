@@ -3,7 +3,14 @@ declare(strict_types=1);
 
 namespace CharlesRothDotNet\EditorV4;
 
+use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\NameSimplifier;
+use CharlesRothDotNet\Alfred\DumbFileLogger;
+
+require_once('../vendor/autoload.php');
+
+$env       = new EnvFile("_env");
+$logger    = new DumbFileLogger($env->get('logFile'));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
     
@@ -11,9 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
     $canId    = $_GET['can_id'] ?? '';
     $name     = $_GET['name']   ?? '';
     $name     = NameSimplifier::makeFilenameFrom($name);
+    $logger->log("name=$name");
 
     // Validate that it is a proper base64 data URI image
     if (preg_match('/^data:image\/(png|jpeg|jpg);base64,/', $rawData, $matches)) {
+       $logger->log("inside preg_match");
         
         $extension = $matches[1]; // Get extension (e.g., png)
         
@@ -27,12 +36,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
         $fileName = $canId . "-" . $name . "-pasted." . $extension;
         
         if (file_put_contents("PHOTOS_CAN/$fileName", $decodedData)) {
+           $logger->log("success");
             echo json_encode(['success' => true, 'file' => $fileName]);
         } else {
+           $logger->log("could not save");
             echo json_encode(['success' => false, 'error' => 'Could not save file.']);
         }
     } else {
         echo json_encode(['success' => false, 'error' => 'Invalid image format.']);
+        $logger->log("invalid image format");
     }
-    exit;
 }
+exit;

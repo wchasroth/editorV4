@@ -302,12 +302,10 @@
                   changed(fieldChanged);
 
                   const p3 = +parts[3];
-                  confirm ("part3=" + p3 + ",  " + (p3 == 1));
                   if (p3 == 1) {
                      fieldChanged = "i:" + parts[1] + ":headcropped";
                      var headcropped = document.getElementsByName(fieldChanged)[0];
                      headcropped.value = '0';
-                     confirm("HC: " + headcropped.value);
                      changed(fieldChanged);
                   }
               }

@@ -24,7 +24,7 @@
 
        /* This is pretty schizoid.  It acts one way for copy-paste, and another for form-post-upload.  Sigh. */
        function closeMe(canId, headshot, usecropped) {
-           if (photoPastedSuccess) parent.postMessage("closePhotoDiv:" + canId + ":" + photoPastedName, '{$parent}');
+           if (photoPastedSuccess) parent.postMessage("closePhotoDiv:" + canId + ":" + photoPastedName + ":1", '{$parent}');
            else {
               {if $photoChanged == 1} parent.postMessage("closePhotoDiv:" + canId + ":" + headshot + ":" + usecropped, '{$parent}');
               {else}                  parent.postMessage("close", '{$parent}');
@@ -128,8 +128,6 @@
             const reader  = new FileReader();
             reader.onload = function(event) {
                const base64Image = event.target.result;
-               confirm ("base64Image: " + base64Image);
-
                {literal}
                   previewDiv.innerHTML = `<img src="${base64Image}" width=200 style="max-width:200px; max-heigh: 200px;"/>`;
                {/literal}

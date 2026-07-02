@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
       if ($got) {
          $headshot = $target;
          $photoChanged = 1;
+         $usecropped   = 1;
       }
    }
 }

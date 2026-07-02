@@ -285,7 +285,7 @@
       }
 
 
-      /* Photo upload div close button */
+      /* Photo editing close button */
       window.addEventListener("message",
           function (e) {
               var photoDiv = document.getElementById('photoDiv');
@@ -301,8 +301,13 @@
                   uploadedPhotoInput.value = parts[2];
                   changed(fieldChanged);
 
-                  if (parts[3] == '1') {
+                  const p3 = +parts[3];
+                  confirm ("part3=" + p3 + ",  " + (p3 == 1));
+                  if (p3 == 1) {
                      fieldChanged = "i:" + parts[1] + ":headcropped";
+                     var headcropped = document.getElementsByName(fieldChanged)[0];
+                     headcropped.value = '0';
+                     confirm("HC: " + headcropped.value);
                      changed(fieldChanged);
                   }
               }

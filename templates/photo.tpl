@@ -55,10 +55,12 @@
             {if $headshot == ''}
                <img id='canPhoto' src="IMG/noPerson2.png"      width='200'/>
             {else}
-               <a    href="PHOTOS_CAN/{$headshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$headshot}" style="max-width: 200px; width: auto; max-height: 190px;"/></a>
-               {if $headcropped == 1}
-                  <a href="PHOTOS_CAN/{$cropshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$cropshot}" style="max-width: 200px; width: auto; max-height: 190px;"/></a>
-               {/if}
+               <a href="PHOTOS_CAN/{$headshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$headshot}" style="max-width: 200px; width: auto; max-height: 190px;"/></a>
+            {/if}
+         </div>
+         <div>
+            {if $headshot != ''  &&  $headcropped == 1}
+               <a href="PHOTOS_CAN/{$cropshot}" target="_blank"><img id='canPhoto' src="PHOTOS_CAN/{$cropshot}" style="max-width: 200px; width: auto; max-height: 190px;"/></a>
             {/if}
          </div>
          <!--
@@ -104,6 +106,9 @@
 
          <p/>
          (Remember to click on <b>Save Changes</b> at the very top of the page!)
+
+         <p/>
+         <div id="status"></div>
       </td>
    </tr>
 </table>
@@ -123,6 +128,7 @@
             const reader  = new FileReader();
             reader.onload = function(event) {
                const base64Image = event.target.result;
+               confirm ("base64Image: " + base64Image);
 
                {literal}
                   previewDiv.innerHTML = `<img src="${base64Image}" width=200 style="max-width:200px; max-heigh: 200px;"/>`;

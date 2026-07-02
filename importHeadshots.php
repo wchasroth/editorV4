@@ -9,7 +9,6 @@ use CharlesRothDotNet\Alfred\Str;
 use CharlesRothDotNet\Alfred\NameSimplifier;
 
 require_once('vendor/autoload.php');
-$name = Str::replaceAll($name, ' ', '_');
 
 // importHeadshots.php
 //    Get the candidate headshots from the internet, and put them in our local file directory.

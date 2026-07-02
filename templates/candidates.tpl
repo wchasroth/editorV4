@@ -299,13 +299,26 @@
          changed(endorsedRowName);
       }
 
-      function handlePick() {
+      function clickPick(name) {
          if (hasChanged()) {
             alert("Please save changes before using the pick-list.");
             return false;
          }
-         confirm("About to show picklist");
+
+         const mySelect = document.getElementsByName(name);
+         if (mySelect === null)  return false;
+         mySelect[0].style.display = 'block';
+         mySelect[0].focus();
          return false;
+      }
+
+      function handlePicklistChange(mySelect) {
+         var value = mySelect.value;
+         mySelect.style.display = "none";
+      }
+
+      function myhide(obj) {
+         obj.style.display = "none";
       }
 
       /* Photo editing close button */
@@ -334,8 +347,6 @@
               }
           }
       );
-
-
    </script>
 </head>
 
@@ -426,12 +437,22 @@
                {if $row['reviewed'] == 1} checked {/if} />
          </td>
 
-         <td><input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/></td>
+         <td style="position: relative;">
+            {if $row['name'] == ''  &&  count($row['picklist']) > 0}
+               <select name="i:{$row['can_id']}:picklist" onChange="handlePicklistChange(this);"
+                       onfocusout="myhide(this);"
+                       style="position: absolute; display: none;">
+                  {foreach from=$row['picklist'] item=candidate}
+                     <option value="{$candidate[0]}">{$candidate[1]}</option>
+                  {/foreach}
+               </select>
+            {/if}
+            <input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/>
+         </td>
 
          <td>
             {if $row['name'] == ''  &&  $row['picklist'] != ''}
-               <a href="#" onClick="return handlePick('i:{$row['can_id']}:picklist');"><img src="IMG/picklist.png" width="20"/></a>
-               <input name="i:{$row['can_id']}:picklist" type="hidden" value="{$row['picklist']}" />
+               <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist');"><img src="IMG/picklist.png" width="20"/></a>
             {/if}
          </td>
 

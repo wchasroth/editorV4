@@ -154,7 +154,7 @@ for ($i=0;   $i<$count;   $i++) {
 
 //---For rows with an empty name, generate 'pick list' for contested races
 for ($i=0;   $i<$count;   $i++) {
-   $rows[$i]['picklist'] = "";
+   $rows[$i]['picklist'] = [];
    if (empty($rows[$i]['name'])) {
       $fields = ['org' => $rows[$i]['org'], 'office' => $rows[$i]['office'], 'district' => $rows[$i]['district'],
          // 'subdist' => $rows[$i]['subdist']
@@ -162,10 +162,9 @@ for ($i=0;   $i<$count;   $i++) {
       $sqlFields = new SqlFields($fields);
       $sql = "SELECT id, name FROM v4filings WHERE " . $sqlFields->getSelectFragment() . " AND contested=1";
       $result = $pdo->run($sql);
-      $logger->log("Picklist: $sql");
       $picks = [];
-      foreach ($result->getRows() as $pick) $picks[] = $pick['id'] . ":" . $pick['name'];
-      $rows[$i]['picklist'] = Str::join($picks, ';');
+      foreach ($result->getRows() as $pick) $picks[] = [$pick['id'], $pick['name']];
+      $rows[$i]['picklist'] = $picks;
    }
 }
 

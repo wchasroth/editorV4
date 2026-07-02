@@ -21,7 +21,8 @@ CREATE TABLE           v4filings (
    partialterm tinyint       NOT NULL DEFAULT  0,
    partialend  smallint      NOT NULL DEFAULT  0,
    incumbent   tinyint       NOT NULL DEFAULT  0,
-   termend     mediumint     NOT NULL DEFAULT  0
+   termend     mediumint     NOT NULL DEFAULT  0,
+   contested   tinyint       NOT NULL DEFAULT  0  /* more than 1 row for this race? */
 )
 
 /*

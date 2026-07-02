@@ -152,11 +152,21 @@ for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['plus'] = shouldShowAddCandidateIcon($i, $count, $rows);
 }
 
-function shouldShowAddCandidateIcon(int $i, int $count, array $rows): int {
-   if ($count === 1)                                             return 1;
-   if ($i     === $count-1)                                      return 1;
-   if ($i <  $count-1  &&  $rows[$i]['id'] != $rows[$i+1]['id']) return 1;
-   return 0;
+//---For rows with an empty name, generate 'pick list' for contested races
+for ($i=0;   $i<$count;   $i++) {
+   $rows[$i]['picklist'] = "";
+   if (empty($rows[$i]['name'])) {
+      $fields = ['org' => $rows[$i]['org'], 'office' => $rows[$i]['office'], 'district' => $rows[$i]['district'],
+         // 'subdist' => $rows[$i]['subdist']
+      ];
+      $sqlFields = new SqlFields($fields);
+      $sql = "SELECT id, name FROM v4filings WHERE " . $sqlFields->getSelectFragment() . " AND contested=1";
+      $result = $pdo->run($sql);
+      $logger->log("Picklist: $sql");
+      $picks = [];
+      foreach ($result->getRows() as $pick) $picks[] = $pick['id'] . ":" . $pick['name'];
+      $rows[$i]['picklist'] = Str::join($picks, ';');
+   }
 }
 
 $regionColumnName = "Reg";
@@ -189,6 +199,13 @@ $smarty->display('candidates.tpl');
 
 
 //$smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, "displayCode2",    [HttpCode::class, "display"]);
+
+function shouldShowAddCandidateIcon(int $i, int $count, array $rows): int {
+   if ($count === 1)                                             return 1;
+   if ($i     === $count-1)                                      return 1;
+   if ($i <  $count-1  &&  $rows[$i]['id'] != $rows[$i+1]['id']) return 1;
+   return 0;
+}
 
 function runQueryReportErrors($pdo, DumbFileLogger $logger, string $sql, $alwaysLog=false): PdoRunResult {
    $result = $pdo->run($sql);

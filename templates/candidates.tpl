@@ -284,6 +284,29 @@
           descFrame.contentWindow.setText(longDesc.innerHTML);
       }
 
+      function flip(radioGroupName, endorsedRowName) {
+         let endorsed   = document.getElementsByName(endorsedRowName)[0];
+         let radioGroup = document.getElementsByClassName(radioGroupName);
+         for (let i=0;   i<radioGroup.length;   ++i) {
+            if (radioGroup[i].name !== endorsed.name) {
+               /* confirm(radioGroup[i].name + " is checked: " + radioGroup[i].checked); */
+               if (radioGroup[i].checked) {
+                  radioGroup[i].checked = false;
+                  changed(radioGroup[i].name);
+               }
+            }
+         }
+         changed(endorsedRowName);
+      }
+
+      function handlePick() {
+         if (hasChanged()) {
+            alert("Please save changes before using the pick-list.");
+            return false;
+         }
+         confirm("About to show picklist");
+         return false;
+      }
 
       /* Photo editing close button */
       window.addEventListener("message",
@@ -349,6 +372,7 @@
       <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed</td>
       <td class="th2a title-target" title-css="Reviewed for correctness?">Rev</td>
       <td class="th2a">&nbsp;Name</td>
+      <td class="th2a title-target" title-css="Has multiple filed-candidate picks">Picks</td>
       <td class="th2a">&nbsp;Photo</td>
       <td class="th2a" style="min-width: 10em;">&nbsp;Statement</td>
       <td class="th2a" colspan='2'>Web</td>
@@ -391,23 +415,6 @@
             {if $row['source'] != ''}AI{/if}
          </td>
 
-         <script>
-            function flip(radioGroupName, endorsedRowName) {
-               let endorsed   = document.getElementsByName(endorsedRowName)[0];
-               let radioGroup = document.getElementsByClassName(radioGroupName);
-               for (let i=0;   i<radioGroup.length;   ++i) {
-                  if (radioGroup[i].name !== endorsed.name) {
-                     /* confirm(radioGroup[i].name + " is checked: " + radioGroup[i].checked); */
-                     if (radioGroup[i].checked) {
-                        radioGroup[i].checked = false;
-                        changed(radioGroup[i].name);
-                     }
-                  }
-               }
-               changed(endorsedRowName);
-            }
-         </script>
-
          <td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="i:{$row['can_id']}:endorsed" value="1"
              class="radio{$seatid} look-like-radio"
              onChange="flip('radio{$seatid}', 'i:{$row['can_id']}:endorsed');"
@@ -418,7 +425,16 @@
                onChange="changed(this.name);"  style="margin-top: 4px;"
                {if $row['reviewed'] == 1} checked {/if} />
          </td>
+
          <td><input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/></td>
+
+         <td>
+            {if $row['name'] == ''  &&  $row['picklist'] != ''}
+               <a href="#" onClick="return handlePick('i:{$row['can_id']}:picklist');"><img src="IMG/picklist.png" width="20"/></a>
+               <input name="i:{$row['can_id']}:picklist" type="hidden" value="{$row['picklist']}" />
+            {/if}
+         </td>
+
          <td>
             {if $row['headshot'] != ''}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['headshot']}');"

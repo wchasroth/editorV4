@@ -31,17 +31,20 @@ $allowedCounties = getUnion($editableCounties, $readableCounties);
 $allowedState    = Str::contains($allowedCounties, "999");
 $allowedCountyNums = Str::split($allowedCounties, ",");
 
-$sql = "   SELECT 'us' AS org, " . calculateTopSeats("'us', 'us-sen', 'us-hou'")
+$sql = "   SELECT 'us' AS org, " . calculateTopSeats (            "'us', 'us-sen', 'us-hou'") . ", "
+                                 . calculateTopMetric("reviewed", "'us', 'us-sen', 'us-hou'") . " AS rcount, "
+                                 . calculateTopMetric("endorsed", "'us', 'us-sen', 'us-hou'") . " AS ecount, "
      . "UNION "
-     . "   SELECT 'mi' AS org, " . calculateTopSeats("'mi', 'mi-sos', 'mi-ag', 'crt-sup'")
+     . "   SELECT 'mi' AS org, " . calculateTopSeats("'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . ", 0 AS rcount, 0 AS endorsed "
      . "UNION "
-     . "   SELECT 'mi_sen' AS org, " . calculateTopSeats("'mi-sen'")
+     . "   SELECT 'mi_sen' AS org, " . calculateTopSeats("'mi-sen'") . ", 0 AS rcount, 0 AS endorsed "
      . "UNION "
-     . "   SELECT 'mi_hou' AS org, " . calculateTopSeats("'mi-hou'")
+     . "   SELECT 'mi_hou' AS org, " . calculateTopSeats("'mi-hou'") . ", 0 AS rcount, 0 AS endorsed "
      . "UNION "
-     . "   SELECT 'mi_boe' AS org, " . calculateTopSeats("'mi-boe','mi-msu','mi-um','mi-wsu'")
+     . "   SELECT 'mi_boe' AS org, " . calculateTopSeats("'mi-boe','mi-msu','mi-um','mi-wsu'") . ", 0 AS rcount, 0 AS endorsed "
 ;
 $result = $pdo->run($sql);
+if ($result->failed()) $logger->log("TOP failed: $sql\n");
 $topOffices = [];
 foreach ($result->getRows() as $row)   $topOffices[$row['org']] = [$row['seats']];
 
@@ -187,3 +190,16 @@ function getUnion (string $counties1, string $counties2): string {
 function calculateTopSeats (string $orgs): string {
    return " (SELECT COUNT(*) FROM v4seats WHERE org IN ($orgs) AND termlen>0 AND termcycle>0 AND ((termcycle + 6*termlen) - 2026) % termlen = 0) AS seats ";
 }
+
+function calculateTopMetric(string $metricName, string $orgs): string {
+   return "(SELECT SUM(counter.metric) AS total_metric "
+        . "   FROM ( SELECT MAX(c.$metricName) AS metric "
+        . "            FROM      v4seats      AS s "
+        . "            LEFT JOIN v4candidates AS c  ON (c.seat_id = s.id) "
+        . "           WHERE s.org IN ($orgs) "
+        . "           GROUP BY s.org, s.office, s.district, s.subdist, s.seatnum "
+        . "   ) AS counter) ";
+}
+
+
+

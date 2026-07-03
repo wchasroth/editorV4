@@ -66,11 +66,11 @@
    {if $allowedState }
       <li>
           <a href="#" onClick="return loadOfficials(999, 'us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a>
-            ({$topOffices.us[0]})
+            {$topOffices.us[0]}-({$topOffices.us[1]}/{$topOffices.us[2]})
       </li>
       <li>
           <a href="#" onClick="return loadOfficials(999, 'mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a>
-            ({$topOffices.mi[0]})
+            {$topOffices.mi[0]}-({$topOffices.mi[1]}/{$topOffices.mi[2]})
       </li>
       <li>
           <a href="#" onClick="return loadOfficials(999, 'mi-sen', '', 'd');" class="child">MI Senate</a>

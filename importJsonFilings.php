@@ -7,6 +7,7 @@ use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
 use CharlesRothDotNet\Alfred\Str;
 use CharlesRothDotNet\Alfred\SqlFields;
+use CharlesRothDotNet\Alfred\NameSimplifier;
 
 require_once('vendor/autoload.php');
 

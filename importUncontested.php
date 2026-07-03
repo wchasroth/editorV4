@@ -76,7 +76,7 @@ foreach ($uncontestedKeyRows as $keyRow) {
             'source' => 'jon-uncon'
          ];
          $sqlFields = new SqlFields($updateFields);
-         $sql = "UPDATE V4candidates SET " . $sqlFields->getSetFragment() . " WHERE id=$emptyCandidateId ";
+         $sql = "UPDATE v4candidates SET " . $sqlFields->getSetFragment() . " WHERE id=$emptyCandidateId ";
          $updateResult = $pdo->run($sql);
          if ($updateResult->failed()) {
             fwrite(STDERR, "Candidate update failed: " . $updateResult->getError() . "  $sql\n");

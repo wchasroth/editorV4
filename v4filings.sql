@@ -13,7 +13,7 @@ CREATE TABLE           v4filings (
    web          varchar( 200) NOT NULL DEFAULT '',
    email        varchar( 100) NOT NULL DEFAULT '',
    phone        varchar(  36) NOT NULL DEFAULT '',
-   headshot_url varchar( 240) NOT NULL DEFAULT '',
+   headshot_url varchar( 320) NOT NULL DEFAULT '',
    headshot     varchar( 120) NOT NULL DEFAULT '', /* local headshot if we PhotoGrabbed it */
    headcropped  tinyint       NOT NULL DEFAULT  0, /* did we get an auto-cropped version, too? */
    description  varchar(8000) NOT NULL DEFAULT '',

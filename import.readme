@@ -1,0 +1,28 @@
+-rw-rw-r-- 1 miv_dm_v5 miv_dm_v5 1984 Jul  3 14:09 importContestedHeadshots.php
+-rw-rw-r-- 1 miv_dm_v5 miv_dm_v5 1761 Jul  1 20:45 importHeadshots.php
+-rw-rw-r-- 1 miv_dm_v5 miv_dm_v5 8697 Jul  3 14:33 importUncontested.php
+
+Sequence of steps to fully import Jon's candidates_2026_enriched.json file:
+
+#1. Get fresh copy of v4seats and v4candidates (if testing in editor2)
+
+#2. Wipe and recreate v4filings (v4filings.sql)
+
+#3. Fill v4filings from enriched data:
+       php importJsonFilings.php candidates_2026_enriched.json 
+
+#4. Mark all contested races in v4filings:
+       php importMarkContested.php
+
+#5. Import all uncontested race candidates, directly into v4candidates:
+       php importUncontested.php
+
+#6. Grab photos for uncontested candidates from the internet, store them
+    locally, fill in v4candidates photo field(s) with local filenames.
+       php importHeadshots.php
+
+#7. Grab photos for contested races from the internet, store them locally
+    (but using v4filings string ids instead of v4candidates numeric ids),
+    put local filename in v4filings headshot field.  (From there, the 
+    candidate editor 'picklist' will find them.)
+       php importContestedHeadshots.php

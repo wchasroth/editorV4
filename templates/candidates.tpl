@@ -300,21 +300,28 @@
       }
 
       function clickPick(name) {
-         if (hasChanged()) {
-            alert("Please save changes before using the pick-list.");
-            return false;
-         }
+         if (hasUnsavedChanges("Please save changes before using the pick-list.")) return false;
 
          const mySelect = document.getElementsByName(name);
-         if (mySelect === null)  return false;
+         if (mySelect === null  ||  mySelect.length === 0)  return false;
          mySelect[0].style.display = 'block';
          mySelect[0].focus();
+         mySelect[0].size = 7;
          return false;
       }
 
-      function handlePicklistChange(mySelect) {
+      function hasUnsavedChanges (text) {
+         if (! hasChanged())  return false;
+         alert (text);
+         return true;
+      }
+
+      function handlePicklistChange(mySelect, can_id) {
          var value = mySelect.value;
+         /* confirm ("Candidate " + can_id + ", set to values from " + value); */
          mySelect.style.display = "none";
+         location.href = "applyPick.php?can_id=" + can_id + "&filing_id=" + value
+                 + "&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}";
       }
 
       function myhide(obj) {
@@ -398,12 +405,12 @@
          <td>
             <a href="deleteCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
                  onClick="return continueIfDataUnChanged()  &&  confirm('OK to delete {$row['name']}?');"
-               ><img src="IMG/trash.png" width="14" style="margin: 1px;"/></a>
+               ><img src="IMG/trash.png" width="14" style="margin: 1px;" title="Delete this candidate."/></a>
             {if $row['plus'] == 1}
                <br/>
                <a href="addCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
                   onClick="return continueIfDataUnChanged();"
-               ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;"/></a>
+               ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" title="Add another candidate row for this seat."/></a>
             {/if}
          </td>
          <td style="white-space: nowrap;"     class="smaller">
@@ -439,9 +446,11 @@
 
          <td style="position: relative;">
             {if $row['name'] == ''  &&  count($row['picklist']) > 0}
-               <select name="i:{$row['can_id']}:picklist" onChange="handlePicklistChange(this);"
+               <select name="i:{$row['can_id']}:picklist" onChange="handlePicklistChange(this, {$row['can_id']});"
+                       multiple size="1"
                        onfocusout="myhide(this);"
-                       style="position: absolute; display: none;">
+                       style="position: absolute; display: none; z-index: 10;">
+                  <!-- <option value="0">(choose one)</option> -->
                   {foreach from=$row['picklist'] item=candidate}
                      <option value="{$candidate[0]}">{$candidate[1]}</option>
                   {/foreach}
@@ -460,6 +469,9 @@
             {if $row['headshot'] != ''}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '{$row['headshot']}');"
                   ><img id='photo-{$row['can_id']}' src="PHOTOS_CAN/{$row['headshot']}" width="40"/></a>
+            {elseif $row['headshot_url'] != '' }
+               <a href="{$row['headshot_url']}" target="_blank" onClick="return ! hasUnsavedChanges('Save changes before editing headshot.');"
+                  ><img src="{$row['headshot_url']}" width="40"></a>
             {else}
                <a href="#" onClick="return photoOpen({$row['can_id']}, '');"
                   ><img id='photo-{$row['can_id']}' src="IMG/noPerson2.png"         width="40"/></a>

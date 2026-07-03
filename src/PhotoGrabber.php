@@ -94,6 +94,7 @@ class PhotoGrabber
                 
             if ($returnCode !== 0) {
                 $outputStr = implode("\n", $output);
+                $cropname  = "";
                 $error = "Warning: Headshot extraction failed (exit code $returnCode). Output: $outputStr";
             }
         }

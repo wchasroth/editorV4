@@ -5,3 +5,5 @@ cache
 .idea
 composer.lock
 .venv
+htdocs/PHOTOS_CAN/
+htdocs/PHOTOS_INC/

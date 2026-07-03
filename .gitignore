@@ -4,3 +4,4 @@ templates_c
 cache
 .idea
 composer.lock
+.venv

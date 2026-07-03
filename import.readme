@@ -26,3 +26,7 @@ Sequence of steps to fully import Jon's candidates_2026_enriched.json file:
     put local filename in v4filings headshot field.  (From there, the 
     candidate editor 'picklist' will find them.)
        php importContestedHeadshots.php
+
+#8. For now... delete all candidate rows that came from AI/Jon, that are NOT
+    "top of ticket".
+       echo "source importDeleteLowerRaces.sql" | my

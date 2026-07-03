@@ -460,7 +460,7 @@
          </td>
 
          <td>
-            {if $row['name'] == ''  &&  $row['picklist'] != ''}
+            {if $row['name'] == ''  &&  count($row['picklist']) > 0}
                <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist');"><img src="IMG/picklist.png" width="20"/></a>
             {/if}
          </td>

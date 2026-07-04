@@ -33,7 +33,7 @@ $allowedCountyNums = Str::split($allowedCounties, ",");
 
 $sql = "   SELECT 'us' AS org, " . calculateTopSeats (            "'us', 'us-sen', 'us-hou'") . ", "
                                  . calculateTopMetric("reviewed", "'us', 'us-sen', 'us-hou'") . " AS rcount, "
-                                 . calculateTopMetric("endorsed", "'us', 'us-sen', 'us-hou'") . " AS ecount, "
+                                 . calculateTopMetric("endorsed", "'us', 'us-sen', 'us-hou'") . " AS ecount "
      . "UNION "
      . "   SELECT 'mi' AS org, " . calculateTopSeats("'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . ", 0 AS rcount, 0 AS endorsed "
      . "UNION "

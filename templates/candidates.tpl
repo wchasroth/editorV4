@@ -299,14 +299,14 @@
          changed(endorsedRowName);
       }
 
-      function clickPick(name) {
+      function clickPick(name, size) {
          if (hasUnsavedChanges("Please save changes before using the pick-list.")) return false;
 
          const mySelect = document.getElementsByName(name);
          if (mySelect === null  ||  mySelect.length === 0)  return false;
          mySelect[0].style.display = 'block';
          mySelect[0].focus();
-         mySelect[0].size = 7;
+         mySelect[0].size = size;
          return false;
       }
 
@@ -468,7 +468,7 @@
 
          <td>
             {if $row['name'] == ''  &&  count($row['picklist']) > 0}
-               <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist');"><img src="IMG/picklist.png" width="20"/></a>
+               <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist', {count($row['picklist'])} );"><img src="IMG/picklist.png" width="20"/></a>
             {/if}
          </td>
 

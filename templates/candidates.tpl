@@ -393,7 +393,7 @@
       {if $showSubDist  } <td class="th2 title-target" title-css="District or ward">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
       <td class="th2 title-target" title-css="Term length, in years">TL</td>
-      <td class="th2 title-target" title-css="Source of candidate info">Src</td>
+      <!-- <td class="th2 title-target" title-css="Source of candidate info">Src</td> -->
       <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed</td>
       <td class="th2a title-target" title-css="Reviewed for correctness?">Rev</td>
       <td class="th2a">&nbsp;Name</td>
@@ -436,9 +436,11 @@
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
          <td align='right' class="smaller">{$row['termlen']}</td>
+         <!--
          <td>
             {if $row['source'] != ''}AI{/if}
          </td>
+         -->
 
          <td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="i:{$row['can_id']}:endorsed" value="1"
              class="radio{$seatid} look-like-radio"

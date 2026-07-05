@@ -32,6 +32,11 @@
            }
        }
 
+       function deleteMe(canId) {
+           parent.postMessage("deletePhotoDiv:" + canId);
+           return false;
+       }
+
        function confirmFileSelected() {
            var photo = document.getElementById('uploadphoto');
            if (photo.files.length != 1) {
@@ -100,7 +105,12 @@
             <li>Click&nbsp;<input type='file' name='uploadphoto' id='uploadphoto' /></li>
             <li style="margin-top: 0.4em;">Then&nbsp;<input type='submit' onClick="return confirmFileSelected();" value='Upload photo' /></li>
          </ul>
+         {$option = $option + 1}
 
+         <p/>
+         <b>Option {$option}:</b> <a href="#" onClick="return deleteMe({$canId})">Delete</a> this photo.
+
+         <p/>
          When you are done, click on
          <button onClick="closeMe({$canId}, '{$headshot}', {$usecropped});">Close window</button>
 

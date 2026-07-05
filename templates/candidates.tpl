@@ -333,27 +333,34 @@
           function (e) {
               var photoDiv = document.getElementById('photoDiv');
               photoDiv.style.display = 'none';
-
-              if (e.data.startsWith("closePhotoDiv:")) {
+              var parts = e.data.split(":"); /* 1 is canId;  2 is filename; 3 1=>using autocropped headshot */
+              if (e.data.startsWith("deletePhotoDiv:")) {
+                 setPhoto (parts[1], "noPerson2.png", 1);
+              }
+              else if (e.data.startsWith("closePhotoDiv:")) {
                   var parts = e.data.split(":"); /* 1 is canId;  2 is filename; 3 1=>using autocropped headshot */
-                  var img = document.getElementById("photo-" + parts[1]);
-                  img.src = "PHOTOS_CAN/" + parts[2];
-
-                  var fieldChanged = "i:" + parts[1] + ":headshot";
-                  var uploadedPhotoInput = document.getElementsByName(fieldChanged)[0];
-                  uploadedPhotoInput.value = parts[2];
-                  changed(fieldChanged);
-
-                  const p3 = +parts[3];
-                  if (p3 == 1) {
-                     fieldChanged = "i:" + parts[1] + ":headcropped";
-                     var headcropped = document.getElementsByName(fieldChanged)[0];
-                     headcropped.value = '0';
-                     changed(fieldChanged);
-                  }
+                  setPhoto(parts[1], parts[2], parts[3]);
               }
           }
       );
+
+      function setPhoto(canId, filename, autocropped) {
+         var img = document.getElementById("photo-" + canId);
+         img.src = "PHOTOS_CAN/" + filename;
+
+         var fieldChanged = "i:" + canId + ":headshot";
+         var uploadedPhotoInput = document.getElementsByName(fieldChanged)[0];
+         uploadedPhotoInput.value = filename;
+         changed(fieldChanged);
+
+         const p3 = +autocropped;
+         if (p3 == 1) {
+            fieldChanged = "i:" + canId + ":headcropped";
+            var headcropped = document.getElementsByName(fieldChanged)[0];
+            headcropped.value = '0';
+            changed(fieldChanged);
+         }
+      }
    </script>
 </head>
 

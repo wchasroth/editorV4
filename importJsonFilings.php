@@ -35,7 +35,13 @@ foreach ($candidates as $candidate) {
       if (Str::contains($candidate['status'], 'withdrawn', 'disqualified')) {
          $pdo->run("DELETE FROM v4filings WHERE id = '$id'");
       } else {
-         $meta = $candidate['metadata'];
+         $meta  = $candidate['metadata'];
+         $extra = $candidate['extra'];
+         if ($seatArray['org'] == 'city-cou'  &&  $seatArray['subdist'] == 0) {
+            $newSubDist = intval($extra['ward_raw'] ?? '');
+            $seatArray['subdist'] = $newSubDist;
+            if ($newSubDist > 0) fwrite (STDERR, "Found ward_raw for city council: " . $candidate['seat_id'] . "\n");
+         }
          $sqlFields = new SqlFields([
             'id' => $candidate['id'], 'org' => $seatArray['org'], 'office' => $seatArray['office'],
             'district' => $seatArray['district'], 'subdist' => $seatArray['subdist'],

@@ -22,7 +22,8 @@ class SeatTranslator {
    private static $townSpellingFixes = [
       'baymills' => 'bay mills', 'detour' => 'de tour',
       'kalamazoo charter township' => 'kalamazoo', 'genoa charter township' => 'genoa',
-      'muskegon charter township'  => 'muskegon', 'almer charter township'  => 'almer'
+      'muskegon charter township'  => 'muskegon', 'almer charter township'  => 'almer',
+      'charter township of redford' => 'redford township'
    ];
 
    private static $cityOfficeMap = [
@@ -44,7 +45,10 @@ class SeatTranslator {
       'president' => 'pres'
    ];
 
-   private static $schoolSpellingFixes = [ 'bridgeport' => 'bridgeport-spaulding' ];
+   private static $schoolSpellingFixes = [
+      'bridgeport' => 'bridgeport-spaulding',
+      'camden frontier' => 'camden-frontier'
+   ];
 
    private static $collegeSpellingFixes = ['delta bay' => 'delta', 'delta saginaw' => 'delta'];
 
@@ -63,13 +67,18 @@ class SeatTranslator {
          'partialterm' => 0, 'partialend' => 0];
 
       //---Ignore these for now (village doesn't have a FIPS code yet)
-      if (Str::contains($jsonSeatId, 'delegate', 'library', 'lakeside-park-village'))  return $result;
+      if (Str::contains($jsonSeatId, 'delegate', 'library', 'lakeside-park-village', 'mi:county:montcalm:trustee'))  return $result;
 
       $parts = Str::splitIntoTokens($jsonSeatId, ':');
       $parts[2] = $parts[2] ?? '';
       $parts[3] = $parts[3] ?? '';
       $parts[4] = $parts[4] ?? '';
       $parts[5] = $parts[5] ?? '';
+
+      if ($parts[1] == 'county') {
+         if (Str::contains($parts[3], 'state-house', 'representative', 'secretary-of-state','michigan-state', 'attorney-general'))
+            return $result;   // Strange duplicates of various state-level seats
+      }
 
       if (Str::contains($jsonSeatId, 'partial-term')) {
          $result['partialterm'] = 1;
@@ -225,9 +234,10 @@ class SeatTranslator {
          $result['district'] = strval($this->extractNumberFrom($parts[2]));
       }
 
-      else if (Str::contains($parts[3], 'county-commission')) {
+      else if (Str::contains($parts[3], 'county-commission', 'county-board')) {
          $result['org'] = 'cnty-com';
          $result['district'] = $countyCode;
+         $result['subdist']  = $this->extractSubdistrictNumber($parts[4] ?? '');
       }
 
       else {
@@ -259,8 +269,8 @@ class SeatTranslator {
    }
 
    private function extractSubdistrictNumber(string $district): int {
-      if (empty($district))                       return 0;
-      if (! Str::contains($district, 'district')) return 0;
+      if (empty($district))                               return 0;
+      if (! Str::contains($district, 'district', 'ward')) return 0;
       $subdist = $this->extractTerminalRomanNumeral($district);
       return ($subdist ?: $this->extractNumberFrom($district));
    }

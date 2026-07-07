@@ -32,6 +32,9 @@ $reviewedKey = $qsOrgs . ":" . $qsDistrict;
 $qsShow     = HttpGet::value('show');
 $showSaved  = 0;
 
+$sql = "SELECT text FROM uitext where id='maintenance'";
+$maintenance = trim($pdo->run($sql)->getSingleValue('text'));
+
 $sql = "SELECT admin, editCounties, adminCounties FROM azure_users WHERE email = '$email'";
 $result = $pdo->run($sql);
 $row = $result->getRows()[0];
@@ -195,6 +198,7 @@ if (Str::contains($qsOrgs, "cnty"))  $regionColumnName = "Dist";
 if (Str::contains($qsOrgs, "city"))  $regionColumnName = "Ward";
 $smarty = new SmartyPage();
 $smarty->assign('rows', $rows);
+$smarty->assign('maintenance', $maintenance);
 $smarty->assign('name', calculatePageName($pdo, $orgs, $district, $logger));
 $smarty->assign('showDistrict', $showDistrict);
 $smarty->assign('showSubDist',  $showSubDist && showSubDistricts($rows));

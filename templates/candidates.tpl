@@ -259,6 +259,10 @@
 <form id="mainForm" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
 
+{if $maintenance != ''}
+   <script> alert("{$maintenance}"); </script>
+{/if}
+
 <div id="pop-up-save" class="pop-up">
      Changes saved.
 </div>

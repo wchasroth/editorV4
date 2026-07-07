@@ -259,7 +259,7 @@
 <form id="mainForm" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
 
-{if $maintenance != ''}
+{if $maintenance|strlen > 8}
    <script> alert("{$maintenance}"); </script>
 {/if}
 

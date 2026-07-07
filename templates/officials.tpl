@@ -201,7 +201,7 @@
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
 <input type="hidden" name="deleteSeat"    id="deleteSeat"    value="" />
 
-{if $maintenance != ''}
+{if $maintenance|strlen > 8}
    <script> alert("{$maintenance}"); </script>
 {/if}
 

@@ -167,10 +167,11 @@ for ($i=0;   $i<$count;   $i++) {
       // Calculate the previous known names for this seat (with wiggle room for the subdist)
       $previousNames = [];
       for ($j=$i-1;   $j>=0;   $j--) {
-         if ($rows[$j]['org']      != $rows[$i]['org']    ||
-             $rows[$j]['office']   != $rows[$i]['office'] ||
-             $rows[$j]['district'] != $rows[$i]['district'])   break;
-
+         if ($rows[$j]['org']      != $rows[$i]['org']      ||
+             $rows[$j]['office']   != $rows[$i]['office']   ||
+             $rows[$j]['district'] != $rows[$i]['district'] ||
+             $rows[$j]['subdist']  != $rows[$i]['subdist']  ||
+             $rows[$j]['seatnum']  != $rows[$i]['seatnum'])  break;
          $previousNames[] = $rows[$j]['name'];
       }
 

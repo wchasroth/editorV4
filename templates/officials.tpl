@@ -201,6 +201,10 @@
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
 <input type="hidden" name="deleteSeat"    id="deleteSeat"    value="" />
 
+{if $maintenance|strlen > 8}
+   <script> alert("{$maintenance}"); </script>
+{/if}
+
 <div id="pop-up-save" class="pop-up">
      Changes saved.
 </div>

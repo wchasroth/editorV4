@@ -316,7 +316,7 @@
          if (mySelect === null  ||  mySelect.length === 0)  return false;
          mySelect[0].style.display = 'block';
          mySelect[0].focus();
-         mySelect[0].size = size;
+         mySelect[0].size = Math.max(size, 2);
          return false;
       }
 

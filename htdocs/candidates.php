@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace CharlesRothDotNet\EditorV4;
 
 use CharlesRothDotNet\Alfred\AlfredPDO;
+use CharlesRothDotNet\Alfred\ArrayHelper;
 use CharlesRothDotNet\Alfred\FieldFormatFixer;
 use CharlesRothDotNet\Alfred\PdoRunResult;
 use CharlesRothDotNet\Alfred\SqlFields;
@@ -162,11 +163,31 @@ for ($i=0;   $i<$count;   $i++) {
       $fields = ['org' => $rows[$i]['org'], 'office' => $rows[$i]['office'], 'district' => $rows[$i]['district'],
          // 'subdist' => $rows[$i]['subdist']
       ];
+
+      // Calculate the previous known names for this seat (with wiggle room for the subdist)
+      $previousNames = [];
+      for ($j=$i-1;   $j>=0;   $j--) {
+         if ($rows[$j]['org']      != $rows[$i]['org']    ||
+             $rows[$j]['office']   != $rows[$i]['office'] ||
+             $rows[$j]['district'] != $rows[$i]['district'])   break;
+
+         $previousNames[] = $rows[$j]['name'];
+      }
+
       $sqlFields = new SqlFields($fields);
       $sql = "SELECT id, name FROM v4filings WHERE " . $sqlFields->getSelectFragment() . " AND contested=1";
       $result = $pdo->run($sql);
+
       $picks = [];
-      foreach ($result->getRows() as $pick) $picks[] = [$pick['id'], $pick['name']];
+      // Only include names in the picklist that we haven't already used for this seat.
+      foreach ($result->getRows() as $pick) {
+         if (! in_array($pick['name'], $previousNames))  $picks[] = [$pick['id'], $pick['name']];
+      }
+//      if ($rows[$i]['org'] == 'mi-hou'  &&  $rows[$i]['district'] == '1') {
+//         foreach ($picks as $pick) {
+//            $logger->log("Picklist: " . ArrayHelper::showKeyValuePairs($pick));
+//         }
+//      }
       $rows[$i]['picklist'] = $picks;
    }
 }

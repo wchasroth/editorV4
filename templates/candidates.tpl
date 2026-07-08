@@ -154,6 +154,11 @@
          border-color: green;
       }
 
+      .noblue {
+         text-decoration: none;
+         color: inherit;
+      }
+
       /* Optional: Add a focus state for keyboard accessibility */
       /*
       input[type="checkbox"].look-like-radio:focus {
@@ -482,8 +487,12 @@
          </td>
 
          <td>
-            {if $row['name'] == ''  &&  count($row['picklist']) > 0}
-               <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist', {count($row['picklist'])} );"><img src="IMG/picklist.png" width="20"/></a>
+            {$picks = count($row['picklist'])}
+            {if $row['name'] == ''  &&  $picks > 0}
+               <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist', {$picks} );"
+                  class="noblue"
+                  title="Select one of the {$picks} remaining candidates."
+                  >({$picks})</a>
             {/if}
          </td>
 

@@ -39,7 +39,7 @@ $sql = "SELECT admin, editCounties, adminCounties FROM azure_users WHERE email =
 $result = $pdo->run($sql);
 $row = $result->getRows()[0];
 
-$canEdit = ($row['admin'] == '1') || foundCountyIn($county, $row['editCounties']) || foundCountyIn($county, $row['adminCounties']);
+$canEdit = ($row['admin'] == '1') || ($row['state'] == '1') || foundCountyIn($county, $row['editCounties']) || foundCountyIn($county, $row['adminCounties']);
 
 //---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");

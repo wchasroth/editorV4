@@ -38,20 +38,23 @@ $sql = "   SELECT 'us' AS org, " . calculateTopSeats (            "'us', 'us-sen
      . "   SELECT 'mi' AS org, " . calculateTopSeats(             "'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . ", "
      .                             calculateTopMetric("reviewed", "'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . " AS rcount, "
      .                             calculateTopMetric("endorsed", "'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . " AS ecount "
-   ;
-/*
      . "UNION "
-     . "   SELECT 'mi_sen' AS org, " . calculateTopSeats("'mi-sen'") . ", 0 AS rcount, 0 AS endorsed "
+     . "   SELECT 'mi_sen' AS org, " . calculateTopSeats (            "'mi-sen'") . ", "
+                                     . calculateTopMetric("reviewed", "'mi-sen'") . " AS rcount, "
+                                   .   calculateTopMetric("endorsed", "'mi-sen'") . " AS ecount "
      . "UNION "
-     . "   SELECT 'mi_hou' AS org, " . calculateTopSeats("'mi-hou'") . ", 0 AS rcount, 0 AS endorsed "
+     . "   SELECT 'mi_hou' AS org, " . calculateTopSeats (            "'mi-hou'") . ", "
+                                     . calculateTopMetric("reviewed", "'mi-hou'") . " AS rcount, "
+                                     . calculateTopMetric("endorsed", "'mi-hou'") . " AS ecount "
      . "UNION "
-     . "   SELECT 'mi_boe' AS org, " . calculateTopSeats("'mi-boe','mi-msu','mi-um','mi-wsu'") . ", 0 AS rcount, 0 AS endorsed "
+     . "   SELECT 'mi_boe' AS org, " . calculateTopSeats (            "'mi-boe','mi-msu','mi-um','mi-wsu'") . ", "
+                                     . calculateTopMetric("reviewed", "'mi-boe','mi-msu','mi-um','mi-wsu'") . " AS rcount, "
+                                     . calculateTopMetric("endorsed", "'mi-boe','mi-msu','mi-um','mi-wsu'") . " AS ecount "
 ;
-*/
 $result = $pdo->run($sql);
 if ($result->failed()) $logger->log("TOP failed: $sql\n");
 $topOffices = [];
-foreach ($result->getRows() as $row)   $topOffices[$row['org']] = [$row['seats']];
+foreach ($result->getRows() as $row)   $topOffices[$row['org']] = [$row['ecount'], $row['rcount'], $row['seats']];
 
 $counties = [];
 //foreach ($allowedCountyNums as $countyNum) {

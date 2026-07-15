@@ -71,13 +71,6 @@
       .col_term  {  max-width:  3em;  }
       .col_year  {  max-width:  3em;  }
 
-      .button {
-         background-color: #0d6dfb;
-         color: white;
-         border-radius: 5px;
-         border: none;
-         height: 1.8em;
-      }
       #pop-up-save {
           display: none;
           position: fixed;
@@ -97,6 +90,20 @@
           border-radius: 5px;
           z-index: 1000;
           box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+      .greybutton {
+         background-color: lightgrey;
+         color: white;
+         border-radius: 5px;
+         border: none;
+         height: 1.8em;
+      }
+      .bluebutton {
+         background-color: #0d6dfb;
+         color: white;
+         border-radius: 5px;
+         border: none;
+         height: 1.8em;
       }
    </style>
    <script>
@@ -124,6 +131,8 @@
       function changed(name) {
          let fc = document.getElementById("fieldsChanged");
          fc.value = fc.value + name + ",";
+         let button = document.getElementById('saveChanges');
+         button.classList.replace('greybutton', 'bluebutton');
       }
 
       function submitMainForm() {
@@ -201,6 +210,10 @@
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
 <input type="hidden" name="deleteSeat"    id="deleteSeat"    value="" />
 
+{if $maintenance|strlen > 8}
+   <script> alert("{$maintenance}"); </script>
+{/if}
+
 <div id="pop-up-save" class="pop-up">
      Changes saved.
 </div>
@@ -215,7 +228,7 @@
       <td class="th1" colspan="5"><b>{$name}</b></td>
       <td class="th1" colspan="18">
          {if $canEdit }
-            <input type="button" onClick="submitMainForm();"; return false;" value=" Save Changes " class="button"/>
+            <input type="button" id='saveChanges' onClick="submitMainForm();"; return false;" value=" Save Changes " class="greybutton"/>
          &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="font-size: 95%;">Reviewed:</span>
             <input type="checkbox" {$reviewedChecked} name="reviewed" value="1" style="accent-color: lightgreen;" onChange="changed(this.name);"/>

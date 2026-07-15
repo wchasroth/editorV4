@@ -77,7 +77,14 @@
       .col_term  {  max-width:  3em;  }
       .col_year  {  max-width:  3em;  }
 
-      .button {
+      .greybutton {
+         background-color: lightgrey;
+         color: white;
+         border-radius: 5px;
+         border: none;
+         height: 1.8em;
+      }
+      .bluebutton {
          background-color: #0d6dfb;
          color: white;
          border-radius: 5px;
@@ -147,6 +154,11 @@
          border-color: green;
       }
 
+      .noblue {
+         text-decoration: none;
+         color: inherit;
+      }
+
       /* Optional: Add a focus state for keyboard accessibility */
       /*
       input[type="checkbox"].look-like-radio:focus {
@@ -181,6 +193,8 @@
       function changed(name) {
          let fc = document.getElementById("fieldsChanged");
          fc.value = fc.value + name + ",";
+         let button = document.getElementById('saveChanges');
+         button.classList.replace('greybutton', 'bluebutton');
       }
 
       function submitMainForm() {
@@ -299,14 +313,14 @@
          changed(endorsedRowName);
       }
 
-      function clickPick(name) {
+      function clickPick(name, size) {
          if (hasUnsavedChanges("Please save changes before using the pick-list.")) return false;
 
          const mySelect = document.getElementsByName(name);
          if (mySelect === null  ||  mySelect.length === 0)  return false;
          mySelect[0].style.display = 'block';
          mySelect[0].focus();
-         mySelect[0].size = 7;
+         mySelect[0].size = Math.max(size, 2);
          return false;
       }
 
@@ -333,33 +347,44 @@
           function (e) {
               var photoDiv = document.getElementById('photoDiv');
               photoDiv.style.display = 'none';
-
-              if (e.data.startsWith("closePhotoDiv:")) {
+              var parts = e.data.split(":"); /* 1 is canId;  2 is filename; 3 1=>using autocropped headshot */
+              if (e.data.startsWith("deletePhotoDiv:")) {
+                 setPhoto (parts[1], "noPerson2.png", 1);
+              }
+              else if (e.data.startsWith("closePhotoDiv:")) {
                   var parts = e.data.split(":"); /* 1 is canId;  2 is filename; 3 1=>using autocropped headshot */
-                  var img = document.getElementById("photo-" + parts[1]);
-                  img.src = "PHOTOS_CAN/" + parts[2];
-
-                  var fieldChanged = "i:" + parts[1] + ":headshot";
-                  var uploadedPhotoInput = document.getElementsByName(fieldChanged)[0];
-                  uploadedPhotoInput.value = parts[2];
-                  changed(fieldChanged);
-
-                  const p3 = +parts[3];
-                  if (p3 == 1) {
-                     fieldChanged = "i:" + parts[1] + ":headcropped";
-                     var headcropped = document.getElementsByName(fieldChanged)[0];
-                     headcropped.value = '0';
-                     changed(fieldChanged);
-                  }
+                  setPhoto(parts[1], parts[2], parts[3]);
               }
           }
       );
+
+      function setPhoto(canId, filename, autocropped) {
+         var img = document.getElementById("photo-" + canId);
+         img.src = "PHOTOS_CAN/" + filename;
+
+         var fieldChanged = "i:" + canId + ":headshot";
+         var uploadedPhotoInput = document.getElementsByName(fieldChanged)[0];
+         uploadedPhotoInput.value = filename;
+         changed(fieldChanged);
+
+         const p3 = +autocropped;
+         if (p3 == 1) {
+            fieldChanged = "i:" + canId + ":headcropped";
+            var headcropped = document.getElementsByName(fieldChanged)[0];
+            headcropped.value = '0';
+            changed(fieldChanged);
+         }
+      }
    </script>
 </head>
 
 <body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
 <form id="mainForm" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
+
+{if $maintenance|strlen > 8}
+   <script> alert("{$maintenance}"); </script>
+{/if}
 
 <div id="pop-up-save" class="pop-up">
      Changes saved.
@@ -375,7 +400,7 @@
       <td class="th1" colspan="5"><b>{$name}</b></td>
       <td class="th1" colspan="18">
          {if $canEdit }
-            <input type="button" onClick="submitMainForm();"; return false;" value=" Save Changes " class="button" />
+            <input type="button" id='saveChanges' onClick="submitMainForm();"; return false;" value=" Save Changes " class="greybutton" />
          {/if}
       </td>
    </tr>
@@ -386,7 +411,7 @@
       {if $showSubDist  } <td class="th2 title-target" title-css="District or ward">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
       <td class="th2 title-target" title-css="Term length, in years">TL</td>
-      <td class="th2 title-target" title-css="Source of candidate info">Src</td>
+      <!-- <td class="th2 title-target" title-css="Source of candidate info">Src</td> -->
       <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed</td>
       <td class="th2a title-target" title-css="Reviewed for correctness?">Rev</td>
       <td class="th2a">&nbsp;Name</td>
@@ -429,9 +454,11 @@
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
          <td align='right' class="smaller">{$row['termlen']}</td>
+         <!--
          <td>
             {if $row['source'] != ''}AI{/if}
          </td>
+         -->
 
          <td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="i:{$row['can_id']}:endorsed" value="1"
              class="radio{$seatid} look-like-radio"
@@ -460,8 +487,12 @@
          </td>
 
          <td>
-            {if $row['name'] == ''  &&  count($row['picklist']) > 0}
-               <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist');"><img src="IMG/picklist.png" width="20"/></a>
+            {$picks = count($row['picklist'])}
+            {if $row['name'] == ''  &&  $picks > 0}
+               <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist', {$picks} );"
+                  class="noblue"
+                  title="Select one of the {$picks} remaining candidates."
+                  >({$picks})</a>
             {/if}
          </td>
 

@@ -35,7 +35,11 @@ $sql = "   SELECT 'us' AS org, " . calculateTopSeats (            "'us', 'us-sen
                                  . calculateTopMetric("reviewed", "'us', 'us-sen', 'us-hou'") . " AS rcount, "
                                  . calculateTopMetric("endorsed", "'us', 'us-sen', 'us-hou'") . " AS ecount "
      . "UNION "
-     . "   SELECT 'mi' AS org, " . calculateTopSeats("'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . ", 0 AS rcount, 0 AS endorsed "
+     . "   SELECT 'mi' AS org, " . calculateTopSeats(             "'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . ", "
+     .                             calculateTopMetric("reviewed", "'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . " AS rcount, "
+     .                             calculateTopMetric("endorsed", "'mi', 'mi-sos', 'mi-ag', 'crt-sup'") . " AS ecount "
+   ;
+/*
      . "UNION "
      . "   SELECT 'mi_sen' AS org, " . calculateTopSeats("'mi-sen'") . ", 0 AS rcount, 0 AS endorsed "
      . "UNION "
@@ -43,111 +47,112 @@ $sql = "   SELECT 'us' AS org, " . calculateTopSeats (            "'us', 'us-sen
      . "UNION "
      . "   SELECT 'mi_boe' AS org, " . calculateTopSeats("'mi-boe','mi-msu','mi-um','mi-wsu'") . ", 0 AS rcount, 0 AS endorsed "
 ;
+*/
 $result = $pdo->run($sql);
 if ($result->failed()) $logger->log("TOP failed: $sql\n");
 $topOffices = [];
 foreach ($result->getRows() as $row)   $topOffices[$row['org']] = [$row['seats']];
 
 $counties = [];
-foreach ($allowedCountyNums as $countyNum) {
-
-   $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, " .  calculateSeats("'cnty', 'cnty-com'", "c.id")
-        . "     FROM s4counties AS c  WHERE id = $countyNum "
-        . "UNION "
-        . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateSeats("'city', 'city-cou'", "j.id")
-        . "     FROM      s4jurisdictions AS j "
-        . "     LEFT JOIN v4completed     AS c  ON (c.id = j.id  AND c.type='city') "
-        . "    WHERE j.type='c'  AND  j.county_id = $countyNum "
-        . "UNION "
-        . "   SELECT 'town' AS org, j.id, j.name, 1 AS link , "  .  calculateSeats("'town', 'town-cou'", "j.id")
-        . "     FROM      s4jurisdictions AS j "
-        . "    WHERE j.type='t'  AND  j.county_id = $countyNum "
-        . "UNION "
-        . "   SELECT 'vil' AS org, v.id, v.name, IF(c.id IS NULL, 0, 1) AS link,"  .  calculateSeats("'vil-cou'", "v.id")
-        . "     FROM      s4villages  AS v "
-        . "     LEFT JOIN v4completed AS c  ON (c.id = v.id  AND c.type='village') "
-        . "    WHERE v.county_id = $countyNum "
-        . "UNION "
-        . "   SELECT 'schl-cou' AS org, s.id, s.name, IF(c.id IS NULL, 0, 1) AS link , "  . calculateSeats("'schl-cou'", "s.id")
-        . "     FROM      s4schools   AS s "
-        . "     LEFT JOIN v4completed AS c  ON (c.id = s.id  AND c.type='school') "
-        . "    WHERE s.county_id = $countyNum "
-        . "UNION "
-        . "   SELECT 'comcol-cou' AS org, m.id, m.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateSeats("'comcol-cou'", "m.id")
-        . "     FROM      s4commcolleges        AS m "
-        . "     LEFT JOIN v4commcolleges_county AS y  ON (m.id = y.id) "
-        . "     LEFT JOIN v4completed           AS c  ON (c.id = m.id  AND c.type='college') "
-        . "    WHERE y.county_id = $countyNum "
-        . "UNION "
-        . "   SELECT type AS org, shortname AS id, name, 1 AS link, "
-        . "      (SELECT COUNT(*) FROM v4seats WHERE org=type AND district=shortname) AS seats "
-        . "    FROM  v4courts "
-        . "    WHERE county_id = $countyNum "
-        . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-pd', 'crt-p', 'crt-m'), name ";
-
-// if ($countyNum === 81) $logger->log("Big: $sql");
-
-   $result = $pdo->run($sql);
-   if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");
-   foreach ($result->getRows() as $row) {
-      $org = $row['org'];
-      $name = simplifyName($row['name']);
-      $district = $row['id'];
-      $link     = intval($row['link']);
-      $seats    = intval($row['seats']);
-      switch ($org) {
-         case 'cnty':
-            $name = Str::replaceAll($name, " County", "");
-            $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $seats],
-               'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => [],
-               'city_num' => 0, 'city_den' => 0,
-               'town_num' => 0, 'town_den' => 0,
-               'vil_num'  => 0, 'vil_den'  => 0,
-               'schl_num' => 0, 'schl_den' => 0,
-               'col_num'  => 0, 'col_den'  => 0,
-               'crt_num'  => 0, 'crt_den'  => 0,
-               'grd_num'  => $seats,
-               'grd_den'  => $seats
-            ];
-            break;
-
-         case 'city':
-            $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $seats];
-            rollUp($counties[$countyNum], 'city', $seats);
-            break;
-
-         case 'town':
-            $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $seats];
-            rollUp($counties[$countyNum], 'town', $seats);
-            break;
-
-         case 'vil':
-            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $seats];
-            rollUp($counties[$countyNum], 'vil', $seats);
-            break;
-
-         case 'schl-cou':
-            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $seats];
-            rollUp($counties[$countyNum], 'schl', $seats);
-            break;
-
-         case 'comcol-cou':
-            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $seats];
-            rollUp($counties[$countyNum], 'col', $seats);
-            break;
-
-         case 'crt-a':
-         case 'crt-c':
-         case 'crt-d':
-         case 'crt-pd':
-         case 'crt-p':
-         case 'crt-m':
-            $counties[$countyNum]['crt'] [] = [$org, $district, $name, $org, $seats];
-            rollUp($counties[$countyNum], 'crt', $seats);
-            break;
-      }
-   }
-}
+//foreach ($allowedCountyNums as $countyNum) {
+//
+//   $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, " .  calculateSeats("'cnty', 'cnty-com'", "c.id")
+//        . "     FROM s4counties AS c  WHERE id = $countyNum "
+//        . "UNION "
+//        . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateSeats("'city', 'city-cou'", "j.id")
+//        . "     FROM      s4jurisdictions AS j "
+//        . "     LEFT JOIN v4completed     AS c  ON (c.id = j.id  AND c.type='city') "
+//        . "    WHERE j.type='c'  AND  j.county_id = $countyNum "
+//        . "UNION "
+//        . "   SELECT 'town' AS org, j.id, j.name, 1 AS link , "  .  calculateSeats("'town', 'town-cou'", "j.id")
+//        . "     FROM      s4jurisdictions AS j "
+//        . "    WHERE j.type='t'  AND  j.county_id = $countyNum "
+//        . "UNION "
+//        . "   SELECT 'vil' AS org, v.id, v.name, IF(c.id IS NULL, 0, 1) AS link,"  .  calculateSeats("'vil-cou'", "v.id")
+//        . "     FROM      s4villages  AS v "
+//        . "     LEFT JOIN v4completed AS c  ON (c.id = v.id  AND c.type='village') "
+//        . "    WHERE v.county_id = $countyNum "
+//        . "UNION "
+//        . "   SELECT 'schl-cou' AS org, s.id, s.name, IF(c.id IS NULL, 0, 1) AS link , "  . calculateSeats("'schl-cou'", "s.id")
+//        . "     FROM      s4schools   AS s "
+//        . "     LEFT JOIN v4completed AS c  ON (c.id = s.id  AND c.type='school') "
+//        . "    WHERE s.county_id = $countyNum "
+//        . "UNION "
+//        . "   SELECT 'comcol-cou' AS org, m.id, m.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateSeats("'comcol-cou'", "m.id")
+//        . "     FROM      s4commcolleges        AS m "
+//        . "     LEFT JOIN v4commcolleges_county AS y  ON (m.id = y.id) "
+//        . "     LEFT JOIN v4completed           AS c  ON (c.id = m.id  AND c.type='college') "
+//        . "    WHERE y.county_id = $countyNum "
+//        . "UNION "
+//        . "   SELECT type AS org, shortname AS id, name, 1 AS link, "
+//        . "      (SELECT COUNT(*) FROM v4seats WHERE org=type AND district=shortname) AS seats "
+//        . "    FROM  v4courts "
+//        . "    WHERE county_id = $countyNum "
+//        . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-pd', 'crt-p', 'crt-m'), name ";
+//
+//// if ($countyNum === 81) $logger->log("Big: $sql");
+//
+//   $result = $pdo->run($sql);
+//   if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");
+//   foreach ($result->getRows() as $row) {
+//      $org = $row['org'];
+//      $name = simplifyName($row['name']);
+//      $district = $row['id'];
+//      $link     = intval($row['link']);
+//      $seats    = intval($row['seats']);
+//      switch ($org) {
+//         case 'cnty':
+//            $name = Str::replaceAll($name, " County", "");
+//            $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $seats],
+//               'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => [],
+//               'city_num' => 0, 'city_den' => 0,
+//               'town_num' => 0, 'town_den' => 0,
+//               'vil_num'  => 0, 'vil_den'  => 0,
+//               'schl_num' => 0, 'schl_den' => 0,
+//               'col_num'  => 0, 'col_den'  => 0,
+//               'crt_num'  => 0, 'crt_den'  => 0,
+//               'grd_num'  => $seats,
+//               'grd_den'  => $seats
+//            ];
+//            break;
+//
+//         case 'city':
+//            $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $seats];
+//            rollUp($counties[$countyNum], 'city', $seats);
+//            break;
+//
+//         case 'town':
+//            $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $seats];
+//            rollUp($counties[$countyNum], 'town', $seats);
+//            break;
+//
+//         case 'vil':
+//            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $seats];
+//            rollUp($counties[$countyNum], 'vil', $seats);
+//            break;
+//
+//         case 'schl-cou':
+//            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $seats];
+//            rollUp($counties[$countyNum], 'schl', $seats);
+//            break;
+//
+//         case 'comcol-cou':
+//            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $seats];
+//            rollUp($counties[$countyNum], 'col', $seats);
+//            break;
+//
+//         case 'crt-a':
+//         case 'crt-c':
+//         case 'crt-d':
+//         case 'crt-pd':
+//         case 'crt-p':
+//         case 'crt-m':
+//            $counties[$countyNum]['crt'] [] = [$org, $district, $name, $org, $seats];
+//            rollUp($counties[$countyNum], 'crt', $seats);
+//            break;
+//      }
+//   }
+//}
 
 $smarty = new SmartyPage();
 $smarty->assign('allowedState', $allowedState);

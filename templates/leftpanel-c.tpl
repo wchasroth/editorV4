@@ -90,21 +90,21 @@
     {foreach from=$counties item=county}
         <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}');"
             ><span id='A{$county.cnty[1]}' class="arrow">&#9654;</span> {$county.cnty[2]}</a>
-            ({$county.grd_num}/{$county.grd_den})
+            (E{$county.grd_end},R{$county.grd_rev} / {$county.grd_den})
             <ul id="C{$county.cnty[1]}" style="display: none;">
                 <li><span class="arrow">&nbsp;</span>
                     <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a>
-                    ({$county.cnty[4]})
+                    (E{$county.cnty[6]},R{$county.cnty[5]} / {$county.cnty[4]})
                 </li>
 
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}Y');"
                     ><span id='A{$county.cnty[1]}Y' class="arrow">&#9654;</span> Cities</a>
-                    ({$county.city_num}/{$county.city_den})
+                    (E{$county.city_end},R{$county.city_rev} / {$county.city_den})
                     <ul id="C{$county.cnty[1]}Y" style="display: none;">
                         {foreach from=$county.city item=city}
                             <li>
                                 <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'city,city-cou', '{$city[1]}', 'ws', 1);" class="child"     >{$city[2]}</a>
-                                ({$city[4]})
+                                (E{$city[6]},R{$city[5]} / {$city[4]})
                             </li>
                         {/foreach}
                     </ul>
@@ -112,12 +112,12 @@
 
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}P');"
                     ><span id='A{$county.cnty[1]}P' class="arrow">&#9654;</span> Townships</a>
-                    ({$county.town_num}/{$county.town_den})
+                    (E{$county.town_end},R{$county.town_rev} / {$county.town_den})
                     <ul id="C{$county.cnty[1]}P" style="display: none;">
                         {foreach from=$county.town item=town}
                             <li>
                                 <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'town,town-cou', '{$town[1]}', 'ws', 1);" class="child"     >{$town[2]}</a>
-                                ({$town[4]})
+                                (E{$town[6]},R{$town[5]} / {$town[4]})
                             </li>
                         {/foreach}
                     </ul>
@@ -126,12 +126,12 @@
                 {if $county.vil|count > 0 }
                     <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}V');"
                         ><span id='A{$county.cnty[1]}V' class="arrow">&#9654;</span> Villages</a>
-                        ({$county.vil_num}/{$county.vil_den})
+                        (E{$county.vil_end},R{$county.vil_rev} / {$county.vil_den})
                         <ul id="C{$county.cnty[1]}V" style="display: none";>
                             {foreach from=$county.vil item=vil}
                                 <li>
                                     <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'vil,vil-cou', '{$vil[1]}', 's', 1);" class="child"     >{$vil[2]}</a>
-                                    ({$vil[4]})
+                                    (E{$vil[6]},R{$vil[5]} / {$vil[4]})
                                 </li>
                             {/foreach}
                         </ul>
@@ -140,12 +140,12 @@
 
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}S');"
                     ><span id='A{$county.cnty[1]}S' class="arrow">&#9654;</span> School Districts</a>
-                    ({$county.schl_num}/{$county.schl_den})
+                    (E{$county.schl_end},R{$county.schl_rev} / {$county.schl_den})
                     <ul id="C{$county.cnty[1]}S" style="display: none";>
                         {foreach from=$county.schl item=schl}
                             <li>
                                 <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'schl-cou', '{$schl[1]}', 's', 1);" class="child"     >{$schl[2]}</a>
-                                ({$schl[4]})
+                                (E{$schl[6]},R{$schl[5]} / {$schl[4]})
                             </li>
                         {/foreach}
                     </ul>
@@ -153,12 +153,12 @@
 
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}T');"
                     ><span id='A{$county.cnty[1]}T' class="arrow">&#9654;</span> Courts</a>
-                    ({$county.crt_num}/{$county.crt_den})
+                    (E{$county.crt_end},R{$county.crt_rev} / {$county.crt_den})
                     <ul id="C{$county.cnty[1]}T" style="display: none";>
                         {foreach from=$county.crt item=crt}
                             <li>
                                 <a href="#" onClick="return loadOfficials({$county.cnty[1]}, '{$crt[3]}', '{$crt[1]}', 's');" class="child">{$crt[2]}</a>
-                                ({$crt[4]})
+                                (E{$crt[6]},R{$crt[5]} / {$crt[4]})
                             </li>
                         {/foreach}
                     </ul>

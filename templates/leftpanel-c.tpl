@@ -28,7 +28,7 @@
          width: 0.9em;
       }
       .green { color: darkgreen; }
-      .endorsed { color: blue; }
+      .endorsed { color: green;  font-weight: bold; }
    </style>
    <script>
       function flipArrow(idBase) {

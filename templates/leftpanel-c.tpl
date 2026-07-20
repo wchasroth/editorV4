@@ -67,22 +67,27 @@
         <li>
             <a href="#" onClick="return loadOfficials(999, 'us,us-vp,us-sen,us-hou',        '', 'ds');" class="child">US</a>
             ({$topOffices.us[1]}/{$topOffices.us[2]}) <span class="endorsed">{$topOffices.us[0]}</span>
+            {if $topOffices.us[1] == $topOffices.us[2]  &&  $topOffices.us[2] > 0} <img src="green-check.png" width="12"/> {/if}
         </li>
         <li>
             <a href="#" onClick="return loadOfficials(999, 'mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a>
             ({$topOffices.mi[1]}/{$topOffices.mi[2]}) <span class="endorsed">{$topOffices.mi[0]}</span>
+            {if $topOffices.mi[1] == $topOffices.mi[2]  &&  $topOffices.mi[2] > 0} <img src="green-check.png" width="12"/> {/if}
         </li>
         <li>
             <a href="#" onClick="return loadOfficials(999, 'mi-sen', '', 'd');" class="child">MI Senate</a>
             ({$topOffices.mi_sen[1]}/{$topOffices.mi_sen[2]}) <span class="endorsed">{$topOffices.mi_sen[0]}</span>
+            {if $topOffices.mi_sen[1] == $topOffices.mi_sen[2]  &&  $topOffices.mi_sen[2] > 0} <img src="green-check.png" width="12"/> {/if}
         </li>
         <li>
             <a href="#" onClick="return loadOfficials(999, 'mi-hou', '', 'd');" class="child">MI House</a>
             ({$topOffices.mi_hou[1]}/{$topOffices.mi_hou[2]}) <span class="endorsed">{$topOffices.mi_hou[0]}</span>
+            {if $topOffices.mi_hou[1] == $topOffices.mi_hou[2]  &&  $topOffices.mi_hou[2] > 0} <img src="green-check.png" width="12"/> {/if}
         </li>
         <li>
             <a href="#" onClick="return loadOfficials(999, 'mi-boe,mi-msu,mi-um,mi-wsu', '', 's');" class="child">MI Education</a>
             ({$topOffices.mi_boe[1]}/{$topOffices.mi_boe[2]}) <span class="endorsed">{$topOffices.mi_boe[0]}</span>
+            {if $topOffices.mi_boe[1] == $topOffices.mi_boe[2]  &&  $topOffices.mi_boe[2] > 0} <img src="green-check.png" width="12"/> {/if}
         </li>
     {/if}
 
@@ -91,22 +96,26 @@
             ><span id='A{$county.cnty[1]}' class="arrow">&#9654;</span> {$county.cnty[2]}</a>
             <!-- (E{$county.grd_end},R{$county.grd_rev} / {$county.grd_den}) -->
             ({$county.grd_rev}/{$county.grd_den}) <span class="endorsed">{$county.grd_end}</span>
+            {if $county.grd_rev == $county.grd_den  &&  $county.grd_den > 0} <img src="green-check.png" width="12"/> {/if}
             <ul id="C{$county.cnty[1]}" style="display: none;">
                 <li><span class="arrow">&nbsp;</span>
                     <a href="#" {if $county.cnty[7] == 1} class="green" {/if}
                        onClick="return loadOfficials({$county.cnty[1]}, 'cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a>
                     ({$county.cnty[5]}/{$county.cnty[4]}) <span class="endorsed">{$county.cnty[6]}</span>
+                    {if $county.cnty[5] == $county.cnty[4]  &&  $county.cnty[4] > 0} <img src="green-check.png" width="12"/> {/if}
                 </li>
 
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}Y');"
                     ><span id='A{$county.cnty[1]}Y' class="arrow">&#9654;</span> Cities</a>
                     ({$county.city_rev}/{$county.city_den}) <span class="endorsed">{$county.city_end}</span>
+                    {if $county.city_rev == $county.city_den  &&  $county.city_den > 0} <img src="green-check.png" width="12"/> {/if}
                     <ul id="C{$county.cnty[1]}Y" style="display: none;">
                         {foreach from=$county.city item=city}
                             <li>
                                 <a href="#"  {if $city[7] == 1} class="green" {/if}
                                    onClick="return loadOfficials({$county.cnty[1]}, 'city,city-cou', '{$city[1]}', 'ws', 1);" class="child"     >{$city[2]}</a>
                                 ({$city[5]}/{$city[4]}) <span class="endorsed">{$city[6]}</span>
+                                {if $city[5] == $city[4]  &&  $city[4] > 0} <img src="green-check.png" width="12"/> {/if}
                             </li>
                         {/foreach}
                     </ul>
@@ -115,12 +124,14 @@
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}P');"
                     ><span id='A{$county.cnty[1]}P' class="arrow">&#9654;</span> Townships</a>
                     ({$county.town_rev}/{$county.town_den}) <span class="endorsed">{$county.town_end}</span>
+                    {if $county.town_rev == $county.town_den  &&  $county.town_den > 0} <img src="green-check.png" width="12"/> {/if}
                     <ul id="C{$county.cnty[1]}P" style="display: none;">
                         {foreach from=$county.town item=town}
                             <li>
                                 <a href="#"  {if $town[7] == 1} class="green" {/if}
                                    onClick="return loadOfficials({$county.cnty[1]}, 'town,town-cou', '{$town[1]}', 'ws', 1);" class="child"     >{$town[2]}</a>
                                 ({$town[5]}/{$town[4]}) <span class="endorsed">{$town[6]}</span>
+                                {if $town[5] == $town[4]  &&  $town[4] > 0} <img src="green-check.png" width="12"/> {/if}
                             </li>
                         {/foreach}
                     </ul>
@@ -130,12 +141,14 @@
                     <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}V');"
                         ><span id='A{$county.cnty[1]}V' class="arrow">&#9654;</span> Villages</a>
                         ({$county.vil_rev}/{$county.vil_den}) <span class="endorsed">{$county.vil_end}</span>
+                        {if $county.vil_rev == $county.vil_den  &&  $county.vil_den > 0} <img src="green-check.png" width="12"/> {/if}
                         <ul id="C{$county.cnty[1]}V" style="display: none";>
                             {foreach from=$county.vil item=vil}
                                 <li>
                                     <a href="#"  {if $vil[7] == 1} class="green" {/if}
                                        onClick="return loadOfficials({$county.cnty[1]}, 'vil,vil-cou', '{$vil[1]}', 's', 1);" class="child"     >{$vil[2]}</a>
                                     ({$vil[5]}/{$vil[4]}) <span class="endorsed">{$vil[6]}</span>
+                                    {if $vil[5] == $vil[4]  &&  $vil[4] > 0} <img src="green-check.png" width="12"/> {/if}
                                 </li>
                             {/foreach}
                         </ul>
@@ -145,12 +158,14 @@
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}S');"
                     ><span id='A{$county.cnty[1]}S' class="arrow">&#9654;</span> School Districts</a>
                     ({$county.schl_rev}/{$county.schl_den}) <span class="endorsed">{$county.schl_end}</span>
+                    {if $county.schl_rev == $county.schl_den  &&  $county.schl_den > 0} <img src="green-check.png" width="12"/> {/if}
                     <ul id="C{$county.cnty[1]}S" style="display: none";>
                         {foreach from=$county.schl item=schl}
                             <li>
                                 <a href="#"  {if $schl[7] == 1} class="green" {/if}
                                    onClick="return loadOfficials({$county.cnty[1]}, 'schl-cou', '{$schl[1]}', 's', 1);" class="child"     >{$schl[2]}</a>
                                 ({$schl[5]}/{$schl[4]}) <span class="endorsed">{$schl[6]}</span>
+                                {if $schl[5] == $schl[4]  &&  $schl[4] > 0} <img src="green-check.png" width="12"/> {/if}
                             </li>
                         {/foreach}
                     </ul>
@@ -159,12 +174,14 @@
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}T');"
                     ><span id='A{$county.cnty[1]}T' class="arrow">&#9654;</span> Courts</a>
                     ({$county.crt_rev}/{$county.crt_den}) <span class="endorsed">{$county.crt_end}</span>
+                    {if $county.crt_rev == $county.crt_den  &&  $county.crt_den > 0} <img src="green-check.png" width="12"/> {/if}
                     <ul id="C{$county.cnty[1]}T" style="display: none";>
                         {foreach from=$county.crt item=crt}
                             <li>
                                 <a href="#" {if $crt[7] == 1} class="green" {/if}
                                    onClick="return loadOfficials({$county.cnty[1]}, '{$crt[3]}', '{$crt[1]}', 's');" class="child">{$crt[2]}</a>
                                 ({$crt[5]}/{$crt[4]}) <span class="endorsed">{$crt[6]}</span>
+                                {if $crt[5] == $crt[4]} <img src="green-check.png" width="12"/> {/if}
                             </li>
                         {/foreach}
                     </ul>

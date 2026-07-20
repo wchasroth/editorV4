@@ -257,7 +257,7 @@ function calculatePassed (string $orgCode, string $district): string {
    $orgClause = Str::contains($orgCode, '%')
       ? " org LIKE '$orgCode' "
       : " org    = '$orgCode' ";
-   return "(SELECT 1 FROM v4candidatepagespassed  WHERE $orgClause AND district=$district LIMIT 1) ";
+   return "(SELECT 1 FROM v4candidatePagesPassed  WHERE $orgClause AND district=$district LIMIT 1) ";
 }
 
 function calculateTopMetric(string $metricName, string $orgs): string {

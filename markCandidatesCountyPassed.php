@@ -78,7 +78,7 @@ if ($result->failed()) echo "Error: $sql\n";
 $entitiesPassed = $result->getRows();
 foreach ($entitiesPassed as $entity) {
    $sqlFields = new SqlFields(['org' => $entity['org'], 'district' => $entity['district']]);
-   $sql = "SELECT 1 AS found FROM v4candidatepagespassed WHERE " . $sqlFields->getSelectFragment();
+   $sql = "SELECT 1 AS found FROM v4candidatePagesPassed WHERE " . $sqlFields->getSelectFragment();
    $result = $pdo->run($sql);
    $found  = intval($result->getSingleValue('found'));
    if ($found > 0) {
@@ -86,7 +86,7 @@ foreach ($entitiesPassed as $entity) {
       continue;
    }  // Already marked passed, don't do it again!
 
-   $sql = "INSERT INTO v4candidatepagespassed (org, district) values ('{$entity['org']}','{$entity['district']}')";
+   $sql = "INSERT INTO v4candidatePagesPassed (org, district) values ('{$entity['org']}','{$entity['district']}')";
    $result = $pdo->run($sql);
    if ($result->failed()) fwrite(STDERR, "$sql\n");
 

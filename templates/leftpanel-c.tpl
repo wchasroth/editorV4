@@ -93,7 +93,8 @@
             ({$county.grd_rev}/{$county.grd_den}) <span class="endorsed">{$county.grd_end}</span>
             <ul id="C{$county.cnty[1]}" style="display: none;">
                 <li><span class="arrow">&nbsp;</span>
-                    <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a>
+                    <a href="#" {if $county.cnty[7] == 1} class="green" {/if}
+                       onClick="return loadOfficials({$county.cnty[1]}, 'cnty,cnty-com', '{$county.cnty[1]}', 'w');" class="child">County Offices</a>
                     ({$county.cnty[5]}/{$county.cnty[4]}) <span class="endorsed">{$county.cnty[6]}</span>
                 </li>
 
@@ -103,7 +104,8 @@
                     <ul id="C{$county.cnty[1]}Y" style="display: none;">
                         {foreach from=$county.city item=city}
                             <li>
-                                <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'city,city-cou', '{$city[1]}', 'ws', 1);" class="child"     >{$city[2]}</a>
+                                <a href="#"  {if $city[7] == 1} class="green" {/if}
+                                   onClick="return loadOfficials({$county.cnty[1]}, 'city,city-cou', '{$city[1]}', 'ws', 1);" class="child"     >{$city[2]}</a>
                                 ({$city[5]}/{$city[4]}) <span class="endorsed">{$city[6]}</span>
                             </li>
                         {/foreach}
@@ -116,7 +118,8 @@
                     <ul id="C{$county.cnty[1]}P" style="display: none;">
                         {foreach from=$county.town item=town}
                             <li>
-                                <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'town,town-cou', '{$town[1]}', 'ws', 1);" class="child"     >{$town[2]}</a>
+                                <a href="#"  {if $town[7] == 1} class="green" {/if}
+                                   onClick="return loadOfficials({$county.cnty[1]}, 'town,town-cou', '{$town[1]}', 'ws', 1);" class="child"     >{$town[2]}</a>
                                 ({$town[5]}/{$town[4]}) <span class="endorsed">{$town[6]}</span>
                             </li>
                         {/foreach}
@@ -130,7 +133,8 @@
                         <ul id="C{$county.cnty[1]}V" style="display: none";>
                             {foreach from=$county.vil item=vil}
                                 <li>
-                                    <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'vil,vil-cou', '{$vil[1]}', 's', 1);" class="child"     >{$vil[2]}</a>
+                                    <a href="#"  {if $vil[7] == 1} class="green" {/if}
+                                       onClick="return loadOfficials({$county.cnty[1]}, 'vil,vil-cou', '{$vil[1]}', 's', 1);" class="child"     >{$vil[2]}</a>
                                     ({$vil[5]}/{$vil[4]}) <span class="endorsed">{$vil[6]}</span>
                                 </li>
                             {/foreach}
@@ -144,7 +148,8 @@
                     <ul id="C{$county.cnty[1]}S" style="display: none";>
                         {foreach from=$county.schl item=schl}
                             <li>
-                                <a href="#" onClick="return loadOfficials({$county.cnty[1]}, 'schl-cou', '{$schl[1]}', 's', 1);" class="child"     >{$schl[2]}</a>
+                                <a href="#"  {if $schl[7] == 1} class="green" {/if}
+                                   onClick="return loadOfficials({$county.cnty[1]}, 'schl-cou', '{$schl[1]}', 's', 1);" class="child"     >{$schl[2]}</a>
                                 ({$schl[5]}/{$schl[4]}) <span class="endorsed">{$schl[6]}</span>
                             </li>
                         {/foreach}
@@ -157,7 +162,8 @@
                     <ul id="C{$county.cnty[1]}T" style="display: none";>
                         {foreach from=$county.crt item=crt}
                             <li>
-                                <a href="#" onClick="return loadOfficials({$county.cnty[1]}, '{$crt[3]}', '{$crt[1]}', 's');" class="child">{$crt[2]}</a>
+                                <a href="#" {if $crt[7] == 1} class="green" {/if}
+                                   onClick="return loadOfficials({$county.cnty[1]}, '{$crt[3]}', '{$crt[1]}', 's');" class="child">{$crt[2]}</a>
                                 ({$crt[5]}/{$crt[4]}) <span class="endorsed">{$crt[6]}</span>
                             </li>
                         {/foreach}

@@ -70,13 +70,15 @@ foreach ($allowedCountyNums as $countyNum) {
    $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, "
         .        calculateSeats (            $orgCnty, "c.id") . ", "
         .        calculateMetric("reviewed", $orgCnty, "c.id") . " AS rcount, "
-        .        calculateMetric("endorsed", $orgCnty, "c.id") . " AS ecount "
+        .        calculateMetric("endorsed", $orgCnty, "c.id") . " AS ecount, "
+        .        calculatePassed('cnty%', "c.id")              . " AS passed "
         . "     FROM s4counties AS c  WHERE id = $countyNum "
         . "UNION "
         . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link, "
         .        calculateSeats (            $orgCity, "j.id") . ", "
         .        calculateMetric("reviewed", $orgCity, "j.id") . " AS rcount, "
-        .        calculateMetric("endorsed", $orgCity, "j.id") . " AS ecount "
+        .        calculateMetric("endorsed", $orgCity, "j.id") . " AS ecount, "
+        .        calculatePassed('city%', 'j.id')              . " AS passed "
         . "     FROM      s4jurisdictions AS j "
         . "     LEFT JOIN v4completed     AS c  ON (c.id = j.id  AND c.type='city') "
         . "    WHERE j.type='c'  AND  j.county_id = $countyNum "
@@ -84,14 +86,16 @@ foreach ($allowedCountyNums as $countyNum) {
         . "   SELECT 'town' AS org, j.id, j.name, 1 AS link , "
         .        calculateSeats (            $orgTown, "j.id") . ", "
         .        calculateMetric("reviewed", $orgTown, "j.id") . " AS rcount, "
-        .        calculateMetric("endorsed", $orgTown, "j.id") . " AS ecount "
+        .        calculateMetric("endorsed", $orgTown, "j.id") . " AS ecount, "
+        .        calculatePassed('town%', 'j.id')              . " AS passed "
         . "     FROM      s4jurisdictions AS j "
         . "    WHERE j.type='t'  AND  j.county_id = $countyNum "
         . "UNION "
         . "   SELECT 'vil' AS org, v.id, v.name, IF(c.id IS NULL, 0, 1) AS link,"
         .        calculateSeats (            $orgVil, "v.id") . ", "
         .        calculateMetric("reviewed", $orgVil, "v.id") . " AS rcount, "
-        .        calculateMetric("endorsed", $orgVil, "v.id") . " AS ecount "
+        .        calculateMetric("endorsed", $orgVil, "v.id") . " AS ecount, "
+        .        calculatePassed('vil%', 'v.id')              . " AS passed "
         . "     FROM      s4villages  AS v "
         . "     LEFT JOIN v4completed AS c  ON (c.id = v.id  AND c.type='village') "
         . "    WHERE v.county_id = $countyNum "
@@ -99,7 +103,8 @@ foreach ($allowedCountyNums as $countyNum) {
         . "   SELECT 'schl-cou' AS org, h.id, h.name, IF(c.id IS NULL, 0, 1) AS link , "
         .        calculateSeats (            $orgSchl, "h.id") . ", "
         .        calculateMetric("reviewed", $orgSchl, "h.id") . " AS rcount, "
-        .        calculateMetric("endorsed", $orgSchl, "h.id") . " AS ecount "
+        .        calculateMetric("endorsed", $orgSchl, "h.id") . " AS ecount, "
+        .        calculatePassed('schl-cou', 'h.id')           . " AS passed "
         . "     FROM      s4schools   AS h "
         . "     LEFT JOIN v4completed AS c  ON (c.id = h.id  AND c.type='school') "
         . "    WHERE h.county_id = $countyNum "
@@ -107,7 +112,8 @@ foreach ($allowedCountyNums as $countyNum) {
         . "   SELECT 'comcol-cou' AS org, m.id, m.name, IF(c.id IS NULL, 0, 1) AS link, "
         .        calculateSeats (            $orgColl, "m.id") . ", "
         .        calculateMetric("reviewed", $orgColl, "m.id") . " AS rcount, "
-        .        calculateMetric("endorsed", $orgColl, "m.id") . " AS ecount "
+        .        calculateMetric("endorsed", $orgColl, "m.id") . " AS ecount, "
+        .        calculatePassed('comcol-cou', 'm.id')         . " AS passed "
         . "     FROM      s4commcolleges        AS m "
         . "     LEFT JOIN v4commcolleges_county AS y  ON (m.id = y.id) "
         . "     LEFT JOIN v4completed           AS c  ON (c.id = m.id  AND c.type='college') "
@@ -116,7 +122,8 @@ foreach ($allowedCountyNums as $countyNum) {
         . "   SELECT type AS org, shortname AS id, name, 1 AS link, "
         .        calculateSeats (            $orgCrt, "shortname") . ", "
         .        calculateMetric("reviewed", $orgCrt, "shortname") . " AS rcount, "
-        .        calculateMetric("endorsed", $orgCrt, "shortname") . " AS ecount "
+        .        calculateMetric("endorsed", $orgCrt, "shortname") . " AS ecount, "
+        .        calculatePassed('crt%', 'shortname')              . " AS passed "
         . "    FROM  v4courts AS ct"
         . "    WHERE county_id = $countyNum "
         . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-pd', 'crt-p', 'crt-m'), name ";
@@ -133,10 +140,11 @@ foreach ($allowedCountyNums as $countyNum) {
       $seats    = intval($row['seats']);
       $rcount   = intval($row['rcount']);
       $ecount   = intval($row['ecount']);
+      $passed   = intval($row['passed']);
       switch ($org) {
          case 'cnty':
             $name = Str::replaceAll($name, " County", "");
-            $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $seats, $rcount, $ecount],
+            $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $seats, $rcount, $ecount, $passed],
                'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => [],
                'city_end' => 0, 'city_rev' => 0, 'city_den' => 0,
                'town_end' => 0, 'town_rev' => 0, 'town_den' => 0,
@@ -151,27 +159,27 @@ foreach ($allowedCountyNums as $countyNum) {
             break;
 
          case 'city':
-            $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $seats, $rcount, $ecount];
+            $counties[$countyNum]['city'][] = [$org, $district, $name, $link, $seats, $rcount, $ecount, $passed];
             rollUp($counties[$countyNum], 'city', $seats, $rcount, $ecount);
             break;
 
          case 'town':
-            $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $seats, $rcount, $ecount];
+            $counties[$countyNum]['town'][] = [$org, $district, $name, $link, $seats, $rcount, $ecount, $passed];
             rollUp($counties[$countyNum], 'town', $seats, $rcount, $ecount);
             break;
 
          case 'vil':
-            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $seats, $rcount, $ecount];
+            $counties[$countyNum]['vil']  [] = [$org, $district, $name, $link, $seats, $rcount, $ecount, $passed];
             rollUp($counties[$countyNum], 'vil', $seats, $rcount, $ecount);
             break;
 
          case 'schl-cou':
-            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $seats, $rcount, $ecount];
+            $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $seats, $rcount, $ecount, $passed];
             rollUp($counties[$countyNum], 'schl', $seats, $rcount, $ecount);
             break;
 
          case 'comcol-cou':
-            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $seats, $rcount, $ecount];
+            $counties[$countyNum]['comcol'] [] = [$org, $district, $name, $link, $seats, $rcount, $ecount, $passed];
             rollUp($counties[$countyNum], 'col', $seats, $rcount, $ecount);
             break;
 
@@ -181,7 +189,7 @@ foreach ($allowedCountyNums as $countyNum) {
          case 'crt-pd':
          case 'crt-p':
          case 'crt-m':
-            $counties[$countyNum]['crt'] [] = [$org, $district, $name, $org, $seats, $rcount, $ecount];
+            $counties[$countyNum]['crt'] [] = [$org, $district, $name, $org, $seats, $rcount, $ecount, $passed];
             rollUp($counties[$countyNum], 'crt', $seats, $rcount, $ecount);
             break;
       }
@@ -243,6 +251,13 @@ function getUnion (string $counties1, string $counties2): string {
    $c2 = Str::split($counties2, ",");
    $union = array_unique(array_merge($c1, $c2));
    return Str::join($union, ",");
+}
+
+function calculatePassed (string $orgCode, string $district): string {
+   $orgClause = Str::contains($orgCode, '%')
+      ? " org LIKE '$orgCode' "
+      : " org    = '$orgCode' ";
+   return "(SELECT 1 FROM v4candidatepagespassed  WHERE $orgClause AND district=$district LIMIT 1) ";
 }
 
 function calculateTopMetric(string $metricName, string $orgs): string {

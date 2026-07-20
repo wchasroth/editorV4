@@ -199,8 +199,10 @@ function rollUp(array &$county, string $org, int $seats, int $reviewed, int $end
    $county['grd_end']    += $endorsed;
    $county["{$org}_rev"] += $reviewed;
    $county["grd_rev"]    += $reviewed;
-   $county["{$org}_den"] += max(1, $seats);
-   $county['grd_den']    += max(1, $seats);   // if we have zero seats, pretend we have at least one for roll-up purposes.
+// $county["{$org}_den"] += max(1, $seats);  // hmm, why did we do this?
+   $county["{$org}_den"] += $seats;
+// $county['grd_den']    += max(1, $seats);   // if we have zero seats, pretend we have at least one for roll-up purposes.
+   $county['grd_den']    += $seats;
 }
 
 function calculateSeats (string $orgClause, string $districtField): string {

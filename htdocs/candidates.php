@@ -161,7 +161,7 @@ for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['picklist'] = [];
    if (empty($rows[$i]['name'])) {
       $fields = ['org' => $rows[$i]['org'], 'office' => $rows[$i]['office'], 'district' => $rows[$i]['district'],
-         // 'subdist' => $rows[$i]['subdist']
+         'subdist' => $rows[$i]['subdist']  // might get weird if 0, but so far it seems ok (7/21/2026)
       ];
 
       // Calculate the previous known names for this seat (with wiggle room for the subdist)

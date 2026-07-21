@@ -1,0 +1,6 @@
+SELECT c.id, c.name, c.phone
+  FROM      v4candidates AS c
+  LEFT JOIN v4incumbents AS i  ON (c.seat_id = i.seat_id)
+ WHERE c.phone = i.phone
+   AND c.phone != ''
+;

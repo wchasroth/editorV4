@@ -1,0 +1,16 @@
+<html>
+<head>
+<script>
+function showUA() {
+    const uaString = navigator.userAgent;
+    document.getElementById("userAgentDisplay").innerText = "User Agent: " + uaString;
+}
+
+</script>
+</head>
+
+<body onLoad="showUA();">
+<p id="userAgentDisplay"></p>
+
+</body>
+</html>

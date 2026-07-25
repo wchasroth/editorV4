@@ -512,7 +512,7 @@
          </td>
 
          <td>
-            <div   id='{$row['can_id']}-shortdesc'   onClick="descOpen({$row['can_id']}, '{$row['name']}');">{$row['shortdesc']}</div>
+            <div   id='{$row['can_id']}-shortdesc'   onClick="descOpen({$row['can_id']}, `{$row['name']}`);">{$row['shortdesc']}</div>
             <div   id='{$row['can_id']}-description' style="display: none;">{$row['description']}</div>
             <input id='{$row['can_id']}-rawdesc'     type="hidden" name="i:{$row['can_id']}:description" />
          </td>

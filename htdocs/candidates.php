@@ -123,7 +123,7 @@ $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.hea
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 
 $result = $pdo->run($sql);
-//$logger->log("BIG SQL: $sql");
+//$logger->log("Candidate SQL: $sql");
 if ($result->failed()) $logger->log("Failed main select: " . $result->getError() . "  $sql");
 
 //---Where the LEFT JOIN v4candidates found no candidate rows, create empty ones, with the seat_id set.

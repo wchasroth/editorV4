@@ -180,7 +180,7 @@
                         {foreach from=$county.comcol item=comcol}
                             <li>
                                 <a href="#"  {if $comcol[7] == 1} class="green" {/if}
-                                   onClick="return loadOfficials({$county.cnty[1]}, 'comcomcol-cou', '{$comcol[1]}', 's', 1);" class="child"     >{$comcol[2]}</a>
+                                   onClick="return loadOfficials({$county.cnty[1]}, 'comcol-cou', '{$comcol[1]}', 's', 1);" class="child"     >{$comcol[2]}</a>
                                 ({$comcol[5]}/{$comcol[4]}) <span class="endorsed">{$comcol[6]}</span>
                                 {if $comcol[5] == $comcol[4]  &&  $comcol[4] > 0} <img src="green-check.png" width="12"/> {/if}
                             </li>

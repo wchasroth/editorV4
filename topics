@@ -1,0 +1,29 @@
+
+
+jon data:
+
+   import (and overwrite) all county or below data.
+
+   for TOT 
+      contested -- take in everything and overwrite  (Wait for Jeff)
+      uncontested -- don't do anything for existing candidates
+
+   strip leading/trailing quotes for ALL statements (and in Jon's new data)
+
+
+Daily report for Ed
+County ID
+County Name
+
+Officials # of seats (aka denominator)
+Officials # of Reviewed (aka numerator)
+
+Candidates # of seats (aka denominator)
+Candidates # of Reviewed (aka numerator)
+Candidates # of Endorsed
+
+Candidates # of seats that are Reviewed and Endorsed (i.e., our goal!)
+Candidates # of seats that are Reviewed, but not Endorsed (i.e., might be pending)
+Candidates # of seats that are Endorsed, but not Reviewed (i.e., might be an error to follow-up on)
+
+

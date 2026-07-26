@@ -171,6 +171,23 @@
                     </ul>
                 </li>
 
+                <!-- com-col -->
+                <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}C');"
+                    ><span id='A{$county.cnty[1]}C' class="arrow">&#9654;</span> Comm Colleges</a>
+                    ({$county.col_rev}/{$county.col_den}) <span class="endorsed">{$county.col_end}</span>
+                    {if $county.col_rev == $county.col_den  &&  $county.col_den > 0} <img src="green-check.png" width="12"/> {/if}
+                    <ul id="C{$county.cnty[1]}C" style="display: none";>
+                        {foreach from=$county.comcol item=comcol}
+                            <li>
+                                <a href="#"  {if $comcol[7] == 1} class="green" {/if}
+                                   onClick="return loadOfficials({$county.cnty[1]}, 'comcomcol-cou', '{$comcol[1]}', 's', 1);" class="child"     >{$comcol[2]}</a>
+                                ({$comcol[5]}/{$comcol[4]}) <span class="endorsed">{$comcol[6]}</span>
+                                {if $comcol[5] == $comcol[4]  &&  $comcol[4] > 0} <img src="green-check.png" width="12"/> {/if}
+                            </li>
+                        {/foreach}
+                    </ul>
+                </li>
+
                 <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}T');"
                     ><span id='A{$county.cnty[1]}T' class="arrow">&#9654;</span> Courts</a>
                     ({$county.crt_rev}/{$county.crt_den}) <span class="endorsed">{$county.crt_end}</span>

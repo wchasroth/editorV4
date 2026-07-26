@@ -187,7 +187,6 @@
                </ul>
             </li>
 
-         <!--
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}C');"
                  ><span id='A{$county.cnty[1]}C' class="arrow">&#9654;</span> Comm Colleges</a>
                  ({$county.col_num}/{$county.col_den})
@@ -206,7 +205,6 @@
                      {/foreach}
                  </ul>
             </li>
-         -->
 
             <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}T');"
                ><span id='A{$county.cnty[1]}T' class="arrow">&#9654;</span> Courts</a>

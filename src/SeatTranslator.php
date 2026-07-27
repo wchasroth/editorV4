@@ -15,6 +15,7 @@ class SeatTranslator {
       'clerk' => 'town-clerk', 'township-clerk' => 'town-clerk', 'constable' => 'town-cons',
       'park-commissioner' => 'town-park', 'parks-board-commissioner' => 'town-park',
       'parks-commissioner' => 'town-park', 'township-park-board' => 'town-park',
+      'township-parks-commissioner' => 'town-park',
       'supervisor' => 'town-super', 'township-supervisor' => 'town-super',
       'treasurer' => 'town-treas', 'township-treasurer' => 'town-treas',
    ];
@@ -22,13 +23,18 @@ class SeatTranslator {
    private static $townSpellingFixes = [
       'baymills' => 'bay mills', 'detour' => 'de tour',
       'kalamazoo charter township' => 'kalamazoo', 'genoa charter township' => 'genoa',
+      'dewitt charter township' => 'de witt',
       'muskegon charter township'  => 'muskegon', 'almer charter township'  => 'almer',
-      'charter township of redford' => 'redford township'
+      'charter township of redford' => 'redford township',
    ];
 
    private static $cityOfficeMap = [
       'mayor' => 'mayor', 'treasurer' => 'treas', 'clerk' => 'clerk', 'city-comptroller' => 'comp',
       'assessor' => 'assess', 'constable' => 'cons'
+   ];
+
+   private static $citySpellingFixesMap = [
+      'city-of-the-village-of-douglas' => 'douglas'
    ];
 
    private static $countyOfficeMap = [
@@ -47,7 +53,19 @@ class SeatTranslator {
 
    private static $schoolSpellingFixes = [
       'bridgeport' => 'bridgeport-spaulding',
-      'camden frontier' => 'camden-frontier'
+      'camden frontier' => 'camden-frontier',
+      'wayland' => 'wayland union',
+      'delton kellogg' => 'delton-kellogg',
+      'thornapple kellogg' => 'thornapple-kellogg',
+      'essexville hampton' => 'essexville-hampton',
+      'dowagiac' => 'dowagiac union',
+      'carman ainsworth' => 'carman-ainsworth',
+      'mt pleasant' => 'mount pleasant',
+      'hanover horton' => 'hanover-horton',
+      'mason county central' => 'mason central',
+      'chesaning' => 'chesaning union',
+      'reeths puffer' => 'reeths-puffer',
+      'sodus township 5 river' => 'sodus township 5'
    ];
 
    private static $collegeSpellingFixes = ['delta bay' => 'delta', 'delta saginaw' => 'delta'];
@@ -75,9 +93,13 @@ class SeatTranslator {
       $parts[4] = $parts[4] ?? '';
       $parts[5] = $parts[5] ?? '';
 
+      if (empty($parts[2]))  return $result;  // state-level offices, handled separately.
+      if (Str::contains($jsonSeatId, "metro-water-district"))  return $result;  // we don't handle water boards (yet)
+
       if ($parts[1] == 'county') {
          if (Str::contains($parts[3], 'state-house', 'representative', 'secretary-of-state','michigan-state', 'attorney-general'))
             return $result;   // Strange duplicates of various state-level seats
+         if ($parts[3] == 'city-commissioner') return $result; // error, city commissioner for county?!
       }
 
       if (Str::contains($jsonSeatId, 'partial-term')) {
@@ -146,12 +168,14 @@ class SeatTranslator {
             $result['org'] = 'city';
             $result['office'] = self::$cityOfficeMap[$parts[5]] ?? '';
          }
-         $cityName = Str::replaceFirst($parts[4], 'city-of-', '');
+         $cityName = self::$citySpellingFixesMap[$parts[4]] ?? $parts[4];
+         $cityName = Str::replaceFirst($cityName, 'city-of-', '');
          $cityName = Str::replaceAll  ($cityName, '-', ' ');
          $cityName = Str::replaceFirst($cityName, "mt ", "mount ");
-         if (! Str::contains($cityName, ' city'))  $cityName .= " city";
 
-         $sql = "SELECT id FROM s4jurisdictions WHERE county_id=$countyCode AND name = '$cityName' AND type='c'";
+         $sql = "SELECT id FROM s4jurisdictions WHERE county_id=$countyCode "
+              . "   AND (name='$cityName' OR name='$cityName city' OR simplename='$cityName') "
+              . "   AND type='c'";
          $result['district'] = $this->getJurisdictionId($sql, $jsonSeatId);
       }
 
@@ -172,7 +196,7 @@ class SeatTranslator {
          $villageName = trim($villageName);
 
          $sql = "SELECT id FROM s4villages WHERE county_id=$countyCode "
-              . "   AND (name = '$villageName' OR name = '$villageName village') ";
+              . "   AND (name = '$villageName' OR name = '$villageName village' OR simplename='$villageName') ";
          $result['district'] = $this->getJurisdictionId($sql, $jsonSeatId);
          if ($result['district'] === '0') fwrite(STDERR, "$sql\n");
       }
@@ -191,7 +215,7 @@ class SeatTranslator {
       else if ($parts[3] === 'school') {
          $result['org'] = 'schl-cou';
          $name = Str::replaceAll($parts[4], '-', ' ');
-         $removeWords = ['public', 'schools', 'school', 'community', 'district', 'area', 'board', 'consolidated', 'of', 'the', 'city'];
+         $removeWords = ['public', 'schools', 'school', 'community', 'district', 'area', 'board', 'consolidated', 'of', 'the', 'city', 'system', 'union'];
          $name = Str::removeWords($name, $removeWords);
 //         $name = trim($name);
          $name = self::$schoolSpellingFixes[$name] ?? $name;
@@ -260,7 +284,7 @@ class SeatTranslator {
       $id = $queryResult->getSingleValue('id');
       if (! empty($id))  return strval($id);
 
-      fwrite(STDERR, "Error: $jsonSeatId\n");
+      fwrite(STDERR, "Error: $jsonSeatId $sql\n");
       return "0";
    }
 

@@ -11,22 +11,21 @@ Sequence of steps to fully import Jon's candidates_2026_enriched.json file:
 #3. Fill v4filings from enriched data:
        php importJsonFilings.php candidates_2026_enriched.json 
 
-#4. Mark all contested races in v4filings:
+#4. Delete all top-of-ticket races from v4filings:
+       echo "source importDeleteTOT.sql" | my
+
+#5. Mark all contested races in v4filings:
        php importMarkContested.php
 
-#5. Import all uncontested race candidates, directly into v4candidates:
+#6. Import all uncontested race candidates, directly into v4candidates:
        php importUncontested.php
 
-#6. Grab photos for uncontested candidates from the internet, store them
+#7. Grab photos for uncontested candidates from the internet, store them
     locally, fill in v4candidates photo field(s) with local filenames.
        php importHeadshots.php
 
-#7. Grab photos for contested races from the internet, store them locally
+#8. Grab photos for contested races from the internet, store them locally
     (but using v4filings string ids instead of v4candidates numeric ids),
     put local filename in v4filings headshot field.  (From there, the 
     candidate editor 'picklist' will find them.)
        php importContestedHeadshots.php
-
-#8. For now... delete all candidate rows that came from AI/Jon, that are NOT
-    "top of ticket".
-       echo "source importDeleteLowerRaces.sql" | my

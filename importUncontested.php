@@ -40,8 +40,10 @@ foreach ($uncontestedKeyRows as $keyRow) {
       }
       else $keyFields['termcycle'] = 2026;
 
-      $result = $pdo->runSF ("INSERT INTO v4seats", "", new SqlFields($keyFields), true);
-      if ($result->failed()) echo "INSERT v4seats error: " . $result->getError() . "\n";
+      $keySqlFields = new SqlFields($keyFields);
+      $result = $pdo->runSF ("INSERT INTO v4seats", "", $keySqlFields, true);
+      echo "Add seat: " . $keySqlFields->getInsertFragment() . "\n";
+      if ($result->failed()) fwrite(STDERR, "INSERT v4seats error: " . $result->getError() . "\n");
       $seatIds[0] = $result->getInsertId();
    }
 
@@ -49,12 +51,14 @@ foreach ($uncontestedKeyRows as $keyRow) {
 
    $candidateId = findCandidateIdMatchingFiling($pdo, $filing, $seatIds);
 
-   //---If we found a match, update each info field (where the original was empty)
+   //---If we found a match, update each info field
    if ($candidateId > 0) {
       foreach (['web', 'email', 'phone', 'headshot_url', 'description', 'party'] as $fieldKey) {
          $fieldValue = $filing[$fieldKey] ?? '';
          if (! empty($fieldValue)) {
-            $sql = "UPDATE v4candidates SET $fieldKey = " . Str::singleQuoted($fieldValue) . " WHERE id = $candidateId AND $fieldKey = ''";
+            // Original version only updated field if it was empty.  The current run (7/27/26) intentionally overwrites all county-and belwo candidates info
+//          $sql = "UPDATE v4candidates SET $fieldKey = " . Str::singleQuoted($fieldValue) . " WHERE id = $candidateId AND $fieldKey = ''";
+            $sql = "UPDATE v4candidates SET $fieldKey = " . Str::singleQuoted($fieldValue) . " WHERE id = $candidateId ";
             $result = $pdo->run($sql);
             if ($result->failed())  fwrite(STDERR, "Field update failed: $sql\n");
          }

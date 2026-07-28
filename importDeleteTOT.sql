@@ -1,4 +1,6 @@
 DELETE FROM v4filings 
- WHERE org in ('us', 'us-sen', 'us-hou', 'mi', 'mi-sen', 'mi-hou', 'crt-sup', 'crt-a')
-    OR org LIKE 'mi%';
+ WHERE org LIKE 'us%' 
+    OR org LIKE 'mi%'
+    OR org = 'crt-sup'
+    OR org = 'crt-a';
 

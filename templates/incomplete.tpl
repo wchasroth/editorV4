@@ -2,10 +2,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://gstatic.com" crossorigin>
+   <link href="https://googleapis.com" rel="stylesheet">
    <style>
       body, td, li {
-        font-family: 'Roboto';
+        font-family: 'Roboto Flex', sans-serif;
         /* font-size: 0.8rem; */
       }
    </style>

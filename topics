@@ -26,6 +26,8 @@ Candidates # of seats that are Reviewed and Endorsed (i.e., our goal!)
 Candidates # of seats that are Reviewed, but not Endorsed (i.e., might be pending)
 Candidates # of seats that are Endorsed, but not Reviewed (i.e., might be an error to follow-up on)
 
+# of uncontested races / county
+
 
 
 Volunteers:
@@ -34,4 +36,10 @@ Volunteers:
    Hal
    Jay N
    Josh B
+
+====================
+
+save email address of person who clicked "reviewed" for each candidate
+
+import contested TOT race info from Jon's most recent.  (But with some cross-checks!)
 

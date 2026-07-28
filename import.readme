@@ -29,3 +29,7 @@ Sequence of steps to fully import Jon's candidates_2026_enriched.json file:
     put local filename in v4filings headshot field.  (From there, the 
     candidate editor 'picklist' will find them.)
        php importContestedHeadshots.php
+
+#9. Trim leading/trailing single quotes in descriptions.
+       echo "source trimQuotes.sql" | my
+

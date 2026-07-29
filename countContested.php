@@ -25,20 +25,20 @@ $csvRow = ["name", "id", "seats", "empty", "uncontested", "contested"];
 echo Str::join($csvRow, ",") . "\n";
 
 for ($countyId=1;   $countyId<=83;  ++$countyId) {
-   $sql =
-      "   SELECT id, org, office,  $countyId AS district, subdist, seatnum "
-      . "     FROM      v4seats "
-      . "    WHERE org = 'mi-sen' "
-      . "      AND district IN (SELECT DISTINCT senate FROM s4streets WHERE county_code = $countyId) "
-      . "      AND termcycle = 2026 "
-      . "UNION ALL "
-      . "   SELECT id, org, office,  $countyId AS district, subdist, seatnum "
-      . "     FROM      v4seats "
-      . "    WHERE org = 'mi-hou' "
-      . "      AND district IN (SELECT DISTINCT house FROM s4streets WHERE county_code = $countyId) "
-      . "      AND termcycle = 2026 "
-      . "UNION ALL "
-      . "   SELECT id, org, office,  district, subdist, seatnum "
+   $sql =  // Decided NOT to include state house or senate seat for now, but leaving query text just in case.
+//      "   SELECT id, org, office,  $countyId AS district, subdist, seatnum "
+//      . "     FROM      v4seats "
+//      . "    WHERE org = 'mi-sen' "
+//      . "      AND district IN (SELECT DISTINCT senate FROM s4streets WHERE county_code = $countyId) "
+//      . "      AND termcycle = 2026 "
+//      . "UNION ALL "
+//      . "   SELECT id, org, office,  $countyId AS district, subdist, seatnum "
+//      . "     FROM      v4seats "
+//      . "    WHERE org = 'mi-hou' "
+//      . "      AND district IN (SELECT DISTINCT house FROM s4streets WHERE county_code = $countyId) "
+//      . "      AND termcycle = 2026 "
+//      . "UNION ALL "
+        "   SELECT id, org, office,  district, subdist, seatnum "
       . "     FROM      v4seats "
       . "    WHERE org LIKE 'cnty%' "
       . "      AND district  = $countyId "
@@ -51,7 +51,7 @@ for ($countyId=1;   $countyId<=83;  ++$countyId) {
       . "      AND j.county_id = $countyId "
       . "      AND s.termcycle = 2026 "
       . "UNION ALL "
-      . "   SELECT s.id,  s.org, s.office, s.district, s.subdist, s.seatnum "
+      . "   SELECT DISTINCT s.id,  s.org, s.office, s.district, s.subdist, s.seatnum "
       . "     FROM      v4seats      AS s "
       . "     LEFT JOIN s4villages   AS v  ON (s.district = v.id) "
       . "    WHERE (s.org LIKE 'vil%') "
@@ -82,17 +82,18 @@ for ($countyId=1;   $countyId<=83;  ++$countyId) {
       . "ORDER BY org, subdist, seatnum, seatnum ";
    $result = $pdo->run($sql);
    if ($result->failed()) fwrite (STDERR, "$sql\n");
-// echo "For $countyId, count=" . $result->getRowCount() . "\n";
 
    $noCandidates = 0;
    $contested    = 0;
    $uncontested  = 0;
    $seats        = $result->getRowCount();
    foreach ($result->getRows() as $row) {
-      $sql = "SELECT name FROM v4candidates WHERE seat_id = " . $row["id"];
+      $sql = "SELECT name FROM v4candidates WHERE seat_id = " . $row["id"] . " AND name != ''";
       $candidateResults = $pdo->run($sql);
       $candidateCount   = $candidateResults->getRowCount();
-      if ($candidateCount > 1) { ++$contested;  continue; }
+//    fwrite(STDERR, "Big: count=$candidateCount, org={$row['org']}, office={$row['office']}, dist={$row['district']}, "
+//       . " sub={$row['subdist']}\n");
+      if ($candidateCount > 1) { ++$contested; continue; }
 
       $match = ['org' => $row["org"], 'office' => $row['office'], 'district' => $row['district']];
       $matchFields = new SqlFields($match);
@@ -100,14 +101,11 @@ for ($countyId=1;   $countyId<=83;  ++$countyId) {
            . "   AND (subdist={$row['subdist']} OR subdist=0)";
       $filingResults = $pdo->run($sql);
       $filingCount   = $filingResults->getRowCount();
+//    fwrite (STDERR, "Can=$candidateCount, Fil=$filingCount, sql=$sql\n");
       if      ($filingCount === 0  &&  $candidateCount === 0) ++$noCandidates;
       else if ($filingCount > 1)                              ++$contested;
       else                                                    ++$uncontested;
    }
    $csvRow = [$michiganCounties->getName($countyId), $countyId, $seats, $noCandidates, $uncontested, $contested];
    echo Str::join($csvRow, ",") . "\n";
-}
-
-function makeKeyFieldsFromKeyRow(array $keyRow): array {
-   return ['org' => $keyRow['org'], 'office' => $keyRow['office'], 'district' => $keyRow['district'], 'subdist' => $keyRow['subdist']];
 }

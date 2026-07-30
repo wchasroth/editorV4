@@ -413,6 +413,7 @@
       {if $showDistrict } <td class="th2 title-target" title-css="District">Dist</td>    {/if}
       {if $showSubDist  } <td class="th2 title-target" title-css="District or ward">{$regionColumnName}</td> {/if}
       {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
+      <td class="th2 title-target" title-css="Partial Term">P</td>
       <td class="th2 title-target" title-css="Term length, in years">TL</td>
       <!-- <td class="th2 title-target" title-css="Source of candidate info">Src</td> -->
       <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed</td>
@@ -456,6 +457,9 @@
          {if $showSeat}
             {if $row['seatmax'] * 1 != 1 } <td align='right' class="smaller">{$row['seatnum']}</td> {else} <td></td> {/if}
          {/if}
+         <td align='right' class="smaller">
+            {if $row['is_open'] == 1}P{/if}
+         </td>
          <td align='right' class="smaller">{$row['termlen']}</td>
          <!--
          <td>

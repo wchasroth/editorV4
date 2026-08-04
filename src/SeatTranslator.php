@@ -25,6 +25,7 @@ class SeatTranslator {
       'kalamazoo charter township' => 'kalamazoo', 'genoa charter township' => 'genoa',
       'dewitt charter township' => 'de witt',
       'muskegon charter township'  => 'muskegon', 'almer charter township'  => 'almer',
+      'charter township of redford township' => 'redford township',
       'charter township of redford' => 'redford township',
    ];
 

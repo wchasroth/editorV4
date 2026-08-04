@@ -34,7 +34,8 @@ class SeatTranslator {
    ];
 
    private static $citySpellingFixesMap = [
-      'city-of-the-village-of-douglas' => 'douglas'
+      'city-of-the-village-of-douglas' => 'douglas',
+      'the-village-of-douglas' => 'douglas'
    ];
 
    private static $countyOfficeMap = [

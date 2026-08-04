@@ -1,6 +1,3 @@
--rw-rw-r-- 1 miv_dm_v5 miv_dm_v5 1984 Jul  3 14:09 importContestedHeadshots.php
--rw-rw-r-- 1 miv_dm_v5 miv_dm_v5 1761 Jul  1 20:45 importHeadshots.php
--rw-rw-r-- 1 miv_dm_v5 miv_dm_v5 8697 Jul  3 14:33 importUncontested.php
 
 Sequence of steps to fully import Jon's candidates_2026_enriched.json file:
 

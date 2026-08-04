@@ -8,6 +8,10 @@ Sequence of steps to fully import Jon's candidates_2026_enriched.json file:
 #3. Fill v4filings from enriched data:
        php importJsonFilings.php candidates_2026_enriched.json 
 
+       Ignore errors about:
+          Lakeside village (too new to have a FIPS code)
+          community-center-board-of-directors
+
 #4. Delete all top-of-ticket races from v4filings:
        echo "source importDeleteTOT.sql" | my
 

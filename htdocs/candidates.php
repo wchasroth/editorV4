@@ -63,6 +63,7 @@ if ($canEdit) {
          else if ($parts[2] == "description")   $value = urldecode($value);
          else if ($parts[2] == "endorsed")      $value = intval($value);
          else if ($parts[2] == "reviewed")      $value = intval($value);
+         else if ($parts[2] == "won")           $value = intval($value);
          $sqlFields = new SqlFields([$parts[2] => $value]);
          $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
          $logger->log("Save Changes: " . $query);
@@ -107,7 +108,7 @@ $quotedOrgs = Str::join($orgs, ",");
 
 $counties = [];
 $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.headshot, c.headshot_url, c.endorsed, c.headcropped, "
-     . "            c.id AS can_id, t.seats, c.description, c.source, c.reviewed "
+     . "            c.id AS can_id, t.seats, c.description, c.source, c.reviewed, c.won "
      . "  FROM v4seats           AS s \n"
      . "  LEFT JOIN v4candidates AS c   ON (s.id = c.seat_id) \n"
      . "  LEFT JOIN s4titles     AS t   ON (s.org = t.org  AND  s.office = t.office) \n"

@@ -415,8 +415,8 @@
       {if $showSeat     } <td class="th2 title-target" title-css="Seat number, assigned arbitrarily">S#</td>      {/if}
       <td class="th2 title-target" title-css="Partial Term">P</td>
       <td class="th2 title-target" title-css="Term length, in years">TL</td>
-      <!-- <td class="th2 title-target" title-css="Source of candidate info">Src</td> -->
       <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed</td>
+      <td class="th2a title-target" title-css="Won primary?">Won</td>
       <td class="th2a title-target" title-css="Reviewed for correctness?">Rev</td>
       <td class="th2a">&nbsp;Name</td>
       <td class="th2a title-target" title-css="Has multiple filed-candidate picks">Picks</td>
@@ -471,17 +471,19 @@
             {if $row['is_open'] == 1}P{/if}
          </td>
          <td align='right' class="smaller">{$row['termlen']}</td>
-         <!--
-         <td>
-            {if $row['source'] != ''}AI{/if}
-         </td>
-         -->
 
          <td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="i:{$row['can_id']}:endorsed" value="1"
              class="radio{$seatid} look-like-radio"
              onChange="flip('radio{$seatid}', 'i:{$row['can_id']}:endorsed');"
              {if $row['endorsed'] == 1} checked {/if}
          /></td>
+
+         <td align='right' class="smaller">
+            &nbsp;<input type="checkbox" name="i:{$row['can_id']}:won" value="1"
+                         onChange="changed(this.name);"  style="margin-top: 4px;"
+                    {if $row['won'] == 1} checked {/if} />
+         </td>
+
          <td>
             &nbsp;<input type="checkbox" name="i:{$row['can_id']}:reviewed" value="1"
                onChange="changed(this.name);"  style="margin-top: 4px;"

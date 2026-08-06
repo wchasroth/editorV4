@@ -395,7 +395,7 @@
 
 {if $showSaved == 1} <script>showPopUp('pop-up-save');</script> {/if}
 
-<table class="zebra" cellpadding="0" cellspacing="0">
+<table class="zebra" cellpadding="0" cellspacing="0" border="0">
    <tr>
       <td class="th1" colspan="2"
          ><img id="shrinkExpand" src="shrink-10-48.png" style="height: 75%;  margin-top: 5px;"
@@ -429,6 +429,7 @@
    {$seatid = 0}
    {$shadow = 1}
    {foreach from=$rows item=row}
+      {$picks = count($row['picklist'])}
       {if $seatid != $row['id']} {$shadow = 1 - $shadow} {/if}
       <tr valign="top" class="zebra{$shadow}">
          <td>
@@ -437,9 +438,18 @@
                ><img src="IMG/trash.png" width="14" style="margin: 1px;" title="Delete this candidate."/></a>
             {if $row['plus'] == 1}
                <br/>
-               <a href="addCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
-                  onClick="return continueIfDataUnChanged();"
-               ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" title="Add another candidate row for this seat."/></a>
+               <table cellspacing="0" cellpadding="0">
+                  <tr valign="top">
+                     <td>
+                        <a href="addCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
+                           onClick="return continueIfDataUnChanged();"
+                        ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" title="Add another candidate row for this seat."/></a>
+                     </td>
+                     {if $picks > 0  && $row['name'] != ''}
+                        <td><span title="There are more possible candidates in the pick-list.&#10;Click the plus sign to add a row for them.">({$picks})</span></td>
+                     {/if}
+                  </tr>
+               </table>
             {/if}
          </td>
          <td style="white-space: nowrap;"     class="smaller">

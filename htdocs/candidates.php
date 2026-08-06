@@ -159,14 +159,15 @@ for ($i=0;   $i<$count;   $i++) {
 //---For rows with an empty name, generate 'pick list' for contested races
 for ($i=0;   $i<$count;   $i++) {
    $rows[$i]['picklist'] = [];
-   if (empty($rows[$i]['name'])) {
+// if (empty($rows[$i]['name'])) {
       $fields = ['org' => $rows[$i]['org'], 'office' => $rows[$i]['office'], 'district' => $rows[$i]['district'],
          'subdist' => intval($rows[$i]['subdist'])  // might get weird if 0, but so far it seems ok (7/21/2026)
       ];
 
       // Calculate the previous known names for this seat (with wiggle room for the subdist)
+      $start = (empty($rows[$i]['name']) ? $i-1 : $i);
       $previousNames = [];
-      for ($j=$i-1;   $j>=0;   $j--) {
+      for ($j=$start;   $j>=0;   $j--) {
          if ($rows[$j]['org']      != $rows[$i]['org']      ||
              $rows[$j]['office']   != $rows[$i]['office']   ||
              $rows[$j]['district'] != $rows[$i]['district'] ||
@@ -192,7 +193,7 @@ for ($i=0;   $i<$count;   $i++) {
 //         }
 //      }
       $rows[$i]['picklist'] = $picks;
-   }
+// }
 }
 
 $regionColumnName = "Reg";

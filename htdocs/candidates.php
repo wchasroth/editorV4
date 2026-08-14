@@ -29,7 +29,8 @@ $logger  = new DumbFileLogger($env->get('logFile'));
 $county      = HttpGet::value('county');
 $qsOrgs      = HttpGet::value('orgs');
 $qsDistrict  = HttpGet::value('district');
-$qsShow     = HttpGet::value('show');
+$qsShow      = HttpGet::value('show');
+$clickpick   = HttpGet::value('clickpick');
 $showSaved  = 0;
 
 $sql = "SELECT text FROM uitext where id='maintenance'";
@@ -223,6 +224,7 @@ $smarty->assign('offices',    $allAddableOfficeNames);
 $smarty->assign('sql', $sql);
 $smarty->assign('showSaved', $showSaved);
 $smarty->assign('fieldsChanged', $fieldsChanged);
+$smarty->assign('clickpick', $clickpick);
 
 $smarty->display('candidates.tpl');
 

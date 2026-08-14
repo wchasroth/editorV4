@@ -378,10 +378,15 @@
             changed(fieldChanged);
          }
       }
+
+      function openPicklistIfSupplied() {
+         let cp = document.getElementById('clickpick{$clickpick}');
+         if (cp) cp.click();
+      }
    </script>
 </head>
 
-<body style="margin-top: 0;"  onLoad="setShrinkExpandButton();">
+<body style="margin-top: 0;"  onLoad="setShrinkExpandButton();  openPicklistIfSupplied();">
 <form id="mainForm" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}">
 <input type="hidden" name="fieldsChanged" id="fieldsChanged" value="" />
 
@@ -428,7 +433,9 @@
    </tr>
    {$seatid = 0}
    {$shadow = 1}
+   {$rowNum = 0}
    {foreach from=$rows item=row}
+      {$rowNum = $rowNum + 1}
       {$picks = count($row['picklist'])}
       {if $seatid != $row['id']} {$shadow = 1 - $shadow} {/if}
       <tr valign="top" class="zebra{$shadow}">
@@ -446,7 +453,11 @@
                         ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" title="Add another candidate row for this seat."/></a>
                      </td>
                      {if $picks > 0  && $row['name'] != ''}
-                        <td><span title="There are more possible candidates in the pick-list.&#10;Click the plus sign to add a row for them.">({$picks})</span></td>
+                        <!-- <td><span title="There are more possible candidates in the pick-list.&#10;Click the plus sign to add a row for them.">({$picks})</span></td> -->
+                        <td><a class="noblue" title="Click to add candidate and see pick-list"
+                          href="addCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}&clickpick={$rowNum+1}"
+                                onClick="return continueIfDataUnChanged();">({$picks})</a>
+                        </td>
                      {/if}
                   </tr>
                </table>
@@ -508,7 +519,7 @@
          <td>
             {$picks = count($row['picklist'])}
             {if $row['name'] == ''  &&  $picks > 0}
-               <a href="#" onClick="return clickPick('i:{$row['can_id']}:picklist', {$picks} );"
+               <a id="clickpick{$rowNum}" href="#" onClick="return clickPick('i:{$row['can_id']}:picklist', {$picks} );"
                   class="noblue"
                   title="Select one of the {$picks} remaining candidates."
                   >({$picks})</a>

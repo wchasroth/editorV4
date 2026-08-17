@@ -421,7 +421,7 @@
       <td class="th2 title-target" title-css="Partial Term">P</td>
       <td class="th2 title-target" title-css="Term length, in years">TL</td>
       <td class="th2a title-target" title-css="Endorsed by state or county party?">&nbsp;Endorsed</td>
-      <td class="th2a title-target" title-css="Won primary?">Won</td>
+      <!-- <td class="th2a title-target" title-css="Won primary?">Won</td> -->
       <td class="th2a title-target" title-css="Reviewed for correctness?">Rev</td>
       <td class="th2a">&nbsp;Name</td>
       <td class="th2a title-target" title-css="Has multiple filed-candidate picks">Picks</td>
@@ -489,13 +489,17 @@
              {if $row['endorsed'] == 1} checked {/if}
          /></td>
 
-         <td align='right' class="smaller">
-            &nbsp;<input type="checkbox" name="i:{$row['can_id']}:won" value="1"
-                         onChange="changed(this.name);"  style="margin-top: 4px;"
-                    {if $row['won'] == 1} checked {/if} />
-         </td>
+         <!--
+            <td align='right' class="smaller">
+               &nbsp;<input type="checkbox" name="i:{$row['can_id']}:won" value="1"
+                            onChange="changed(this.name);"  style="margin-top: 4px;"
+                       {if $row['won'] == 1} checked {/if} />
+            </td>
+         -->
 
          <td>
+             <input type="hidden" name="i:{$row['can_id']}:won" value="{$row['won']}"/>
+
             &nbsp;<input type="checkbox" name="i:{$row['can_id']}:reviewed" value="1"
                onChange="changed(this.name);"  style="margin-top: 4px;"
                {if $row['reviewed'] == 1} checked {/if} />

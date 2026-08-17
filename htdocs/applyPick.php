@@ -34,6 +34,17 @@ $qsDistrict  = HttpGet::value('district');
 $qsShow      = HttpGet::value('show');
 $can_id      = HttpGet::value('can_id');
 $filing_id   = HttpGet::value('filing_id');
+$newCanId    = HttpGet::value('newCanId');
+
+//---If we want to add a NEW candidate row, and then fill it in.  Otherwise, just update the existing can_id row.
+if (! empty($newCanId)) {
+   $sql     = "SELECT seat_id FROM v4candidates WHERE id=$can_id LIMIT 1";
+   $seat_id = $pdo->run($sql)->getSingleValue('seat_id');
+
+   $sql     = "INSERT INTO v4candidates (seat_id) VALUES ($seat_id)";
+   $result  = $pdo->run($sql);
+   $can_id  = $result->getInsertId();
+}
 
 $sql = "SELECT * FROM v4filings WHERE id = '$filing_id'";
 $result = $pdo->run($sql);

@@ -45,6 +45,7 @@ showTotalsByCategory($pdo, "Court*", $category, "LEFT JOIN v4courts AS t ON (s.d
 
 function showTotalsByCategory (AlfredPDO $pdo, string $rowName, string $category, string $joinTable): void {
    $select = "SELECT COUNT(*) AS number FROM v4seats AS s ";
+   $select = "SELECT COUNT(DISTINCT s.org, s.office, s.district, s.subdist) AS number FROM v4seats AS s ";
    $is2026 = " (s.termcycle=2026 OR s.is_open=1) ";
    $joinCan = " LEFT JOIN v4candidates AS c ON (c.seat_id = s.id) ";
    $hasName = " (c.name IS NOT NULL AND c.name!='') ";

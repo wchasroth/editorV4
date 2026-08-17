@@ -333,12 +333,12 @@
          return true;
       }
 
-      function handlePicklistChange(mySelect, can_id) {
+      function handlePicklistChange(mySelect, can_id, newCanId) {
          var value = mySelect.value;
          /* confirm ("Candidate " + can_id + ", set to values from " + value); */
          mySelect.style.display = "none";
          location.href = "applyPick.php?can_id=" + can_id + "&filing_id=" + value
-                 + "&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}";
+                 + "&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}&newCanId=" + newCanId;
       }
 
       function myhide(obj) {
@@ -424,7 +424,7 @@
       <!-- <td class="th2a title-target" title-css="Won primary?">Won</td> -->
       <td class="th2a title-target" title-css="Reviewed for correctness?">Rev</td>
       <td class="th2a">&nbsp;Name</td>
-      <td class="th2a title-target" title-css="Has multiple filed-candidate picks">Picks</td>
+      <!-- <td class="th2a title-target" title-css="Has multiple filed-candidate picks">Picks</td> -->
       <td class="th2a">&nbsp;Photo</td>
       <td class="th2a" style="min-width: 10em;">&nbsp;Statement</td>
       <td class="th2a" colspan='2'>Web</td>
@@ -450,13 +450,22 @@
                      <td>
                         <a href="addCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
                            onClick="return continueIfDataUnChanged();"
-                        ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" title="Add another candidate row for this seat."/></a>
+                        ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" title="Add another (empty) candidate row for this seat."/></a>
                      </td>
-                     {if $picks > 0  && $row['name'] != ''}
-                        <!-- <td><span title="There are more possible candidates in the pick-list.&#10;Click the plus sign to add a row for them.">({$picks})</span></td> -->
-                        <td><a class="noblue" title="Click to add candidate and see pick-list"
-                          href="addCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}&clickpick={$rowNum+1}"
-                                onClick="return continueIfDataUnChanged();">({$picks})</a>
+                     {if $picks > 0}
+                        <td><a class="noblue" title="Click to add candidate from pick-list" href="#"
+                               onClick="return clickPick('i:{$row['can_id']}:picklist', {$picks} );"
+                            >({$picks})</a>
+                              {$newCanId = $row['name'] != '' ? 1 : 0}
+                              <select name="i:{$row['can_id']}:picklist"
+                                    onChange="handlePicklistChange(this, {$row['can_id']}, {$newCanId});"
+                                    multiple size="1"
+                                    onfocusout="myhide(this);"
+                                    style="position: absolute; display: none; z-index: 10;">
+                                 {foreach from=$row['picklist'] item=candidate}
+                                    <option value="{$candidate[0]}">{$candidate[1]}</option>
+                                 {/foreach}
+                              </select>
                         </td>
                      {/if}
                   </tr>
@@ -471,7 +480,6 @@
          {$seatid = $row['id']}
          {if $showDistrict} <td align='right' class="smaller">{$row['district']}</td> {/if}
          {if $showSubDist}
-             <!-- <td align='right' class="smaller"> -->
              <td><input name="s:{$row['id']}:subdist"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"
                                  value="{$row['subdist']}"/></td>
          {/if}
@@ -505,29 +513,8 @@
                {if $row['reviewed'] == 1} checked {/if} />
          </td>
 
-         <td style="position: relative;">
-            {if $row['name'] == ''  &&  count($row['picklist']) > 0}
-               <select name="i:{$row['can_id']}:picklist" onChange="handlePicklistChange(this, {$row['can_id']});"
-                       multiple size="1"
-                       onfocusout="myhide(this);"
-                       style="position: absolute; display: none; z-index: 10;">
-                  <!-- <option value="0">(choose one)</option> -->
-                  {foreach from=$row['picklist'] item=candidate}
-                     <option value="{$candidate[0]}">{$candidate[1]}</option>
-                  {/foreach}
-               </select>
-            {/if}
-            <input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/>
-         </td>
-
          <td>
-            {$picks = count($row['picklist'])}
-            {if $row['name'] == ''  &&  $picks > 0}
-               <a id="clickpick{$rowNum}" href="#" onClick="return clickPick('i:{$row['can_id']}:picklist', {$picks} );"
-                  class="noblue"
-                  title="Select one of the {$picks} remaining candidates."
-                  >({$picks})</a>
-            {/if}
+            <input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/>
          </td>
 
          <td>

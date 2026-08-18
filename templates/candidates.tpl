@@ -450,10 +450,10 @@
                      <td>
                         <a href="addCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
                            onClick="return continueIfDataUnChanged();"
-                        ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" title="Add another (empty) candidate row for this seat."/></a>
+                        ><img src="IMG/plus.png"  width="15" style="margin-left: 1px; margin-bottom: 5px;" title="Add new blank row for this seat."/></a>
                      </td>
                      {if $picks > 0}
-                        <td><a class="noblue" title="Click to add candidate from pick-list" href="#"
+                        <td><a class="noblue" title="Add candidate from a pick list" href="#"
                                onClick="return clickPick('i:{$row['can_id']}:picklist', {$picks} );"
                             >({$picks})</a>
                               {$newCanId = $row['name'] != '' ? 1 : 0}

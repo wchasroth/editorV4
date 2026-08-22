@@ -73,7 +73,7 @@
             {if $topOffices.us[0] == $topOffices.us[2]  &&  $topOffices.us[2] > 0} <img src="green-check.png" width="12"/> {/if}
         </li>
         <li>
-            <a href="#" onClick="return loadOfficials(999, 'mi,mi-lt,mi-sos,mi-ag,crt-sup', '', 's');" class="child">MI</a>
+            <a href="#" onClick="return loadOfficials(999, 'mi,mi-lt,mi-sos,mi-ag,crt-sup,mi-prop', '', 's');" class="child">MI</a>
             ({$topOffices.mi[1]}/{$topOffices.mi[2]}) <span class="endorsed">{$topOffices.mi[0]}</span>
             {if $topOffices.mi[0] == $topOffices.mi[2]  &&  $topOffices.mi[2] > 0} <img src="green-check.png" width="12"/> {/if}
         </li>

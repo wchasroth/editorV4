@@ -184,7 +184,7 @@ $expandableOrgs = array_intersect($expandableOrgs,
 //---Apply simple transformations for display:
 $thisYear = intval(date('Y'));
 for ($i=0;   $i<$count;   $i++) {
-   $rows[$i]['name']      = correctCase($rows[$i]['name']);  // Fix all-upper-case names
+   $rows[$i]['name']      = EntityNamer::correctCase($rows[$i]['name']);  // Fix all-upper-case names
    $rows[$i]['termcycle'] = nextElectionYearForSeat($rows[$i], $thisYear);
 // if (intval($rows[$i]['PCT']) > 100)  $rows[$i]['PCT'] = '??';
    $rows[$i]['web'] = stripHttps ($rows[$i]['web']);
@@ -199,7 +199,7 @@ if (Str::contains($qsOrgs, "city"))  $regionColumnName = "Ward";
 $smarty = new SmartyPage();
 $smarty->assign('rows', $rows);
 $smarty->assign('maintenance', $maintenance);
-$smarty->assign('name', calculatePageName($pdo, $orgs, $district, $logger));
+$smarty->assign('name', EntityNamer::getName($pdo, $orgs, $district));
 $smarty->assign('showDistrict', $showDistrict);
 $smarty->assign('showSubDist',  $showSubDist && showSubDistricts($rows));
 $smarty->assign('showSeat',     $showSeat);
@@ -282,64 +282,6 @@ function nextElectionYearForSeat(array $row, int $thisYear): string {
 function stripHttps(?string $url): string {
    if (Str::isReallyEmpty($url))  return "";
    return (Str::startsWith($url, "https://") ? Str::substringAfter($url, "https://") : $url);
-}
-
-function correctCase(?string $name): string {
-   if (Str::isReallyEmpty($name))  return "";
-   $upper = strtoupper($name);
-   if ($upper != $name)  return $name;
-   return ucwords(strtolower($name));
-}
-
-function calculatePageName(AlfredPDO $pdo, array $orgs, string $district, DumbFileLogger $logger): string {
-   switch ($orgs[0]) {
-      case "'us'":      return "United States";
-      case "'mi'":      return "State of Michigan";
-      case "'mi-sen'":  return "Michigan Senate";
-      case "'mi-hou'":  return "Michigan House";
-      case "'mi-boe'":  return "State and University Education Boards";
-   }
-
-   $quotedOrgs = Str::join($orgs, ",");
-   $sql = "SELECT name FROM entity26 WHERE org IN ($quotedOrgs) " . makeDistrictClause($district);
-   $rows = $pdo->run($sql)->getRows();
-
-   //---This is a horrible hack-around for the issues with entity26 -- which itself should be replaced!
-   if (count($rows) == 0) {
-//    $logger->log("officials, nothing in entity26: $sql");
-      if (Str::startsWith($orgs[0], "'vil'")) {
-         $sql = "SELECT name FROM s4villages WHERE id=$district";
-         $result = $pdo->run($sql);
-         $name = correctCase($result->getSingleValue('name'));
-         if (! Str::contains(strtolower($name), "village")) $name = "Village of $name";
-         return $name;
-      }
-      if (Str::startsWith($orgs[0], "'comcol")) {
-         $sql = "SELECT name FROM s4commcolleges WHERE id=$district";
-         $result = $pdo->run($sql);
-         $name = $result->getSingleValue('name');
-         return correctCase($name);
-      }
-      if (Str::startsWith($orgs[0], "'town")) {
-         $sql = "SELECT name FROM s4jurisdictions WHERE type='t' AND id=$district";
-         $result = $pdo->run($sql);
-         $name = $result->getSingleValue('name');
-         return correctCase($name);
-      }
-      if (Str::startsWith($orgs[0], "'city")) {
-         $sql = "SELECT name FROM s4jurisdictions WHERE type='c' AND id=$district";
-         $result = $pdo->run($sql);
-         $name = $result->getSingleValue('name');
-         return correctCase($name);
-      }
-      if (Str::startsWith($orgs[0], "'schl")) {
-         $sql = "SELECT name FROM s4schools WHERE  id=$district";
-         $result = $pdo->run($sql);
-         $name = $result->getSingleValue('name');
-         return correctCase($name);
-      }
-   }
-   return ucwords(strtolower((count($rows) > 0) ? $rows[0]['name'] : "No Name Found"));
 }
 
 function makeDistrictClause (string $district): string {

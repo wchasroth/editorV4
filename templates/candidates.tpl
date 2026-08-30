@@ -6,7 +6,7 @@
    <link rel="preconnect" href="https://gstatic.com" crossorigin>
    <link href="https://googleapis.com" rel="stylesheet">
 
-   <link rel="stylesheet" href="photo3.css">
+   <link rel="stylesheet" href="photo4.css">
    <link rel="stylesheet" href="editor.css">
    <style>
       td, input { font-size: 90%;  margin: 0; padding: 0;}

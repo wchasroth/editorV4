@@ -20,7 +20,7 @@ class EntityNamer {
       if (str::startswith($orgs[0], "'vil'")) {
          $sql = "select name from s4villages where id=$district";
          $result = $pdo->run($sql);
-         $name = correctcase($result->getsinglevalue('name'));
+         $name = self::correctCase($result->getsinglevalue('name'));
          if (! str::contains(strtolower($name), "village")) $name = "village of $name";
          return $name;
       }
@@ -28,13 +28,13 @@ class EntityNamer {
          $sql = "select name from s4commcolleges where id=$district";
          $result = $pdo->run($sql);
          $name = $result->getsinglevalue('name');
-         return correctcase($name);
+         return self::correctCase($name);
       }
       if (str::startswith($orgs[0], "'town")) {
          $sql = "select name from s4jurisdictions where type='t' and id=$district";
          $result = $pdo->run($sql);
          $name = $result->getsinglevalue('name');
-         return correctcase($name);
+         return self::correctCase($name);
       }
       if (str::startswith($orgs[0], "'city")) {
          $sql = "select name from s4jurisdictions where type='c' and id=$district";

@@ -81,7 +81,13 @@ if ($canEdit) {
       $result = $pdo->run($sql);
       $logger->log("seatmax: $sql   " . $result->getError());
       $seatmax = intval($result->getSingleValue('seats'));
-      $sql = "INSERT INTO v4seats (org, office, district, seatnum, seatmax, termcycle) VALUES ('$org', '$office', '$qsDistrict', 1, $seatmax, 2026)";
+      $seatnum = 1;
+      if ($office === 'prop') {
+         $fields = new SqlFields(['org' => $org, 'office' => 'prop', 'district' => $qsDistrict, 'termcycle' => 2026]);
+         $sql = "SELECT COUNT(*) AS seatCount FROM v4seats WHERE " . $fields->getSelectFragment();
+         $seatnum = $pdo->run($sql)->getSingleValue('seatCount') + 1;
+      }
+      $sql = "INSERT INTO v4seats (org, office, district, seatnum, seatmax, termcycle) VALUES ('$org', '$office', '$qsDistrict', $seatnum, $seatmax, 2026)";
       $pdo->run($sql);
    }
 

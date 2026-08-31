@@ -611,8 +611,8 @@
    <form id="addSeats2" method="post" action="candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"></form>
    <div style="max-width: 50em;">
       <b>New Seats:</b>
-      If you have data for a candidate, but their seat <b>does not appear</b> in the list above,
-      there are two possibilities:
+      If you have data for a candidate (or proposal), but their seat <b>does not appear</b> in the list above,
+      there are several possibilities:
       <ol>
          <li><b>Partial Term.</b>&nbsp;
             If the candidate is running in a partial-term election, it means that someone resigned their
@@ -660,6 +660,14 @@
       {/foreach}
    </table>
          </li>
+
+       {if in_array($expandableOrgs[0], ['cnty', 'city', 'town', 'vil']) }
+         <li><b>Proposal.<b/>&nbsp;&nbsp;
+           <input type="hidden" name="org"    value="{$expandableOrgs[0]}" form="addSeats1" />
+           <input type="hidden" name="office" value="prop"                 form="addSeats1" />
+           <button type="submit" onClick="return continueIfDataUnChanged();" form="addSeats1">Add new proposal</button>
+         </li>
+       {/if}
       </ol>
    </div>
    </form>

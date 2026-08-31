@@ -62,9 +62,25 @@
 </head>
 
 <body style='max-width: 65em; background-color: #CCE6FF;'>
+{if count($totalCounts) > 0}
+   <table cellspacing="0" cellpadding="0">
+       <tr>
+           <td>Total: </td>
+           <td align="right">&nbsp;{$totalCounts['numReviewed']}&nbsp;/</td>
+           <td align="right">&nbsp;{$totalCounts['numSeats']}</td>
+           <td align="right">&nbsp;<span class="endorsed">{$totalCounts['numEndorsed']}</span></td>
+       </tr>
+       <tr>
+           <td>County: </td>
+           <td align="right">&nbsp;{$countyCounts['numReviewed']}&nbsp;/</td>
+           <td align="right">&nbsp;{$countyCounts['numSeats']}</td>
+           <td align="right">&nbsp;<span class="endorsed">{$countyCounts['numEndorsed']}</span></td>
+       </tr>
+   </table>
+{/if}
+
 <button style="position: fixed; top: 10px; right: 20px;" onClick="forceReload();">Refresh</button>
 
-<p>&nbsp;</p>
 <ul style="padding-left: 0;">
     {if $allowedState }
         <li>

@@ -31,6 +31,19 @@ $allowedCounties = getUnion($editableCounties, $readableCounties);
 $allowedState    = Str::contains($allowedCounties, "999");
 $allowedCountyNums = Str::split($allowedCounties, ",");
 
+$isAdmin = $pdo->run("SELECT admin FROM azure_users WHERE email = '$email'")->getSingleValue('admin');
+$logger->log("leftpanel: isAdmin=$isAdmin");
+$logger->log("leftpanel: email=$email");
+
+//---Get (reviewed / seats) endorsed counts for top left.
+$totalCounts  = [];
+$countyCounts = [];
+if ($isAdmin == 1) {
+   $cc = new CandidateCounter($pdo);
+   $totalCounts  = $cc->calculateOverallCounts("");
+   $countyCounts = $cc->calculateOverallCounts(" AND s.org NOT LIKE 'mi%' AND s.org!='crt-sup' ");
+}
+
 $sql = "   SELECT 'us' AS org, " . calculateTopSeats (            "'us', 'us-sen', 'us-hou'") . ", "
                                  . calculateTopMetric("reviewed", "'us', 'us-sen', 'us-hou'") . " AS rcount, "
                                  . calculateTopMetric("endorsed", "'us', 'us-sen', 'us-hou'") . " AS ecount "
@@ -200,6 +213,8 @@ $smarty = new SmartyPage();
 $smarty->assign('allowedState', $allowedState);
 $smarty->assign('counties', $counties);
 $smarty->assign('topOffices', $topOffices);
+$smarty->assign('totalCounts', $totalCounts);
+$smarty->assign('countyCounts', $countyCounts);
 $smarty->display('leftpanel-c.tpl');
 
 function rollUp(array &$county, string $org, int $seats, int $reviewed, int $endorsed): void {

@@ -38,9 +38,16 @@ $ct  = $pdo->run($sql)->getSingleValue('ct');
 
 $sql = "DELETE FROM v4candidates WHERE id = $can_id";
 $pdo->run($sql);
+$sql = "DELETE FROM v4seats WHERE id=$seat_id AND office='prop'";
+$pdo->run($sql);
+
 if ($ct == 1) {
-   $sql = "INSERT INTO v4candidates (seat_id) VALUES ($seat_id)";
-   $pdo->run($sql);
+   $sql = "SELECT office FROM v4seats WHERE id=$seat_id";
+   $office = $pdo->run($sql)->getSingleValue('office');
+   if ($office != 'prop') {
+      $sql = "INSERT INTO v4candidates (seat_id) VALUES ($seat_id)";
+      $pdo->run($sql);
+   }
 }
 
 //$logger->log("Redirecting to: candidates.php?county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}");

@@ -34,7 +34,7 @@ $qsShow      = HttpGet::value('show');
 $clickpick   = HttpGet::value('clickpick');
 $showSaved  = 0;
 
-$sql = "SELECT text FROM uitext where id='maintenance'";
+$sql = "SELECT text FROM v4uitext where id='maintenance'";
 $maintenance = trim($pdo->run($sql)->getSingleValue('text'));
 
 $sql = "SELECT admin, state, editCounties, adminCounties FROM azure_users WHERE email = '$email'";

@@ -41,7 +41,7 @@ $countyCounts = [];
 if ($isAdmin == 1) {
    $cc = new CandidateCounter($pdo);
    $totalCounts  = $cc->calculateOverallCounts("");
-   $countyCounts = $cc->calculateOverallCounts(" AND s.org NOT LIKE 'mi%' AND s.org!='crt-sup' ");
+   $countyCounts = $cc->calculateOverallCounts(" AND s.org NOT LIKE 'mi%' AND s.org!='crt-sup' AND s.org NOT LIKE 'us%' ");
 }
 
 $sql = "   SELECT 'us' AS org, " . calculateTopSeats (            "'us', 'us-sen', 'us-hou'") . ", "

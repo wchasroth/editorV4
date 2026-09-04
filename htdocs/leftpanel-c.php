@@ -38,9 +38,11 @@ $logger->log("leftpanel: email=$email");
 //---Get (reviewed / seats) endorsed counts for top left.
 $totalCounts  = [];
 $countyCounts = [];
+$totCounts    = [];
 if ($isAdmin == 1) {
    $cc = new CandidateCounter($pdo);
    $totalCounts  = $cc->calculateOverallCounts("");
+   $totCounts    = $cc->calculateOverallCounts(" AND (s.org LIKE 'mi%' OR s.org='crt-sup' OR s.org LIKE 'us%') ");
    $countyCounts = $cc->calculateOverallCounts(" AND s.org NOT LIKE 'mi%' AND s.org!='crt-sup' AND s.org NOT LIKE 'us%' ");
 }
 
@@ -213,8 +215,9 @@ $smarty = new SmartyPage();
 $smarty->assign('allowedState', $allowedState);
 $smarty->assign('counties', $counties);
 $smarty->assign('topOffices', $topOffices);
-$smarty->assign('totalCounts', $totalCounts);
+$smarty->assign('totalCounts',  $totalCounts);
 $smarty->assign('countyCounts', $countyCounts);
+$smarty->assign('totCounts',    $totCounts);
 $smarty->display('leftpanel-c.tpl');
 
 function rollUp(array &$county, string $org, int $seats, int $reviewed, int $endorsed): void {

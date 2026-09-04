@@ -65,16 +65,22 @@
 {if count($totalCounts) > 0}
    <table cellspacing="0" cellpadding="0">
        <tr>
-           <td>Total: </td>
-           <td align="right">&nbsp;{$totalCounts['numReviewed']}&nbsp;/</td>
-           <td align="right">&nbsp;{$totalCounts['numSeats']}</td>
-           <td align="right">&nbsp;<span class="endorsed">{$totalCounts['numEndorsed']}</span></td>
+           <td>ToT: </td>
+           <td align="right">&nbsp;{$totCounts['numReviewed']}&nbsp;/</td>
+           <td align="right">&nbsp;{$totCounts['numSeats']}</td>
+           <td align="right">&nbsp;<span class="endorsed">{$totCounts['numEndorsed']}</span></td>
        </tr>
        <tr>
            <td>County: </td>
            <td align="right">&nbsp;{$countyCounts['numReviewed']}&nbsp;/</td>
            <td align="right">&nbsp;{$countyCounts['numSeats']}</td>
            <td align="right">&nbsp;<span class="endorsed">{$countyCounts['numEndorsed']}</span></td>
+       </tr>
+       <tr>
+           <td>Total: </td>
+           <td align="right">&nbsp;{$totalCounts['numReviewed']}&nbsp;/</td>
+           <td align="right">&nbsp;{$totalCounts['numSeats']}</td>
+           <td align="right">&nbsp;<span class="endorsed">{$totalCounts['numEndorsed']}</span></td>
        </tr>
    </table>
 {/if}

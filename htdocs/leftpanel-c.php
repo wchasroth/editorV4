@@ -236,12 +236,14 @@ function calculateSeats (string $orgClause, string $districtField): string {
 }
 
 function calculateMetric(string $metricName, string $orgClause, string $districtField): string {
+#  $endorsedHack = ($metricName="endorsed" ? " AND c.reviewed=1 " : "");
+   $endorsedHack = "";
    return "(SELECT SUM(counter.metric) AS total_metric "
       . "   FROM ( SELECT MAX(c.$metricName) AS metric "
       . "            FROM      v4seats      AS s "
       . "            LEFT JOIN v4candidates AS c  ON (c.seat_id = s.id) "
       . "           WHERE s.$orgClause "
-      . "             AND district=$districtField "
+      . "             AND district=$districtField  $endorsedHack "
       . "           GROUP BY s.org, s.office, s.district, s.subdist, s.seatnum "
       . "   ) AS counter) ";
 }

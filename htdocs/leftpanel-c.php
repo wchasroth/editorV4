@@ -236,8 +236,7 @@ function calculateSeats (string $orgClause, string $districtField): string {
 }
 
 function calculateMetric(string $metricName, string $orgClause, string $districtField): string {
-#  $endorsedHack = ($metricName="endorsed" ? " AND c.reviewed=1 " : "");
-   $endorsedHack = "";
+   $endorsedHack = ($metricName="endorsed" ? " AND c.reviewed=1 " : "");
    return "(SELECT SUM(counter.metric) AS total_metric "
       . "   FROM ( SELECT MAX(c.$metricName) AS metric "
       . "            FROM      v4seats      AS s "

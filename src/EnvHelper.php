@@ -6,13 +6,38 @@ namespace CharlesRothDotNet\EditorV4;
 use CharlesRothDotNet\Alfred\CookieBoss;
 use CharlesRothDotNet\Alfred\CookieVerifier;
 use CharlesRothDotNet\Alfred\EnvFile;
+use CharlesRothDotNet\Alfred\AlfredPDO;
+use CharlesRothDotNet\Alfred\Str;
 
 class EnvHelper {
+   private static array $emptyUser = ['admin' => 0, 'state' => 0, 'editCounties' => '', 'adminCounties' => ''];
+
    public static function getEmail(EnvFile $env): string {
       if ($env->get('isLocal') == "1")
          return $env->get('localEmail') ?? "wchasroth@gmail.com";
       $boss = new CookieBoss($env->get('domain'), $env->get('cookie_path'), $env->get('securekey'));
       return CookieVerifier::getEmail($boss, $env->get('cookie'));
+   }
+
+   public static function getUserPermissions(AlfredPDO $pdo, string $email): array {
+      if (Str::contains($email, "'"))  return self::$emptyUser;
+
+      $sql = "SELECT admin, state, editCounties, adminCounties FROM azure_users WHERE email = '$email'";
+      $result = $pdo->run($sql);
+      if ($result->failed()  ||  $result->getRowCount() === 0)  return self::$emptyUser;
+      return $result->getRows()[0];
+   }
+
+   public static function canUserEdit(array $userPermissions, int $county): bool {
+      return
+         ($userPermissions['admin'] === 1)                               ||
+         ($userPermissions['state'] === 1)                               ||
+         self::foundCountyIn($county, $userPermissions['editCounties'])  ||
+         self::foundCountyIn($county, $userPermissions['adminCounties']);
+   }
+
+   public static function foundCountyIn(int $county, string $counties): bool {
+      return Str::contains(",$counties,", ",$county,");
    }
 
    public static function getEditableCounties(EnvFile $env): string {

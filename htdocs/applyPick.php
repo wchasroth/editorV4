@@ -25,16 +25,21 @@ require_once('../vendor/autoload.php');
 date_default_timezone_set("America/New_York");
 
 $env     = new EnvFile("_env");
-$pdo     = PdoHelper::makePdo($env);
 $logger  = new DumbFileLogger($env->get('logFile'));
+$pdo     = PdoHelper::makePdo($env);
 
-$county      = HttpGet::value('county');
+$county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
 $qsDistrict  = HttpGet::value('district');
-$qsShow      = HttpGet::value('show');
-$can_id      = HttpGet::value('can_id');
-$filing_id   = HttpGet::value('filing_id');
+$qsShow      = substr(HttpGet::value('show'), 0, 1);
+$can_id      = HttpGet::number('can_id');
+$filing_id   = HttpGet::number('filing_id');
 $newCanId    = HttpGet::value('newCanId');
+
+$email   = EnvHelper::getEmail($env);
+$row     = EnvHelper::getUserPermissions($pdo, $email);
+$canEdit = EnvHelper::canUserEdit($row, $county);
+if (! $canEdit)  exit();
 
 //---If we want to add a NEW candidate row, and then fill it in.  Otherwise, just update the existing can_id row.
 if (! empty($newCanId)) {
@@ -61,3 +66,7 @@ if ($result->succeeded()  &&  $result->getRowCount() > 0) {
 
 header("Location: candidates.php?county=$county&orgs=$qsOrgs&district=$qsDistrict&show=$qsShow");
 exit;
+
+function foundCountyIn(int $county, string $counties): bool {
+   return Str::contains(",$counties,", ",$county,");
+}

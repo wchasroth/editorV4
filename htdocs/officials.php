@@ -20,26 +20,22 @@ require_once('../vendor/autoload.php');
 date_default_timezone_set("America/New_York");
 
 $env     = new EnvFile("_env");
-$email   = EnvHelper::getEmail($env);
-//$readall = EnvHelper::getReadall($env);
-$pdo     = PdoHelper::makePdo($env);
 $logger  = new DumbFileLogger($env->get('logFile'));
+$pdo     = PdoHelper::makePdo($env);
 
-$county      = HttpGet::value('county');
+$county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
 $qsDistrict  = HttpGet::value('district');
 $reviewedKey = $qsOrgs . ":" . $qsDistrict;
-$qsShow     = HttpGet::value('show');
-$showSaved  = 0;
+$qsShow      = HttpGet::value('show');
+$showSaved   = 0;
+
+$email = EnvHelper::getEmail($env);
+$row   = EnvHelper::getUserPermissions($pdo, $email);
+$canEdit = EnvHelper::canUserEdit($row, $county);
 
 $sql = "SELECT text FROM v4uitext where id='maintenance'";
 $maintenance = trim($pdo->run($sql)->getSingleValue('text'));
-
-$sql = "SELECT admin, state, editCounties, adminCounties FROM azure_users WHERE email = '$email'";
-$result = $pdo->run($sql);
-$row = $result->getRows()[0];
-
-$canEdit = ($row['admin'] == '1') || ($row['state'] == '1')  ||  foundCountyIn($county, $row['editCounties']) || foundCountyIn($county, $row['adminCounties']);
 
 //---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");

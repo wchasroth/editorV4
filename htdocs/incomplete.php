@@ -12,6 +12,7 @@ use CharlesRothDotNet\Alfred\SmartyPage;
 use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
 use CharlesRothDotNet\Alfred\DumbFileLogger;
+use CharlesRothDotNet\EditorV4\EnvHelper;
 
 require_once('../vendor/autoload.php');
 
@@ -19,12 +20,18 @@ date_default_timezone_set("America/New_York");
 
 $env = new EnvFile("_env");
 $pdo = PdoHelper::makePdo($env);
-$logger = new DumbFileLogger($env->get('logFile'));
-$logger->log("Incomplete startup");
+#$logger = new DumbFileLogger($env->get('logFile'));
+#$logger->log("Incomplete startup");
 
 $qsOrgs     = HttpGet::value('orgs');
-$qsDistrict = HttpGet::value('district');
+$qsDistrict = HttpGet::number('district');
 $qsShow     = HttpGet::value('show');
+$county     = HttpGet::number('county');
+
+$email = EnvHelper::getEmail($env);
+$row   = EnvHelper::getUserPermissions($pdo, $email);
+$canEdit = EnvHelper::canUserEdit($row, $county);
+if (! $canEdit)  exit();
 
 $org = Str::substringBefore($qsOrgs . ',', ',');
 $sql = "SELECT '' ";

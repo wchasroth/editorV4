@@ -25,7 +25,7 @@ $pdo     = PdoHelper::makePdo($env);
 
 $county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
-$qsDistrict  = HttpGet::value('district');
+$qsDistrict  = EnvHelper::safeDistrict(HttpGet::value('district'));
 $reviewedKey = $qsOrgs . ":" . $qsDistrict;
 $qsShow      = HttpGet::value('show');
 $showSaved   = 0;
@@ -43,7 +43,7 @@ $office      = HttpPost::value('office');
 $subdistText = HttpPost::value('subdist');
 $subdistNum  = intval(HttpPost::value('subdist'));
 $org         = HttpPost::value('org');
-$deleteSeat  = HttpPost::value('deleteSeat');
+$deleteSeat  = HttpPost::number('deleteSeat');
 
 //---Handle data changes (form submission).
 if ($canEdit) {

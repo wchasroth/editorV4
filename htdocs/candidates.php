@@ -27,7 +27,7 @@ $pdo     = PdoHelper::makePdo($env);
 
 $county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
-$qsDistrict  = HttpGet::value('district');
+$qsDistrict  = EnvHelper::safeDistrict(HttpGet::value('district'));
 $qsShow      = HttpGet::value('show');
 $clickpick   = HttpGet::value('clickpick');
 
@@ -53,7 +53,8 @@ if ($canEdit) {
    if (! Str::isReallyEmpty($fieldsChanged)) {
       foreach (Str::split($fieldsChanged, ",") as $field) {
          $value = HttpPost::value($field);
-         $logger->log("Candidate field changed: $field: '$value'");
+         if ($field !== "description")  $value = Str::removeAll($value, ['\n', '\r', ';']);
+#        $logger->log("Candidate field changed: $field: '$value'");
          $parts = Str::split($field, ':');
          $sql = "UPDATE " . ($parts[0] == 'i' ? "v4candidates" : "v4seats") . " SET ";
          if (Str::startsWith($parts[2], "term")) $value = intval($value);
@@ -65,7 +66,7 @@ if ($canEdit) {
          else if ($parts[2] == "won")           $value = intval($value);
          $sqlFields = new SqlFields([$parts[2] => $value]);
          $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
-         $logger->log("Save Changes: " . $query);
+#        $logger->log("Save Changes: " . $query);
          $result = $pdo->run($query);
       }
    

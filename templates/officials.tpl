@@ -262,7 +262,7 @@ Only change if the value is wrong."
    </tr>
    {foreach from=$rows item=row}
       <tr>
-         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, `{$row['shortname']}: {$row['name']}`);"
+         <td><a href="#" onClick="return deleteThisSeat({$row['id']}, `{$row['shortname']}: {$row['name']|escape}`);"
             class="title-target" title-css="Delete seat. Only use this if there are literally TOO MANY seats.
  To remove an incumbent, just blank out their fields."
             ><img src="trash.png" width="14" />
@@ -281,7 +281,7 @@ Only change if the value is wrong."
          <td><input {$hidden} name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td>&nbsp;<input type="checkbox" name="s:{$row['id']}:is_open" value="1" {if $row['is_open'] == 1} checked {/if} onChange="changed(this.name);" /></td>
          <td><input {$hidden} name="s:{$row['id']}:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
-         <td><input           name="i:{$row['inc_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']}"/></td>
+         <td><input           name="i:{$row['inc_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']|escape}"/></td>
 
          <td style="position: relative;">
             {$id = $row['inc_id']}

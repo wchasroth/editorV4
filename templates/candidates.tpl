@@ -479,7 +479,7 @@
       <tr valign="top" class="zebra{$shadow}">
          <td>
             <a href="deleteCandidate.php?can_id={$row['can_id']}&county={$county}&orgs={$qsOrgs}&district={$qsDistrict}&show={$qsShow}"
-                 onClick="return continueIfDataUnChanged()  &&  confirm('OK to delete {$row['name']}?');"
+                 onClick="return continueIfDataUnChanged()  &&  confirm('OK to delete {$row['name']|escape}?');"
                ><img src="IMG/trash.png" width="14" style="margin: 1px;" title="Delete this candidate."/></a>
             {if $row['plus'] == 1}
                <br/>
@@ -552,7 +552,7 @@
          </td>
 
          <td>
-            <input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']}"/>
+            <input name="i:{$row['can_id']}:name"  type="text"  size="22" onChange="changed(this.name);"  value="{$row['name']|escape}"/>
          </td>
 
          <td>
@@ -571,7 +571,7 @@
          </td>
 
          <td>
-            <div   id='{$row['can_id']}-shortdesc'   onClick="descOpen({$row['can_id']}, `{$row['name']}`);">{$row['shortdesc']}</div>
+            <div   id='{$row['can_id']}-shortdesc'   onClick="descOpen({$row['can_id']}, `{$row['name']|escape}`);">{$row['shortdesc']}</div>
             <div   id='{$row['can_id']}-description' style="display: none;">{$row['description']}</div>
             <input id='{$row['can_id']}-rawdesc'     type="hidden" name="i:{$row['can_id']}:description" />
          </td>

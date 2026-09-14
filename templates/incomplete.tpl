@@ -22,7 +22,7 @@ it partly falls under one or more counties that have not been imported yet:
 
 <ul>
 {foreach from=$rows item=row}
-   <li>{$row['name']}</li>
+   <li>{$row['name']|escape}</li>
 {/foreach}
 </ul>
 

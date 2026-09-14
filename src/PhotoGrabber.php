@@ -89,7 +89,8 @@ class PhotoGrabber
             $cropname = "$cropBase.$ext";
             $croppath = rtrim($this->targetFolder, '/\\') . DIRECTORY_SEPARATOR . $cropname;
 
-            $cmd = sprintf( '%s %s %s %s 2>&1', $this->python, escapeshellarg($this->facecropScript), $filepath, $croppath);
+            $cmd = sprintf( '%s %s %s %s 2>&1', $this->python,
+               escapeshellarg($this->facecropScript), escapeshellarg($filepath), escapeshellarg($croppath));
             exec($cmd, $output, $returnCode);
                 
             if ($returnCode !== 0) {
@@ -145,13 +146,13 @@ class PhotoGrabber
         }
 
         // Fallback: extract extension from the clean URL path
-        $path = parse_url($cleanUrl, PHP_URL_PATH);
-        if ($path) {
-            $urlExt = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-            // Normalize common extension names
-            if ($urlExt === 'jpeg') return 'jpg';
-            if (!empty($urlExt))    return $urlExt;
-        }
+//      $path = parse_url($cleanUrl, PHP_URL_PATH);
+//      if ($path) {
+//          $urlExt = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+//          // Normalize common extension names
+//          if ($urlExt === 'jpeg') return 'jpg';
+//          if (!empty($urlExt))    return $urlExt;
+//      }
 
         return null;
     }

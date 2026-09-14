@@ -16,7 +16,7 @@ $pdo = PdoHelper::makePdo($env);
 
 $county     = HttpGet::number('county');
 $qsOrgs     = HttpGet::value('orgs');
-$qsDistrict = HttpGet::value('district');
+$qsDistrict = EnvHelper::safeDistrict(HttpGet::value('district'));
 $qsShow     = HttpGet::value('show');
 $can_id     = HttpGet::number('can_id');
 $clickPick  = HttpGet::value('clickpick');

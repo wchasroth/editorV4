@@ -30,7 +30,7 @@ $pdo     = PdoHelper::makePdo($env);
 
 $county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
-$qsDistrict  = HttpGet::value('district');
+$qsDistrict  = EnvHelper::safeDistrict(HttpGet::value('district'));
 $qsShow      = substr(HttpGet::value('show'), 0, 1);
 $can_id      = HttpGet::number('can_id');
 $filing_id   = HttpGet::number('filing_id');

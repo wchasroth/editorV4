@@ -27,7 +27,7 @@ $logger    = new DumbFileLogger($env->get('logFile'));
 $parent    = $env->get('parent');
 $photosDir = $env->get('photosCanDir');
 
-$canId      = $_GET['canId']      ?? '';
+$canId      = HttpGet::number('canId');
 $name       = $_GET['name']       ?? '';
 $headshot   = $_GET['headshot']   ?? '';
 $usecropped = $_GET['usecropped'] ?? '0';

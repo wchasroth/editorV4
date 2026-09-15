@@ -32,8 +32,8 @@ $allowedState    = Str::contains($allowedCounties, "999");
 $allowedCountyNums = Str::split($allowedCounties, ",");
 
 $isAdmin = $pdo->run("SELECT admin FROM azure_users WHERE email = '$email'")->getSingleValue('admin');
-$logger->log("leftpanel: isAdmin=$isAdmin");
-$logger->log("leftpanel: email=$email");
+//$logger->log("leftpanel: isAdmin=$isAdmin");
+//$logger->log("leftpanel: email=$email");
 
 //---Get (reviewed / seats) endorsed counts for top left.
 $totalCounts  = [];
@@ -83,11 +83,11 @@ $counties = [];
 foreach ($allowedCountyNums as $countyNum) {
 
    $sql = "   SELECT 'cnty' AS org, id, name, 1 AS link, "
-        .        calculateSeats (            $orgCnty, "c.id") . ", "
-        .        calculateMetric("reviewed", $orgCnty, "c.id") . " AS rcount, "
-        .        calculateMetric("endorsed", $orgCnty, "c.id") . " AS ecount, "
-        .        calculatePassed('cnty%', "c.id")              . " AS passed "
-        . "     FROM s4counties AS c  WHERE id = $countyNum "
+        .        calculateSeats (            $orgCnty, "y.id") . ", "
+        .        calculateMetric("reviewed", $orgCnty, "y.id") . " AS rcount, "
+        .        calculateMetric("endorsed", $orgCnty, "y.id") . " AS ecount, "
+        .        calculatePassed('cnty%', "y.id")              . " AS passed "
+        . "     FROM s4counties AS y  WHERE id = $countyNum "
         . "UNION "
         . "   SELECT 'city' AS org, j.id, j.name, IF(c.id IS NULL, 0, 1) AS link, "
         .        calculateSeats (            $orgCity, "j.id") . ", "
@@ -143,7 +143,8 @@ foreach ($allowedCountyNums as $countyNum) {
         . "    WHERE county_id = $countyNum "
         . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-pd', 'crt-p', 'crt-m'), name ";
 
-// $logger->log("Big: $sql");
+// $logger->log("County $countyNum");
+// if ($countyNum == 13) $logger->log("Big: $sql");
 
    $result = $pdo->run($sql);
    if ($result->failed()) $logger->log("Failed: leftpanel main select: " . $result->getError() . "  $sql");
@@ -242,7 +243,7 @@ function calculateMetric(string $metricName, string $orgClause, string $district
       . "            FROM      v4seats      AS s "
       . "            LEFT JOIN v4candidates AS c  ON (c.seat_id = s.id) "
       . "           WHERE s.$orgClause "
-      . "             AND district=$districtField  $endorsedHack "
+      . "             AND s.district=$districtField  $endorsedHack "
       . "           GROUP BY s.org, s.office, s.district, s.subdist, s.seatnum "
       . "   ) AS counter) ";
 }

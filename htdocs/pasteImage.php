@@ -15,7 +15,7 @@ $logger    = new DumbFileLogger($env->get('logFile'));
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
     
     $rawData  = $_POST['pasted_image'];
-    $canId    = $_GET['can_id'] ?? '';
+    $canId    = HttpGet::number('can_id');
     $name     = $_GET['name']   ?? '';
     $name     = NameSimplifier::makeFilenameFrom($name);
     $logger->log("name=$name");

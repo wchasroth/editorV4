@@ -168,8 +168,8 @@ foreach ($allowedCountyNums as $countyNum) {
                'schl_end' => 0, 'schl_rev' => 0, 'schl_den' => 0,
                'col_end'  => 0, 'col_rev'  => 0, 'col_den'  => 0,
                'crt_end'  => 0, 'crt_rev'  => 0, 'crt_den'  => 0,
-               'grd_end'  => 0,
-               'grd_rev'  => 0,
+               'grd_end'  => $ecount,
+               'grd_rev'  => $rcount,
                'grd_den'  => $seats
             ];
             break;

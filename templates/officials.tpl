@@ -385,13 +385,6 @@ Only change if the value is wrong."
 {/if}
 
 
-<pre>
-   <!--
-qsOrgs    ={$qsOrgs}
-qsDistrict={$qsDistrict}
-qsShow={$qsShow}
--->
-
 {$error}
 {$rowText}
 </pre>

@@ -28,7 +28,7 @@ $pdo     = PdoHelper::makePdo($env);
 $county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
 $qsDistrict  = EnvHelper::safeDistrict(HttpGet::value('district'));
-$qsShow      = HttpGet::value('show');
+$qsShow      = EnvHelper::safeShow    (HttpGet::value('show'));
 $clickpick   = HttpGet::value('clickpick');
 
 $email   = EnvHelper::getEmail($env);

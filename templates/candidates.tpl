@@ -680,12 +680,6 @@
 
 
 <pre>
-   <!--
-qsOrgs    ={$qsOrgs}
-qsDistrict={$qsDistrict}
-qsShow={$qsShow}
-fieldsChanged={$fieldsChanged}
--->
 
 {$error}
 {$rowText}

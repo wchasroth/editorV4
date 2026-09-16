@@ -26,7 +26,7 @@ $logger = new DumbFileLogger($env->get('logFile'));
 $county     = HttpGet::number('county');
 $qsOrgs     = HttpGet::value('orgs');
 $qsDistrict = EnvHelper::safeDistrict(HttpGet::value('district'));
-$qsShow     = HttpGet::value('show');
+$qsShow     = EnvHelper::safeShow    (HttpGet::value('show'));
 $can_id     = HttpGet::number('can_id');
 
 $email   = EnvHelper::getEmail($env);

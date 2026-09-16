@@ -30,12 +30,12 @@ $photosDir = $env->get('photosCanDir');
 $canId      = HttpGet::number('canId');
 $name       = $_GET['name']       ?? '';
 $headshot   = $_GET['headshot']   ?? '';
-$usecropped = $_GET['usecropped'] ?? '0';
+$usecropped = HttpGet::number('usecropped');
 $photoChanged = 0;
 
 $headcropped = 0;
 $cropshot = "";
-if (intval($usecropped) === 1) {
+if ($usecropped === 1) {
    $photoChanged = 1;
 }
 else {

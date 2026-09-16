@@ -24,8 +24,8 @@ $pdo = PdoHelper::makePdo($env);
 #$logger->log("Incomplete startup");
 
 $qsOrgs     = HttpGet::value('orgs');
-$qsDistrict = HttpGet::number('district');
-$qsShow     = HttpGet::value('show');
+$qsDistrict = EnvHelper::safeDistrict(HttpGet::value('district'));
+$qsShow     = EnvHelper::safeShow    (HttpGet::value('show'));
 $county     = HttpGet::number('county');
 
 $email = EnvHelper::getEmail($env);

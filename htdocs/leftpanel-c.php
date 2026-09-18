@@ -28,7 +28,8 @@ $result = $pdo->run($sql);
 $readableCounties = $result->getSingleValue('readCounties');
 
 $allowedCounties = getUnion($editableCounties, $readableCounties);
-$allowedState    = Str::contains($allowedCounties, "999");
+//$allowedState    = Str::contains($allowedCounties, "999");
+$allowedState      = 1;  // Everyone can SEE Top of ticket.
 $allowedCountyNums = Str::split($allowedCounties, ",");
 
 $isAdmin = $pdo->run("SELECT admin FROM azure_users WHERE email = '$email'")->getSingleValue('admin');

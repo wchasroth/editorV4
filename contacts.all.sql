@@ -1,4 +1,3 @@
-
 SELECT 'Filings' AS type, org, office, district, subdist, name, phone, email
   FROM v4filings
  WHERE party='D'
@@ -12,7 +11,7 @@ SELECT 'Candidates' AS type, s.org, s.office, s.district, s.subdist, c.name, c.p
  WHERE c.party = 'D'
    AND c.name  != ''
    AND c.name  IS NOT NULL
-   AND (c.phone!='' AND c.email!='')
+   AND (c.phone!='' OR c.email!='')
 
 UNION ALL
 
@@ -22,10 +21,12 @@ SELECT 'Incumbents' AS type, s.org, s.office, s.district, s.subdist, c.name, c.p
  WHERE c.party = 'D'
    AND c.name  != ''
    AND c.name  IS NOT NULL
-   AND (c.phone!='' AND c.email!='')
+   AND (c.phone!='' OR c.email!='')
 
-ORDER BY type, name, org, office, district, subdist
+ORDER BY type, name, org, office, district, subdist;
 
-   
-
-   
+/*
+   SELECT 'Filings' AS type, count(*) from v4filings;
+   SELECT 'Candidates' AS type, count(*) from v4candidates;
+   SELECT 'Incumbents' AS type, count(*) from v4incumbents;
+*/

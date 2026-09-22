@@ -14,7 +14,8 @@
     ],
     "require": {
         "smarty/smarty": "^5.4",
-        "charlesrothdotnet/alfred": "dev-main"
+        "charlesrothdotnet/alfred": "dev-main",
+        "ezyang/htmlpurifier": "^4.19"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.4"

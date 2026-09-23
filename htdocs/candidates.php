@@ -45,6 +45,8 @@ $maintenance = trim($pdo->run($sql)->getSingleValue('text'));
 //---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");
 $office      = HttpPost::value('office');
+$officeProp  = HttpPost::value('office_prop');
+if (! empty($officeProp))  $office = $officeProp;
 $subdistText = HttpPost::value('subdist');
 $subdistNum  = intval(HttpPost::value('subdist'));
 $org         = HttpPost::value('org');
@@ -78,6 +80,7 @@ if ($canEdit) {
    //---Handle new offices (form submission)
    else if (! Str::isReallyEmpty($office)) {
       $sql = "SELECT seats FROM s4titles WHERE org='$org' AND office='$office'";
+      $logger->log("new office $sql");
       $result = $pdo->run($sql);
       $logger->log("seatmax: $sql   " . $result->getError());
       $seatmax = intval($result->getSingleValue('seats'));
@@ -132,7 +135,7 @@ $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.hea
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 
 $result = $pdo->run($sql);
-$logger->log("Candidate SQL: $sql");
+#$logger->log("Candidate SQL: $sql");
 if ($result->failed()) $logger->log("Failed main select: " . $result->getError() . "  $sql");
 
 //---Where the LEFT JOIN v4candidates found no candidate rows, create empty ones, with the seat_id set.
@@ -189,7 +192,7 @@ for ($i=0;   $i<$count;   $i++) {
 //    $sql = "SELECT id, name FROM v4filings WHERE " . $sqlFields->getSelectFragment() . " AND contested=1";
       $sql = "SELECT id, name FROM v4filings WHERE " . $sqlFields->getSelectFragment();
       $result = $pdo->run($sql);
-      $logger->log("Picklist: n=" . $result->getRowCount() . "  sql=$sql");
+#     $logger->log("Picklist: n=" . $result->getRowCount() . "  sql=$sql");
 
       $picks = [];
       // Only include names in the picklist that we haven't already used for this seat.

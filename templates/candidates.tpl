@@ -421,6 +421,11 @@
       function initDragger() {
          dragElement(document.getElementById('descDiv'));
       }
+
+      function setOfficeProp() {
+         let officeProp = document.getElementById('office_prop');
+         officeProp.value = "prop";
+      }
    </script>
 </head>
 
@@ -663,9 +668,9 @@
 
        {if in_array($expandableOrgs[0], ['cnty', 'city', 'town', 'vil']) }
          <li><b>Proposal.</b>&nbsp;&nbsp;
-           <input type="hidden" name="org"    value="{$expandableOrgs[0]}" form="addSeats1" />
-           <input type="hidden" name="office" value="prop"                 form="addSeats1" />
-           <button type="submit" onClick="return continueIfDataUnChanged();" form="addSeats1">Add new proposal</button>
+           <input type="hidden" name="org"         value="{$expandableOrgs[0]}" form="addSeats1" />
+           <input type="hidden" name="office_prop" value=""  id="office_prop"   form="addSeats1" />
+           <button type="submit" onClick="setOfficeProp();  return continueIfDataUnChanged();" form="addSeats1">Add new proposal</button>
            <p/>
            For a new proposal, use a "candidate" name like "A - YES: Free Ice Cream".&nbsp;
            (Use the same number or letter that will appear on the ballot.)&nbsp;
@@ -676,8 +681,6 @@
    </div>
    </form>
 {/if}
-
-
 
 <pre>
 

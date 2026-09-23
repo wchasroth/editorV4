@@ -16,6 +16,7 @@ use CharlesRothDotNet\Alfred\SmartyPage;
 use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
 use CharlesRothDotNet\Alfred\DumbFileLogger;
+use CharlesRothDotNet\Alfred\AlfredHTMLPurifier;
 
 require_once('../vendor/autoload.php');
 
@@ -24,6 +25,7 @@ date_default_timezone_set("America/New_York");
 $env     = new EnvFile("_env");
 $logger  = new DumbFileLogger($env->get('logFile'));
 $pdo     = PdoHelper::makePdo($env);
+$purifier = new AlfredHTMLPurifier();
 
 $county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
@@ -60,7 +62,7 @@ if ($canEdit) {
          if (Str::startsWith($parts[2], "term")) $value = intval($value);
          if      ($parts[2] == "web")           $value = addProtocol(stripHttps($value));
          else if ($parts[2] == "phone")         $value = FieldFormatFixer::fixPhone($value);
-         else if ($parts[2] == "description")   $value = urldecode($value);
+         else if ($parts[2] == "description")   $value = $purifier->purify(urldecode($value));
          else if ($parts[2] == "endorsed")      $value = intval($value);
          else if ($parts[2] == "reviewed")      $value = intval($value);
          else if ($parts[2] == "won")           $value = intval($value);

@@ -14,6 +14,7 @@ use CharlesRothDotNet\Alfred\SmartyPage;
 use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
 use CharlesRothDotNet\Alfred\DumbFileLogger;
+use CharlesRothDotNet\Alfred\AlfredHTMLPurifier;
 
 require_once('../vendor/autoload.php');
 
@@ -27,6 +28,7 @@ date_default_timezone_set("America/New_York");
 $env     = new EnvFile("_env");
 $logger  = new DumbFileLogger($env->get('logFile'));
 $pdo     = PdoHelper::makePdo($env);
+$purifier = new AlfredHTMLPurifier();
 
 $county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
@@ -56,7 +58,9 @@ $result = $pdo->run($sql);
 if ($result->succeeded()  &&  $result->getRowCount() > 0) {
    $row = $result->getRows()[0];
    $fields = ['name' => $row['name'], 'party' => $row['party'], 'web' => $row['web'], 'email' => $row['email'], 'phone' => $row['phone'],
-      'headshot_url' => $row['headshot_url'], 'description' => $row['description'], 'source' => 'AI' ,
+      'headshot_url' => $row['headshot_url'],
+      'description' => $purifier->purify($row['description']),
+      'source' => 'AI' ,
       'headshot' => $row['headshot'], 'headcropped' => $row['headcropped']];
    $sqlFields = new SqlFields($fields);
    $sql = "UPDATE v4candidates SET " . $sqlFields->getSetFragment() . " WHERE id='$can_id'";

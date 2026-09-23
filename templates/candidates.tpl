@@ -687,7 +687,7 @@
 
 <!--- divs for pop-open boxes: description, photos -->
 <div id="descDiv" class="descDivCss" style="display: none;">
-   <img id='descDiv.handle' src="IMG/dragger3.png" style="position: absolute; right: 20px; top: 14px;"/>
+   <img id='descDiv.handle' src="IMG/dragger3.png" style="position: absolute; right: 40px; top: 14px;"/>
    <iframe id='descFrame' class="descFrameCss" src="summer2.html"></iframe>
    <input type='hidden' id='descDivRownum' />
 </div>

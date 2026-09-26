@@ -55,6 +55,11 @@ foreach ($rawdata as $data) {
       addRow($rows, $mc->getName($county), "$juris $office", $data['name']);
    }
 
+   else if (Str::startsWith($org, 'cnty')) {
+      if ($org === 'cnty-com') $office = "Commission";
+      addRow($rows, $mc->getName(intval($district)), "$office", $data['name']);
+   }
+
    else if (Str::startsWith($org, 'town')) {
       if ($org === 'town-cou') $office = "Trustee";
       $sql = "SELECT county_id, name FROM s4jurisdictions WHERE id=$district AND type='t' LIMIT 1";

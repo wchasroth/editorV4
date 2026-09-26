@@ -348,6 +348,7 @@
       /* Photo editing close button */
       window.addEventListener("message",
           function (e) {
+              if (e.origin !== window.location.origin) confirm("OOPS!");
               var photoDiv = document.getElementById('photoDiv');
               photoDiv.style.display = 'none';
               var parts = e.data.split(":"); /* 1 is canId;  2 is filename; 3 1=>using autocropped headshot */

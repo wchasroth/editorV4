@@ -6,19 +6,25 @@ namespace CharlesRothDotNet\EditorV4;
 use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\NameSimplifier;
 use CharlesRothDotNet\Alfred\DumbFileLogger;
+use CharlesRothDotNet\Alfred\Html;
+use CharlesRothDotNet\Alfred\PdoHelper;
 
 require_once('../vendor/autoload.php');
 
-$env       = new EnvFile("_env");
-$logger    = new DumbFileLogger($env->get('logFile'));
+$env     = new EnvFile("_env");
+$pdo     = PdoHelper::makePdo($env);
+$logger  = new DumbFileLogger($env->get('logFile'));
+$email   = EnvHelper::getEmail($env);
+$row     = EnvHelper::getUserPermissions($pdo, $email);
+if (count($row) === 0)  exit();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
     
     $rawData  = $_POST['pasted_image'];
     $canId    = HttpGet::number('can_id');
-    $name     = $_GET['name']   ?? '';
+    $name     = Html::removeHtmlTags($_GET['name']   ?? '');
     $name     = NameSimplifier::makeFilenameFrom($name);
-    $logger->log("name=$name");
+#   $logger->log("name=$name");
 
     // Validate that it is a proper base64 data URI image
     if (preg_match('/^data:image\/(png|jpeg|jpg);base64,/', $rawData, $matches)) {

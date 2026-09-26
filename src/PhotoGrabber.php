@@ -54,14 +54,15 @@ class PhotoGrabber
         $errno = curl_errno($ch);
         $error = curl_error($ch);
 
+        //---This is insecure!  Commented out.
         // Fallback: If cURL failed due to SSL handshake/cert issues (e.g. error code 35, 51, 60),
         // retry the request without SSL verification.
-        if ($data === false  &&  in_array($errno, [35, 51, 60])) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            $data  = curl_exec($ch);
-            $error = curl_error($ch);
-        }
+//        if ($data === false  &&  in_array($errno, [35, 51, 60])) {
+//            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+//            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+//            $data  = curl_exec($ch);
+//            $error = curl_error($ch);
+//        }
 
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);

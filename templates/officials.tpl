@@ -281,7 +281,8 @@ Only change if the value is wrong."
          <td><input {$hidden} name="s:{$row['id']}:termlen"   type="text"  size="1"  class="char1 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termlen']}"/></td>
          <td>&nbsp;<input type="checkbox" name="s:{$row['id']}:is_open" value="1" {if $row['is_open'] == 1} checked {/if} onChange="changed(this.name);" /></td>
          <td><input {$hidden} name="s:{$row['id']}:termcycle" type="text"  size="4"  class="char4 number"  pattern="[0-9]*" onChange="changed(this.name);"  value="{$row['termcycle']}"/></td>
-         <td><input           name="i:{$row['inc_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"  value="{$row['name']|escape}"/></td>
+         <td><input           name="i:{$row['inc_id']}:name"  type="text"  size="22"                                        onChange="changed(this.name);"
+                             value="{$row['name']|escape}"/></td>
 
          <td style="position: relative;">
             {$id = $row['inc_id']}
@@ -304,25 +305,25 @@ Only change if the value is wrong."
              {/if}
          </td>
 
-         <td class="col_web"><input type="text" name="i:{$row['inc_id']}:web"  size="60" value="{$row['web']}"
+         <td class="col_web"><input type="text" name="i:{$row['inc_id']}:web"  size="60" value="{$row['web']|escape}"
              style="position: relative; z-index: 3;"
              onFocus="expand(this);" onBlur="shrink(this);" onChange="changed(this.name);" /></td>
 
          <td class="spacer" style="position: relative; z-index: 4;">&nbsp;&nbsp;</td>
 
-         <td class="col_email"><input type="text" name="i:{$row['inc_id']}:email" size="45"  value="{$row['email']}"
+         <td class="col_email"><input type="text" name="i:{$row['inc_id']}:email" size="45"  value="{$row['email']|escape}"
              style="position: relative; z-index: 5;"
              onFocus="expand(this);" onBlur="shrink(this);" onChange="changed(this.name);" /></td>
 
          <td class="spacer" style="position: relative; z-index: 6;">&nbsp;&nbsp;</td>
 
          <td class="col_phone"><input name="i:{$row['inc_id']}:phone"     type="text"  size="18" class="char12"  onChange="changed(this.name);" 
-               value="{$row['phone']}" style="position: relative; z-index: 7;"
+               value="{$row['phone']|escape}" style="position: relative; z-index: 7;"
              onFocus="expand(this);" onBlur="shrink(this);" onChange="changed(this.name);" /></td>
 
          <td class="spacer" style="position: relative; z-index: 8;">&nbsp;&nbsp;</td>
 
-         <td><input name="i:{$row['inc_id']}:address"   type="text"  size="40"  onChange="changed(this.name);"  value="{$row['address']}"
+         <td><input name="i:{$row['inc_id']}:address"   type="text"  size="40"  onChange="changed(this.name);"  value="{$row['address']|escape}"
                style="position: relative; z-index: 9;" /></td>
       </tr>
    {/foreach}

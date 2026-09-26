@@ -15,6 +15,7 @@ use CharlesRothDotNet\Alfred\SmartyPage;
 use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
 use CharlesRothDotNet\Alfred\DumbFileLogger;
+use CharlesRothDotNet\Alfred\Html;
 
 require_once('../vendor/autoload.php');
 
@@ -28,9 +29,11 @@ $parent    = $env->get('parent');
 $photosDir = $env->get('photosCanDir');
 
 $canId      = HttpGet::number('canId');
-$name       = $_GET['name']       ?? '';
-$headshot   = $_GET['headshot']   ?? '';
+$name       = Html::removeHtmlTags($_GET['name']       ?? '');
+$headshot   = Html::removeHtmlTags($_GET['headshot']   ?? '');
 $usecropped = HttpGet::number('usecropped');
+$row     = EnvHelper::getUserPermissions($pdo, $email);
+if (count($row) === 0)  exit();
 $photoChanged = 0;
 
 $headcropped = 0;

@@ -17,6 +17,7 @@ use CharlesRothDotNet\Alfred\EnvFile;
 use CharlesRothDotNet\Alfred\PdoHelper;
 use CharlesRothDotNet\Alfred\DumbFileLogger;
 use CharlesRothDotNet\Alfred\AlfredHTMLPurifier;
+use CharlesRothDotNet\Alfred\Html;
 
 require_once('../vendor/autoload.php');
 
@@ -32,6 +33,7 @@ $qsOrgs      = HttpGet::value('orgs');
 $qsDistrict  = EnvHelper::safeDistrict(HttpGet::value('district'));
 $qsShow      = EnvHelper::safeShow    (HttpGet::value('show'));
 $clickpick   = HttpGet::value('clickpick');
+if (Str::contains($clickpick, "'"))  exit();
 
 $email   = EnvHelper::getEmail($env);
 $row     = EnvHelper::getUserPermissions($pdo, $email);
@@ -68,6 +70,7 @@ if ($canEdit) {
          else if ($parts[2] == "endorsed")      $value = intval($value);
          else if ($parts[2] == "reviewed")      $value = intval($value);
          else if ($parts[2] == "won")           $value = intval($value);
+         else if ($parts[2] == "name")          $value = Html::removeHtmlTags($value);
          $sqlFields = new SqlFields([$parts[2] => $value]);
          $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
 #        $logger->log("Save Changes: " . $query);

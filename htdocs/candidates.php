@@ -73,7 +73,7 @@ if ($canEdit) {
          else if ($parts[2] == "name")          $value = Html::removeHtmlTags($value);
          $sqlFields = new SqlFields([$parts[2] => $value]);
          $query = $sql . $sqlFields->getUpdateFragment() . " WHERE id={$parts[1]}";
-#        $logger->log("Save Changes: " . $query);
+//       $logger->log("Save Changes: " . $query);
          $result = $pdo->run($query);
       }
    
@@ -85,7 +85,7 @@ if ($canEdit) {
       $sql = "SELECT seats FROM s4titles WHERE org='$org' AND office='$office'";
       $logger->log("new office $sql");
       $result = $pdo->run($sql);
-      $logger->log("seatmax: $sql   " . $result->getError());
+//    $logger->log("seatmax: $sql   " . $result->getError());
       $seatmax = intval($result->getSingleValue('seats'));
       $seatnum = 1;
       if ($office === 'prop') {
@@ -138,7 +138,7 @@ $sql = "SELECT s.*, c.name, c.party, t.shortname, c.phone, c.email, c.web, c.hea
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 
 $result = $pdo->run($sql);
-#$logger->log("Candidate SQL: $sql");
+//$logger->log("Candidate SQL: $sql");
 if ($result->failed()) $logger->log("Failed main select: " . $result->getError() . "  $sql");
 
 //---Where the LEFT JOIN v4candidates found no candidate rows, create empty ones, with the seat_id set.
@@ -195,7 +195,7 @@ for ($i=0;   $i<$count;   $i++) {
 //    $sql = "SELECT id, name FROM v4filings WHERE " . $sqlFields->getSelectFragment() . " AND contested=1";
       $sql = "SELECT id, name FROM v4filings WHERE " . $sqlFields->getSelectFragment();
       $result = $pdo->run($sql);
-#     $logger->log("Picklist: n=" . $result->getRowCount() . "  sql=$sql");
+//    $logger->log("Picklist: n=" . $result->getRowCount() . "  sql=$sql");
 
       $picks = [];
       // Only include names in the picklist that we haven't already used for this seat.

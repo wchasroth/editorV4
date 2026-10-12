@@ -28,6 +28,7 @@ $qsOrgs      = HttpGet::value('orgs');
 $qsDistrict  = EnvHelper::safeDistrict(HttpGet::value('district'));
 $qsShow      = EnvHelper::safeShow    (HttpGet::value('show'));
 $reviewedKey = $qsOrgs . ":" . $qsDistrict;
+if (Str::contains($reviewedKey, "'", "\"", "<", ">"))  exit(1);
 $showSaved   = 0;
 
 $email = EnvHelper::getEmail($env);

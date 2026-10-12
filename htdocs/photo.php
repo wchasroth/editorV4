@@ -31,6 +31,8 @@ $photosDir = $env->get('photosCanDir');
 $canId      = HttpGet::number('canId');
 $name       = Html::removeHtmlTags($_GET['name']       ?? '');
 $headshot   = Html::removeHtmlTags($_GET['headshot']   ?? '');
+if (Str::contains($headshot, "'", "\""))  exit(1);
+
 $usecropped = HttpGet::number('usecropped');
 $row     = EnvHelper::getUserPermissions($pdo, $email);
 if (count($row) === 0)  exit();
@@ -57,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
    if ($uploadedFile['error'] === UPLOAD_ERR_OK) {
       $filename = $uploadedFile['name'];
       $filename = NameSimplifier::makeFilenameFrom($filename);
+      if (! hasValidImageExtension($filename))  exit(1);
       $target   = $canId . "-" . $filename;
       $got = move_uploaded_file($uploadedFile["tmp_name"], "$photosDir/$target");
       $logger->log("Move status: " . ($got ? 'T' : 'F') . "  " . $uploadedFile['tmp_name'] . " to $photosDir/$target");
@@ -79,3 +82,12 @@ $smarty->assign('cropshot', $cropshot);
 $smarty->assign('parent',   $parent);
 $smarty->assign('photoChanged',   $photoChanged);
 $smarty->display('photo.tpl');
+
+function hasValidImageExtension (string $filename): bool {
+   $filename = strtolower($filename);
+   return Str::endsWith($filename, ".jpg")  ||
+          Str::endsWith($filename, ".jpeg") ||
+          Str::endsWith($filename, ".png")  ||
+          Str::endsWith($filename, ".webp") ||
+          Str::endsWith($filename, ".gif");
+}

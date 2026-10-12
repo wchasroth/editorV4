@@ -30,10 +30,12 @@ $purifier = new AlfredHTMLPurifier();
 
 $county      = HttpGet::number('county');
 $qsOrgs      = HttpGet::value('orgs');
+if (Str::contains($qsOrgs, "\"", "'", ">", "<")) exit(1);
+
 $qsDistrict  = EnvHelper::safeDistrict(HttpGet::value('district'));
 $qsShow      = EnvHelper::safeShow    (HttpGet::value('show'));
 $clickpick   = HttpGet::value('clickpick');
-if (Str::contains($clickpick, "'"))  exit();
+if (Str::contains($clickpick, "'", "<", ">"))  exit();
 
 $email   = EnvHelper::getEmail($env);
 $row     = EnvHelper::getUserPermissions($pdo, $email);
@@ -47,11 +49,16 @@ $maintenance = trim($pdo->run($sql)->getSingleValue('text'));
 //---Get form data (note that we have *three* different forms: data changes or seat deletions, new offices, or new commission/council seats.
 $fieldsChanged = rtrim(HttpPost::value('fieldsChanged'), ",");
 $office      = HttpPost::value('office');
+if (Str::contains($office, "'", "\"", "<", ">", "(", "#"))  exit(1);
+
 $officeProp  = HttpPost::value('office_prop');
+if (Str::contains($officeProp, "'", "\"", "<", ">", "(", "#"))  exit(1);
 if (! empty($officeProp))  $office = $officeProp;
+
 $subdistText = HttpPost::value('subdist');
 $subdistNum  = intval(HttpPost::value('subdist'));
 $org         = HttpPost::value('org');
+if (Str::contains($org, "'", "\"", "<", ">", "(", "#"))  exit(1);
 $deleteSeat  = HttpPost::value('deleteSeat');
 
 //---Handle data changes (form submission).

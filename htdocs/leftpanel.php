@@ -99,6 +99,15 @@ foreach ($countyNums as $countyNum) {
         . "     LEFT JOIN v4commcolleges_county AS y  ON (m.id = y.id) "
         . "     LEFT JOIN v4completed           AS c  ON (c.id = m.id  AND c.type='college') "
         . "    WHERE y.county_id = $countyNum "
+
+        . "UNION "
+        . "   SELECT 'lib' AS org, m.id, m.name, IF(c.id IS NULL, 0, 1) AS link, " . calculateReviewed('lib', 'm.id') . ","
+        .             calculatePassed('lib', 'm.id') . ","
+        .             calculateSeats("'lib'", "m.id")
+        . "     FROM      s4libraries          AS m "
+        . "     LEFT JOIN v4completed          AS c  ON (c.id = m.id  AND c.type='lib') "
+        . "    WHERE m.in_county = $countyNum "
+
         . "UNION "
         . "   SELECT type AS org, shortname AS id, name, 1 AS link, "
         . "      (SELECT 1 AS reviewed FROM v4pagesReviewed WHERE page=CONCAT(type, ':', shortname)) AS reviewed, "
@@ -106,7 +115,7 @@ foreach ($countyNums as $countyNum) {
         . "      (SELECT COUNT(*) FROM v4seats WHERE org=type AND district=shortname) AS seats "
         . "    FROM  v4courts "
         . "    WHERE county_id = $countyNum "
-        . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-pd', 'crt-p', 'crt-m'), name ";
+        . "ORDER BY FIELD (org, 'city', 'town', 'vil', 'schl-cou', 'comcol-cou', 'crt-a', 'crt-c', 'crt-d', 'crt-pd', 'crt-p', 'crt-m', 'lib'), name ";
 
 // if ($countyNum === 81) $logger->log("Big: $sql");
 
@@ -124,13 +133,14 @@ foreach ($countyNums as $countyNum) {
          case 'cnty':
             $name = Str::replaceAll($name, " County", "");
             $counties[$countyNum] = ['cnty' => [$org, $district, $name, 1, $reviewed, $seats, $passed],
-               'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => [],
+               'city' => [], 'town' => [], 'vil' => [], 'schl' => [], 'crt' => [], 'comcol' => [], 'lib' => [],
                'city_num' => 0, 'city_den' => 0,
                'town_num' => 0, 'town_den' => 0,
                'vil_num'  => 0, 'vil_den'  => 0,
                'schl_num' => 0, 'schl_den' => 0,
                'col_num'  => 0, 'col_den'  => 0,
                'crt_num'  => 0, 'crt_den'  => 0,
+               'lib_num'  => 0, 'lib_den'  => 0,
                'grd_num'  => $seats * $reviewed,
                'grd_den'  => $seats
             ];
@@ -154,6 +164,11 @@ foreach ($countyNums as $countyNum) {
          case 'schl-cou':
             $counties[$countyNum]['schl'] [] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'schl', $seats, $reviewed);
+            break;
+
+         case 'lib':
+            $counties[$countyNum]['lib'] [] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
+            rollUp($counties[$countyNum], 'lib', $seats, $reviewed);
             break;
 
          case 'comcol-cou':

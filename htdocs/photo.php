@@ -55,14 +55,14 @@ if ($headcropped == 1) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'  &&  isset($_FILES['uploadphoto'])) {
    $uploadedFile = $_FILES['uploadphoto'];
-   $logger->log("Uploaded tmp file: " . $uploadedFile['tmp_name']);
+// $logger->log("Uploaded tmp file: " . $uploadedFile['tmp_name']);
    if ($uploadedFile['error'] === UPLOAD_ERR_OK) {
       $filename = $uploadedFile['name'];
       $filename = NameSimplifier::makeFilenameFrom($filename);
       if (! hasValidImageExtension($filename))  exit(1);
       $target   = $canId . "-" . $filename;
       $got = move_uploaded_file($uploadedFile["tmp_name"], "$photosDir/$target");
-      $logger->log("Move status: " . ($got ? 'T' : 'F') . "  " . $uploadedFile['tmp_name'] . " to $photosDir/$target");
+//    $logger->log("Move status: " . ($got ? 'T' : 'F') . "  " . $uploadedFile['tmp_name'] . " to $photosDir/$target");
       if ($got) {
          $headshot = $target;
          $photoChanged = 1;

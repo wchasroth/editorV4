@@ -30,7 +30,6 @@ $qsShow      = EnvHelper::safeShow    (HttpGet::value('show'));
 $reviewedKey = $qsOrgs . ":" . $qsDistrict;
 if (Str::contains($reviewedKey, "'", "\"", "<", ">"))  exit(1);
 $showSaved   = 0;
-$logger->log("Official: county=$county, qsOrgs=$qsOrgs, qsDistrict=$qsDistrict");
 
 $email = EnvHelper::getEmail($env);
 $row   = EnvHelper::getUserPermissions($pdo, $email);
@@ -79,7 +78,7 @@ if ($canEdit) {
    else if (! Str::isReallyEmpty($office)) {
       $sql = "SELECT seats FROM s4titles WHERE org='$org' AND office='$office'";
       $result = $pdo->run($sql);
-      $logger->log("seatmax: $sql   " . $result->getError());
+//    $logger->log("seatmax: $sql   " . $result->getError());
       $seatmax = intval($result->getSingleValue('seats'));
       $sql = "INSERT INTO v4seats (org, office, district, seatnum, seatmax) VALUES ('$org', '$office', '$qsDistrict', 1, $seatmax)";
       $pdo->run($sql);
@@ -152,7 +151,7 @@ $sql = "SELECT s.*, i.name, i.party, t.shortname, i.phone, i.email, i.address, i
      . makeDistrictClause($district) . "\n"
      . "  ORDER BY FIELD(s.org, $quotedOrgs), t.ballot_order, s.district + 0, s.subdist, s.seatnum \n";
 $result = $pdo->run($sql);
-$logger->log("BIG SQL: $sql");
+//$logger->log("BIG SQL: $sql");
 if ($result->failed()) $logger->log("Failed main select: " . $result->getError() . "  $sql");
 
 //---Where the LEFT JOIN v4incumbents found no incumbent rows, create empty ones, with the seat_id set.
@@ -169,12 +168,9 @@ for ($i=0;   $i<$count;   $i++) {
 }
 
 $expandableOrgs = getUniqueOrgsFoundIn($rows);
-$logger->log("Orgs1: " . Str::join($expandableOrgs, ', '));
 if (! in_array ($org1, $expandableOrgs))  $expandableOrgs[] = $org1;
-$logger->log("Orgs2: " . Str::join($expandableOrgs, ', '));
 $expandableOrgs = array_intersect($expandableOrgs,
    ['city', 'city-cou', 'cnty', 'cnty-com', 'crt-a', 'crt-c', 'crt-d', 'crt-m', 'crt-p', 'schl-cou', 'town', 'town-cou', 'vil', 'vil-cou', 'comcol-cou', 'lib']);
-$logger->log("Orgs3: " . Str::join($expandableOrgs, ', '));
 //$offices = [];
 //foreach ($expandableOrgs as $org) {
 //   $sql = "SELECT office, shortname FROM s4titles WHERE org='$org' AND shortname != '' ";

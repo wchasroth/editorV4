@@ -167,8 +167,6 @@ foreach ($countyNums as $countyNum) {
             break;
 
          case 'lib':
-            $diagnose = [$org, $district, $name, $link, $reviewed, $seats, $passed];
-            $logger->log("Lib: " . Str::join($diagnose, ", "));
             $counties[$countyNum]['lib'] [] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'lib', $seats, $reviewed);
             break;
@@ -196,7 +194,7 @@ foreach ($countyNums as $countyNum) {
    }
 }
 $time1 = (int) (microtime(true) * 1000);
-$logger->log("Time: " . strval($time1 - $time0));
+#$logger->log("Time: " . strval($time1 - $time0));
 
 $smarty = new SmartyPage();
 $smarty->assign('allowedState', $allowedState);

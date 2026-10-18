@@ -90,7 +90,7 @@ if ($canEdit) {
    //---Handle new offices (form submission)
    else if (! Str::isReallyEmpty($office)) {
       $sql = "SELECT seats FROM s4titles WHERE org='$org' AND office='$office'";
-      $logger->log("new office $sql");
+//    $logger->log("new office $sql");
       $result = $pdo->run($sql);
 //    $logger->log("seatmax: $sql   " . $result->getError());
       $seatmax = intval($result->getSingleValue('seats'));

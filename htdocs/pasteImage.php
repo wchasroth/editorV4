@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pasted_image'])) {
         
         error_clear_last();
         if (file_put_contents("PHOTOS_CAN/$fileName", $decodedData)) {
-           $logger->log("success");
+//         $logger->log("success");
             echo json_encode(['success' => true, 'file' => $fileName]);
         } else {
            $error = error_get_last();

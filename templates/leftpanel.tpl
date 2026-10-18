@@ -233,7 +233,7 @@
                      {foreach from=$county.lib item=lib}
                          <li>
                              <a {if $lib[6] == 1} class="green" {/if}
-                                     href="#" onClick="return loadOfficials({$county.cnty[1]}, '{$lib[3]}', '{$lib[1]}', 's');" class="child">{$lib[2]}</a>
+                                     href="#" onClick="return loadOfficials({$county.cnty[1]}, 'lib', '{$lib[1]}', 's');" class="child">{$lib[2]}</a>
                              ({$lib[5]})
                              {if $lib[4] == 1}  <img src="green-check.png" width="12"/> {/if}
                          </li>

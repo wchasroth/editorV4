@@ -362,6 +362,8 @@ Only change if the value is wrong."
 
                {elseif $org == 'schl-cou'}   {include file="inc_council.tpl" org=$org title="school board"}
 
+               {elseif $org == 'lib'}        {include file="inc_council.tpl" org=$org title="library board"}
+
                {elseif $org == 'comcol-cou'} {include file="inc_council.tpl" org=$org title="board member"}
 
                {elseif $org|substr:0:3 == 'crt'}  {include file="inc_council.tpl" org=$org title="judge"}

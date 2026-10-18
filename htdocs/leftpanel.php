@@ -167,6 +167,8 @@ foreach ($countyNums as $countyNum) {
             break;
 
          case 'lib':
+            $diagnose = [$org, $district, $name, $link, $reviewed, $seats, $passed];
+            $logger->log("Lib: " . Str::join($diagnose, ", "));
             $counties[$countyNum]['lib'] [] = [$org, $district, $name, $link, $reviewed, $seats, $passed];
             rollUp($counties[$countyNum], 'lib', $seats, $reviewed);
             break;

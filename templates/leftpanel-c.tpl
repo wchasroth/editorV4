@@ -227,6 +227,22 @@
                         {/foreach}
                     </ul>
                 </li>
+
+                <li><a href='#' class="parent" onClick="return flipArrow('{$county.cnty[1]}L');"
+                    ><span id='A{$county.cnty[1]}L' class="arrow">&#9654;</span> Libraries</a>
+                    ({$county.lib_rev}/{$county.lib_den}) <span class="endorsed">{$county.lib_end}</span>
+                    {if $county.lib_end == $county.lib_den  &&  $county.lib_den > 0} <img src="green-check.png" width="12"/> {/if}
+                    <ul id="C{$county.cnty[1]}L" style="display: none";>
+                        {foreach from=$county.lib item=lib}
+                            <li>
+                                <a href="#"  {if $lib[7] == 1} class="green" {/if}
+                                   onClick="return loadOfficials({$county.cnty[1]}, 'lib', '{$lib[1]}', 's', 1);" class="child"     >{$lib[2]}</a>
+                                ({$lib[5]}/{$lib[4]}) <span class="endorsed">{$lib[6]}</span>
+                                {if $lib[6] == $lib[4]  &&  $lib[4] > 0} <img src="green-check.png" width="12"/> {/if}
+                            </li>
+                        {/foreach}
+                    </ul>
+                </li>
             </ul>
         </li>
     {/foreach}

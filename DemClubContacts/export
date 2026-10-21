@@ -4,6 +4,6 @@ echo "source export.sql" | mycsv | \
    sed "s/https:\/\///g"         | \
    sed "s/http:\/\///g"          | \
    sed "s/www\.//g"              | \
-   sed "s/mailto://g" >j
+   sed "s/mailto://g" > DemPartyClubContacts.tsv
 
 

@@ -1,0 +1,74 @@
+   
+   SELECT c.id, c.name, s.org, s.office, y.name as County, j.name AS dname, c.web
+     FROM      v4candidates    AS c
+     LEFT JOIN v4seats         AS s  ON (c.seat_id = s.id)
+     LEFT JOIN s4jurisdictions AS j  ON (j.id = s.district)
+     LEFT JOIN s4counties      AS y  ON (j.county_id = y.id)
+    WHERE s.org IN ('city', 'city-cou', 'town', 'town-cou')
+      AND c.email    = ''
+      AND c.web     != ''
+      AND c.endorsed = 1
+      AND c.reviewed = 1
+      AND office NOT LIKE 'prop%'
+
+UNION ALL
+   SELECT c.id, c.name, s.org, s.office, y.name as County, j.name AS dname, c.web
+     FROM      v4candidates    AS c
+     LEFT JOIN v4seats         AS s  ON (c.seat_id = s.id)
+     LEFT JOIN s4schools       AS j  ON (j.id = s.district)
+     LEFT JOIN s4counties      AS y  ON (j.county_id = y.id)
+    WHERE s.org = 'schl-cou'
+      AND c.email    = ''
+      AND c.web     != ''
+      AND c.endorsed = 1
+      AND c.reviewed = 1
+      AND office NOT LIKE 'prop%'
+
+UNION ALL
+   
+   SELECT c.id, c.name, s.org, s.office, '' as County, '' AS dname, c.web
+     FROM      v4candidates    AS c
+     LEFT JOIN v4seats         AS s  ON (c.seat_id = s.id)
+     LEFT JOIN s4jurisdictions AS j  ON (j.id = s.district)
+    WHERE (s.org LIKE 'mi%' OR s.org LIKE 'us%')
+      AND c.email    = ''
+      AND c.web     != ''
+      AND c.endorsed = 1
+      AND c.reviewed = 1
+      AND office NOT LIKE 'prop%'
+UNION ALL
+   
+   SELECT c.id, c.name, s.org, s.office, '' as County, j.name AS dname, c.web
+     FROM      v4candidates    AS c
+     LEFT JOIN v4seats         AS s  ON (c.seat_id   = s.id)
+     LEFT JOIN v4courts        AS j  ON (j.shortname = s.district AND j.type=s.org)
+    WHERE (s.org IN ('crt-c', 'crt-d', 'crt-a', 'crt-p'))
+      AND c.email    = ''
+      AND c.web     != ''
+      AND c.endorsed = 1
+      AND c.reviewed = 1
+UNION ALL
+   
+   SELECT c.id, c.name, s.org, s.office, '' as County, j.name AS dname, c.web
+     FROM      v4candidates    AS c
+     LEFT JOIN v4seats         AS s  ON (c.seat_id   = s.id)
+     LEFT JOIN s4commcolleges  AS j  ON (j.id = s.district)
+    WHERE s.org = 'comcol-cou'
+      AND c.email    = ''
+      AND c.web     != ''
+      AND c.endorsed = 1
+      AND c.reviewed = 1
+
+UNION ALL
+   
+   SELECT c.id, c.name, s.org, s.office, j.name, '' AS dname, c.web
+     FROM      v4candidates    AS c
+     LEFT JOIN v4seats         AS s  ON (c.seat_id = s.id)
+     LEFT JOIN s4counties      AS j  ON (j.id = s.district)
+    WHERE (s.org LIKE 'cnty%')
+      AND c.email    = ''
+      AND c.web     != ''
+      AND c.endorsed = 1
+      AND c.reviewed = 1
+      AND office NOT LIKE 'prop%'
+ORDER BY org, office, County, dname, name
